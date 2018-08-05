@@ -14,7 +14,8 @@ const HOSTNAME = window && window.location && window.location.hostname
 let ON_HEROKU = false
 
 console.log(HOSTNAME, "HOST")
-if (HOSTNAME === 'infinitea.herokuapp.com' || HOSTNAME === 'www.infinitea.org') {
+if (HOSTNAME === 'infinitea.herokuapp.com' || HOSTNAME === 'www.infinitea.org'
+    || HOSTNAME === 'david-oconnor.github.io') {
     ON_HEROKU = true
 }
 
