@@ -476,6 +476,8 @@ class Main extends React.Component<MainProps, MainState> {
     }
 
     render() {
+        console.log(HOSTNAME, "HOST")
+
         let mainDisplay = <Picker
             ingredients={this.state.ingredients}
             ingSelection={this.state.ingSelection}
