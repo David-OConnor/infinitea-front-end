@@ -13,7 +13,6 @@ import {Address, Blend, Ingredient, Order} from "./types"
 const HOSTNAME = window && window.location && window.location.hostname
 let ON_HEROKU = false
 
-console.log(HOSTNAME, "HOST")
 if (HOSTNAME === 'infinitea.herokuapp.com' || HOSTNAME === 'www.infinitea.org'
     || HOSTNAME === 'david-oconnor.github.io') {
     ON_HEROKU = true
@@ -476,8 +475,6 @@ class Main extends React.Component<MainProps, MainState> {
     }
 
     render() {
-        console.log(HOSTNAME, "HOST")
-
         let mainDisplay = <Picker
             ingredients={this.state.ingredients}
             ingSelection={this.state.ingSelection}
