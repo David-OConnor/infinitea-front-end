@@ -96,8 +96,8 @@ const IngredientCard = ({ingredient, selected, selectCb}:
 
     let style = {cursor: 'pointer', borderWidth: "5px", borderColor: "#69996a"}
     if (selected) {style['borderStyle'] = "solid"}
-                    // todo
-                    {/*<Image src={'./images/' + ingredient.name.toLocaleLowerCase() + '.jpg'}*/}
+    // todo
+    {/*<Image src={'./images/' + ingredient.name.toLocaleLowerCase() + '.jpg'}*/}
 
     return (
         <div>
@@ -299,21 +299,27 @@ class ContactForm extends React.Component<ContactProps, ContactState> {
                     />
                 </FormGroup>
 
-                <Button bsStyle="primary" type="button" onClick={() => {
-                    sendMessage(
-                        this.state.name, this.state.email, this.state.message
-                    )
-                    // Now reset the form and show confirmation.
-                    this.handleChange('name', "")
-                    this.props.showCb(false)
-                    this.props.confirmationCb(true)
+                <div style={{display: 'flex', margin: 'auto'}}>
+                    <div
+                        style={{...buttonStyle, background: primaryColor}}
+                        onClick={() => {
+                            sendMessage(
+                                this.state.name, this.state.email, this.state.message
+                            )
+                            // Now reset the form and show confirmation.
+                            this.handleChange('name', "")
+                            this.props.showCb(false)
+                            this.props.confirmationCb(true)
 
-                }}>Submit</Button>
+                        }}>Submit</div>
 
-                <Button type="button" onClick={() => {
-                    this.handleChange('name', "")
-                    this.props.showCb(false)
-                }}>Discard</Button>
+                    <div
+                        style={buttonStyle}
+                        onClick={() => {
+                            this.handleChange('name', "")
+                            this.props.showCb(false)
+                        }}>Discard</div>
+                </div>
             </Form>
         )
     }
@@ -372,7 +378,23 @@ class Footer extends React.Component<FooterProps, FooterState> {
                     confirmationCb={this.setConfirmation}
 
                 /> : null}
-                {this.state.showConfirmation ? <h4>Thanks for your message! 🙂</h4> : null}
+                {this.state.showConfirmation ?
+                    <div style={{
+                        display: 'flex',
+                        margin: 'auto',
+                        marginTop: 40,
+                        paddingTop: 20,
+                        paddingLeft: 30,
+                        background: 'white',
+                        opacity: mainOpacity,
+                        textAlign: 'center',
+                        width: 300,
+                        height: 80,
+                    }}>
+                        <h4>
+                            Thanks for your message! 🙂
+                        </h4>
+                    </div>: null}
 
                 <h5 style={{textAlign: 'center'}}>© 2018 Infinitea.org</h5>
             </div>
