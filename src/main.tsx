@@ -502,6 +502,8 @@ class Main extends React.Component<MainProps, MainState> {
                 <div
                     style={{
                         ...buttonStyle,
+                        // height: 60,
+                        // width: 200,
                         background: primaryColor,
                     }}
                     onClick={() => this.set('mainDisplay', 1)}>Size and price
