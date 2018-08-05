@@ -96,7 +96,8 @@ const IngredientCard = ({ingredient, selected, selectCb}:
 
     let style = {cursor: 'pointer', borderWidth: "5px", borderColor: "#69996a"}
     if (selected) {style['borderStyle'] = "solid"}
-
+                    // todo
+                    {/*<Image src={'./images/' + ingredient.name.toLocaleLowerCase() + '.jpg'}*/}
 
     return (
         <div>
@@ -104,8 +105,7 @@ const IngredientCard = ({ingredient, selected, selectCb}:
                 <h5 style={selected ? {fontWeight: "bold"} : {}}>{ingredient.name}</h5>
 
                 <OverlayTrigger trigger={['hover', 'focus']} placement="bottom" overlay={popover}>
-
-                    <Image src={'./images/' + ingredient.name.toLocaleLowerCase() + '.jpg'}
+                    <Image src={'./images/sencha tea.jpg'}
                            style={style}
                            width={64} height={64} circle
                            onClick={() => selectCb(!selected)}
