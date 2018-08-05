@@ -570,7 +570,7 @@ class Main extends React.Component<MainProps, MainState> {
 
                         <Menu page={this.state.page} cb={(page: number) => this.set('page', page)} />
 
-                        <div style={{background: 'white', border: "0px solid black", padding: 40}}>
+                        <div style={{background: 'white', opacity: .9, border: "0px solid black", padding: 40}}>
                             <Row>
                                 <Col xs={12}>
                                     {this.state.page === 0 ? mainDisplay : <About />}
