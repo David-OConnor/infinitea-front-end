@@ -13,7 +13,7 @@ import {Address, Blend, Ingredient, Order} from "./types"
 const HOSTNAME = window && window.location && window.location.hostname
 let ON_HEROKU = false
 
-console.log("HOSTNAME")
+console.log(HOSTNAME, "HOST")
 if (HOSTNAME === 'infinitea.herokuapp.com' || HOSTNAME === 'www.infinitea.org') {
     ON_HEROKU = true
 }
