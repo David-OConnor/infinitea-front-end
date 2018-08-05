@@ -9,15 +9,25 @@ export interface Ingredient {
     chocolate: number;
     spicy: number;
     savory: number;
+    price: number;
 }
 export interface Blend {
-    id: number;
-    name: string;
+    title: string;
     description: string;
     ingredients: Ingredient[];
 }
 export interface Order {
     items: [Blend, number][];
-    name: string;
     shipping_address: number;
+}
+export interface Address {
+    name: string;
+    email: string;
+    country: string;
+    address1: string;
+    address2: string;
+    city: string;
+    state: string;
+    postal: string;
+    phone: string;
 }
