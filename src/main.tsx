@@ -269,7 +269,7 @@ class ContactForm extends React.Component<ContactProps, ContactState> {
 
     render() {
         return (
-            <Form>
+            <Form style={{background: 'white', padding: 40}}>
                 <FormGroup>
                     <ControlLabel>Your name</ControlLabel>
                     <FormControl
@@ -349,17 +349,19 @@ class Footer extends React.Component<FooterProps, FooterState> {
                 <br />
                 <br />
 
-                <h4>Questions? Feedback?</h4>
+                {/*<h4 style={{textAlign: 'center'}}>Questions? Feedback?</h4>*/}
                 {!this.state.showContact ?
 
                     <div
                         style={{
                             ...buttonStyle,
+                            height: 60,
                         }}
                         onClick={() => {
                             this.setContactForm(true)
                             this.setConfirmation(false)
                         }}>
+                        Questions? Feedback?
                         Send us a message
                     </div>
 
