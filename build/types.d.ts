@@ -10,15 +10,12 @@ export interface Ingredient {
     spicy: number;
     savory: number;
     price: number;
+    inventory: number;
 }
 export interface Blend {
     title: string;
     description: string;
-    ingredients: Ingredient[];
-}
-export interface Order {
-    items: [Blend, number][];
-    shipping_address: number;
+    ingredients: [Ingredient, number][];
 }
 export interface Address {
     name: string;

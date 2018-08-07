@@ -374,9 +374,20 @@ export default ({orderCb, blend, size, price}: {orderCb: Function,
         blend: Blend, size: number, price: number}) => (
     <div>
         <h2 style={{textAlign: 'center'}}>Your order summary</h2>
+
+        <div style={{
+            marginTop: 50,
+            fontFamily: 'Georgia',
+            background: '#c9d1e7',
+
+        }}>
+            <h3 style={{textAlign: 'center'}}>{blend.title}</h3>
+            <p style={{textAlign: 'center'}}>{blend.description}</p>
+        </div>
+
         <h3>Your blend</h3>
         <ul>
-            {blend.ingredients.map(ing => <li key={ing.id}>{ing.name}</li>)}
+            {blend.ingredients.map(ing => <li key={ing[0].id}>{ing[0].name}</li>)}
         </ul>
         <h4 style={{textAlign: 'center'}}>Size: {size + " grams"}</h4>
         <h4 style={{textAlign: 'center'}}>Price: {"$" + price}</h4>

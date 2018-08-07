@@ -7,7 +7,7 @@ import {Button, Grid, Row, Col, ControlLabel,
 import CheckoutForm from './checkout'
 import About from './about'
 import * as util from './util'
-import {Address, Blend, Ingredient, Order} from "./types"
+import {Address, Blend, Ingredient} from "./types"
 // import {stringify} from "querystring";
 
 const HOSTNAME = window && window.location && window.location.hostname
@@ -20,6 +20,19 @@ if (HOSTNAME === 'infinitea.herokuapp.com' || HOSTNAME === 'www.infinitea.org'
 
 export const BASE_URL = ON_HEROKU ? 'https://infinitea.herokuapp.com/api/' :
     'http://localhost:8000/api/'
+
+
+const descriptions = [
+    "Definitely an aphrodisiac",
+    "Orange you glad I contain chocolate?",
+    "Drink me",
+    "It's always Tea Time",
+    "Would you like an adventure now, or shall we have our tea first?",
+]
+
+// Generate it here, so the same value persists until the page is refreshed.
+const description = descriptions[Math.floor(Math.random()*descriptions.length)]
+
 
 const primaryColor = '#9091c2'
 const mainOpacity = 0.85
@@ -37,6 +50,7 @@ const buttonStyle = {
     textAlign: 'center' as any,  // wtf?
     // verticalAlign: 'middle',
     color: 'black',
+    fontFamily: '"Lucida Sans Unicode"',
     fontSize: '1.2em',
 }
 
@@ -44,7 +58,7 @@ const Menu = ({page, cb}: {page: number, cb: Function}) => {
     let text = "About"
     let destPage = 1
     if (page === 1) {
-        text = "Your tea"
+        text = "⇐ Your tea"
         destPage = 0
     }
 
@@ -75,9 +89,13 @@ const Menu = ({page, cb}: {page: number, cb: Function}) => {
 // </div>
 
 const Heading = () => (
-    <div style={{textAlign: 'center'}}>
+    <div style={{
+        textAlign: 'center',
+        fontFamily: '"Georgia", "times"',
+
+    }}>
         <h1>Infini·tea ∞ </h1>
-        <h3>Your personalized tea blend</h3>
+        <h3>For your personalitea</h3>
     </div>
 )
 
@@ -102,7 +120,13 @@ const IngredientCard = ({ingredient, selected, selectCb}:
     return (
         <div>
             <Col xs={3}>
-                <h5 style={selected ? {fontWeight: "bold"} : {}}>{ingredient.name}</h5>
+                <h5 style={selected ? {
+                        fontWeight: "bold",
+                        fontFamily: '"Lucida Sans Unicode"',
+                    } :
+                    {fontFamily: '"Lucida Sans Unicode"'}}>
+                    {ingredient.name}
+                </h5>
 
                 <OverlayTrigger trigger={['hover', 'focus']} placement="bottom" overlay={popover}>
                     <Image src={'./images/sencha tea.jpg'}
@@ -125,10 +149,10 @@ const BlendDisplay = ({ingredients, ingSelection}:
     </div>
 )
 
-const Picker = ({ingredients, ingSelection, selectCb, title, description, titleCb, descriptionCb}:
-                    {ingredients: Ingredient[], ingSelection: Map<number, boolean>,
-                        selectCb: Function, title: string, description: string,
-                        titleCb: Function, descriptionCb: Function}) => {
+const Picker = ({ingredients, blend, ingSelection, selectCb, titleCb, descriptionCb}:
+                    {ingredients: Ingredient[], blend: Blend, ingSelection: Map<number, boolean>
+                        selectCb: Function, titleCb: Function, descriptionCb: Function}) => {
+
     const selected = ingredients.filter(ing => ingSelection.get(ing.id))
     let selectedDisplay = selected.reduce((acc, ing) => (acc + " " + ing.name + ","), "")
     selectedDisplay = selectedDisplay.slice(0, -1)  // Remove final trailing comma.
@@ -138,6 +162,12 @@ const Picker = ({ingredients, ingSelection, selectCb, title, description, titleC
 
     return (
         <div>
+            <Row style={{marginBottom: 50}}>
+                <Col xs={12}>
+                    <h4 style={{textAlign: 'center'}}>{blendText}</h4>
+                </Col>
+            </Row>
+
             <Row>
                 <Col xs={12}>
                     {ingredients.map(ing => <IngredientCard
@@ -156,11 +186,7 @@ const Picker = ({ingredients, ingSelection, selectCb, title, description, titleC
                 </Col>
             </Row>
 
-            <Row style={{marginTop: 50}}>
-                <Col xs={12}>
-                    <h4 style={{textAlign: 'center'}}>{blendText}</h4>
-                </Col>
-            </Row>
+
 
             <Row style={{marginTop: 30}}>
                 <Col xs={10} xsOffset={1}>
@@ -169,7 +195,7 @@ const Picker = ({ingredients, ingSelection, selectCb, title, description, titleC
                             <ControlLabel>Title</ControlLabel>
                             <FormControl
                                 type="text"
-                                value={title}
+                                value={blend.title}
                                 placeholder="Serious? Fun?"
                                 onChange={(e: any) => titleCb(e.target.value)}
                             />
@@ -179,8 +205,9 @@ const Picker = ({ingredients, ingSelection, selectCb, title, description, titleC
                             <ControlLabel>Description</ControlLabel>
                             <FormControl
                                 type="text"
-                                value={description}
-                                placeholder="Orange you glad I contain chocolate?"
+                                value={blend.description}
+                                // Random description.
+                                placeholder={description}
                                 onChange={(e: any) => descriptionCb(e.target.value)}
                             />
                         </FormGroup>
@@ -209,7 +236,7 @@ const OrderDetails = ({sizeSelected, blend, sizeCb}:
 
             <h3>Your blend</h3>
             <ul>
-                {blend.ingredients.map(ing => <li key={ing.id}>{ing.name}</li>)}
+                {blend.ingredients.map(ing => <li key={ing[0].id}>{ing[0].name}</li>)}
             </ul>
 
             <Panel bsStyle={sizeSelected === 50 ? 'primary' : 'default'}
@@ -396,7 +423,7 @@ class Footer extends React.Component<FooterProps, FooterState> {
                         </h4>
                     </div>: null}
 
-                <h5 style={{textAlign: 'center'}}>© 2018 Infinitea.org</h5>
+                <h5 style={{textAlign: 'center', color: 'white'}}>© 2018 Infinitea.org</h5>
             </div>
         )
     }
@@ -409,6 +436,13 @@ const OrderPlaced = () => (
     </div>
 )
 
+const OrderFailed = () => (
+    <div>
+        <h1 style={{color: '#e25f45'}}>There was a problem placing your order. 😞</h1>
+        <h3>If this happens again, please let us know.</h3>
+    </div>
+)
+
 interface MainProps {
     // state: any
     // dispatch: Function
@@ -416,13 +450,14 @@ interface MainProps {
 
 interface MainState {
     page: number
-    order: Order
-    ingredients: Ingredient[]  // Second param is if selected.
-    ingSelection: Map<number, boolean> // <ingredient id, selected>
     mainDisplay: number // 0 for picker, 1 for order details, 2 for payment
+    ingredients: Ingredient[]  // Second param is if selected.
+
+    ingSelection: Map<number, boolean> // <ingredient id, selected>
     sizeSelected: number
     title: string
     description: string
+
 }
 
 
@@ -431,15 +466,13 @@ class Main extends React.Component<MainProps, MainState> {
         super(props)
         this.state = {
             page: 0,
-            order: {
-                shipping_address: 1,
-                items: []},
-            ingredients: [],
-            ingSelection: new Map(),
             mainDisplay: 0,
-            sizeSelected: 50,
+            ingredients: [],
+
+            ingSelection: new Map(),
             title: "",
             description: "",
+            sizeSelected: 50,
         }
 
         // Populate ingredients from the database.
@@ -471,16 +504,8 @@ class Main extends React.Component<MainProps, MainState> {
         this.setState({ingSelection: modifiedSel})
     }
 
-    order(address: Address, token: any) {
+    order(selected: Ingredient[], blend: Blend, address: Address, token: any) {
         // todo dry from below in render()
-
-        const selected = this.state.ingredients.filter(ing => this.state.ingSelection.get(ing.id))
-        const blend: Blend = {
-            title: this.state.title,
-            description: this.state.description,
-            ingredients: selected
-        }
-
         axios.post(
             BASE_URL + 'order',
             {
@@ -494,18 +519,26 @@ class Main extends React.Component<MainProps, MainState> {
                 console.log("RESP FROM DJANGO:", resp)
                 if (resp.data.success) {
                     this.set('mainDisplay', 3)
+                } else {
+                    this.set('mainDisplay', 4)
                 }
             }
         )
     }
 
     render() {
+        const selected = this.state.ingredients.filter(ing => this.state.ingSelection.get(ing.id))
+        const blend: Blend = {
+            title: this.state.title,
+            description: this.state.description,
+            ingredients: selected.map(s => ([s, 1.0])) as any
+        }
+
         let mainDisplay = <Picker
             ingredients={this.state.ingredients}
+            blend={blend}
             ingSelection={this.state.ingSelection}
             selectCb={this.addRemIngredient}
-            title={this.state.title}
-            description={this.state.description}
             titleCb={(title: string) => this.set('title', title)}
             descriptionCb={(descrip: string) => this.set('description', descrip)}
         />
@@ -520,13 +553,12 @@ class Main extends React.Component<MainProps, MainState> {
 
         let nextDisplayButtons = (<div />)
 
+        // Only allow the user to proceed if 1 or more ingredients are selected.
         if (numSelected > 0) {
             nextDisplayButtons = (
                 <div
                     style={{
                         ...buttonStyle,
-                        // height: 60,
-                        // width: 200,
                         background: primaryColor,
                     }}
                     onClick={() => this.set('mainDisplay', 1)}>Size and price
@@ -534,17 +566,12 @@ class Main extends React.Component<MainProps, MainState> {
             )
         }
 
-        const selected = this.state.ingredients.filter(ing => this.state.ingSelection.get(ing.id))
-        const blend: Blend = {
-            title: this.state.title,
-            description: this.state.description,
-            ingredients: selected
-        }
-
         if (this.state.mainDisplay === 1) {
-            mainDisplay = <OrderDetails sizeSelected={this.state.sizeSelected}
-                                        blend={blend}
-                                        sizeCb={(size: number) => this.set('sizeSelected', size)}/>
+            mainDisplay = <OrderDetails
+                sizeSelected={this.state.sizeSelected}
+                blend={blend}
+                sizeCb={(size: number) => this.set('sizeSelected', size)}
+            />
             nextDisplayButtons = (
                 <div style={{'display': 'flex', 'margin': 'auto'}}>
                     <div style={buttonStyle} onClick={() =>
@@ -557,7 +584,7 @@ class Main extends React.Component<MainProps, MainState> {
 
         else if (this.state.mainDisplay === 2)  {
             mainDisplay = <CheckoutForm
-                orderCb={this.order}
+                orderCb={(address: Address, token: any) => this.order(selected, blend, address, token)}
                 blend={blend}
                 size={this.state.sizeSelected}
                 price={util.calcPrice(blend, this.state.sizeSelected)}
@@ -578,6 +605,15 @@ class Main extends React.Component<MainProps, MainState> {
 
         else if (this.state.mainDisplay === 3)  {
             mainDisplay = <OrderPlaced />
+            nextDisplayButtons = (
+                <div style={{'display': 'flex', 'margin': 'auto'}}>
+                    <Button onClick={() => this.set('mainDisplay', 0)}>⇐ Back to the main page</Button>
+                </div>
+            )
+        }
+
+        else if (this.state.mainDisplay === 4)  {
+            mainDisplay = <OrderFailed />
             nextDisplayButtons = (
                 <div style={{'display': 'flex', 'margin': 'auto'}}>
                     <Button onClick={() => this.set('mainDisplay', 0)}>⇐ Back to the main page</Button>

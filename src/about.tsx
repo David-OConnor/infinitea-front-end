@@ -7,7 +7,11 @@ export default () => (
     <div>
         <h2>☕ Our mission: </h2>
 
-        <p>You're passionate about tea and creativity. We help you
+        <p>Make it as easy as possible to create and order custom tea creations.
+            Distraction-free.
+            Our passion for high-quality teas and your creativitea make a great combination.
+            
+            You're passionate about tea and creativitea. We help you
             create unique teas. Wheather it's for yourself or as a gift, we hope
             you enjoy your tea!</p>
 

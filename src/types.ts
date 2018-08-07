@@ -10,18 +10,20 @@ export interface Ingredient {
     spicy: number
     savory: number
     price: number // $ per gram
+    inventory: number // grams
 }
 
 export interface Blend {
     title: string
     description: string
-    ingredients: Ingredient[]
+    ingredients: [Ingredient, number][]  // ingredient, relative amount.
 }
 
-export interface Order {
-    items: [Blend, number][]  // second tuple item is the size in grams.
-    shipping_address: number  // todo
-}
+// export interface Order {
+//     blends: [Blend, number][]  // second tuple item is the size in grams.
+//     shipping_address: number
+//     notes: string
+// }
 
 export interface Address {
     name: string
