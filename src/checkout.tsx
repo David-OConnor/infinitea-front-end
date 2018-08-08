@@ -8,11 +8,37 @@ import {
     Elements,
     StripeProvider,
     injectStripe,
-    CardExpiryElement, CardCVCElement, PostalCodeElement, CardNumberElement
 } from "react-stripe-elements"
-import {Button, ControlLabel, Form, FormControl, FormGroup} from 'react-bootstrap'
-import {Address, Blend, Ingredient} from "./types";
+import {
+    Col,
+    ControlLabel,
+    Form,
+    FormControl,
+    FormGroup, Row
+} from 'react-bootstrap'
 
+import {Address, Blend, Ingredient} from "./types";
+import * as util from './util'
+
+
+// todo duped from main.
+const buttonStyle = {
+    cursor: 'pointer',
+    background: '#c4ddd2',
+    height: 40,
+    width: 200,
+
+    margin: 'auto',
+    paddingTop: 6,
+    display: 'block',
+    // lineHeight: 40,
+    textAlign: 'center' as any,  // wtf?
+    // verticalAlign: 'middle',
+    color: 'black',
+    fontFamily: '"Lucida Sans Unicode"',
+    fontSize: '1.2em',
+}
+const primaryColor = '#9091c2'
 
 // Min lengths for address validation
 const minName = 3
@@ -22,6 +48,7 @@ const minAddress2 = 0
 const minCity = 3
 const minState = 2
 const minPostal = 5
+const maxPostal = 10
 const minPhone = 10
 const maxPhone = 15
 
@@ -53,7 +80,7 @@ const createOptions = (fontSize: string) => {
                 '::placeholder': {
                     color: '#aab7c4',
                 },
-                padding,
+                // padding: padding,
             },
             invalid: {
                 color: '#9e576d',
@@ -76,150 +103,110 @@ const inputStyle = {
     // backgroundCo: '#ff1111'
 }
 
-interface AddressProps {
-    cb: Function
+const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
+    const validStyle = {borderColor: 'green'}
+    const invalidStyle = {borderColor: '#b4677e'}
+    
+    return (
+        <Form>
+            <h5> Only orders to US addresses accepted at this time.
+                Expect international shipping in the future!</h5>
+            <h4> Shipping address</h4>
+
+            <FormGroup>
+                <ControlLabel>Your name</ControlLabel>
+                <FormControl
+                    style={address.name.length >= minName ? validStyle : invalidStyle}
+                    type="text"
+                    value={address.name}
+                    placeholder="Name"
+                    onChange={(e: any) => cb('name', e.target.value)}
+                />
+            </FormGroup>
+
+            <FormGroup>
+                <ControlLabel>Email address</ControlLabel>
+                <FormControl
+                    style={address.email.length >= minEmail && address.email.includes('@') &&
+                    address.email.includes('.') ? validStyle : invalidStyle}
+                    type="text"
+                    value={address.email}
+                    placeholder="Email"
+                    onChange={(e: any) => cb('email', e.target.value)}
+                />
+            </FormGroup>
+
+            <FormGroup>
+                <ControlLabel>Address, line 1</ControlLabel>
+                <FormControl
+                    style={address.address1.length >= minAddress1 ? validStyle : invalidStyle}
+                    type="text"
+                    value={address.address1}
+                    placeholder="Address 1"
+                    onChange={(e: any) => cb('address1', e.target.value)}
+                />
+            </FormGroup>
+
+            <FormGroup>
+                <ControlLabel>Address, line 2 (eg apartment #)</ControlLabel>
+                <FormControl
+                    style={address.address2.length >= minAddress2 ? validStyle : invalidStyle}
+                    type="text"
+                    value={address.address2}
+                    placeholder="(Optional)"
+                    onChange={(e: any) => cb('address2', e.target.value)}
+                />
+            </FormGroup>
+
+            <FormGroup>
+                <ControlLabel>City</ControlLabel>
+                <FormControl
+                    style={address.city.length >= minCity ? validStyle : invalidStyle}
+                    type="text"
+                    value={address.city}
+                    placeholder="City"
+                    onChange={(e: any) => cb('city', e.target.value)}
+                />
+            </FormGroup>
+
+            <FormGroup>
+                <ControlLabel>State</ControlLabel>
+                <FormControl
+                    style={address.state.length >= minState ? validStyle : invalidStyle}
+                    type="text"
+                    value={address.state}
+                    placeholder="State"
+                    onChange={(e: any) => cb('state', e.target.value)}
+                />
+            </FormGroup>
+
+            <FormGroup>
+                <ControlLabel>Postal (ZIP) code</ControlLabel>
+                <FormControl
+                    style={address.postal.length >= minPostal && address.postal.length <= maxPostal ? validStyle : invalidStyle}
+                    type="text"
+                    value={address.postal}
+                    placeholder="Postal code"
+                    onChange={(e: any) => cb('postal', e.target.value)}
+                />
+            </FormGroup>
+
+            <FormGroup>
+                <ControlLabel>Phone number</ControlLabel>
+                <FormControl
+                    style={address.phone.length >=minPhone &&
+                    address.phone.length <= maxPhone ? validStyle : invalidStyle}
+                    type="text"
+                    value={address.phone}
+                    placeholder="Phone number"
+                    onChange={(e: any) => cb('phone', e.target.value)}
+                />
+            </FormGroup>
+        </Form>
+    )
 }
 
-interface AddressState {
-    name: string
-    email: string
-    // country: string
-    address1: string
-    address2: string
-    city: string
-    state: string
-    postal: string
-    phone: string
-}
-
-class AddressForm extends React.Component<AddressProps, AddressState> {
-    constructor(props: AddressProps) {
-        super(props)
-        this.state = {
-            name: '',
-            email: '',
-            address1: '',
-            address2: '',
-            city: '',
-            state: '',
-            postal: '',
-            phone: '',
-        }
-
-        this.handleChange = this.handleChange.bind(this)
-    }
-
-    handleChange(attr: string, val: string) {
-        this.setState({[attr]: val} as any)
-        this.props.cb(this.state.name, this.state.email, this.state.address1, this.state.address2,
-            this.state.city, this.state.state, this.state.postal, this.state.phone)
-
-    }
-
-    render() {
-        const validStyle = {borderColor: 'green'}
-        const invalidStyle = {borderColor: '#b4677e'}
-        return (
-            <Form>
-                <h5> Only orders to US addresses accepted at this time.
-                    Expect international shipping in the future!</h5>
-                <h4> Shipping address</h4>
-
-                <FormGroup>
-                    <ControlLabel>Your name</ControlLabel>
-                    <FormControl
-                        style={this.state.name.length >= minName ? validStyle : invalidStyle}
-                        type="text"
-                        value={this.state.name}
-                        placeholder="Name"
-                        onChange={(e: any) => this.handleChange('name', e.target.value)}
-                    />
-                </FormGroup>
-
-                <FormGroup>
-                    <ControlLabel>Email address</ControlLabel>
-                    <FormControl
-                        style={this.state.email.length >= minEmail && this.state.email.includes('@') &&
-                            this.state.email.includes('.') ? validStyle : invalidStyle}
-                        type="text"
-                        value={this.state.email}
-                        placeholder="Email"
-                        onChange={(e: any) => this.handleChange('email', e.target.value)}
-                    />
-                </FormGroup>
-
-                <FormGroup>
-                    <ControlLabel>Address, line 1</ControlLabel>
-                    <FormControl
-                        style={this.state.address1.length >= minAddress1 ? validStyle : invalidStyle}
-                        type="text"
-                        value={this.state.address1}
-                        placeholder="Address 1"
-                        onChange={(e: any) => this.handleChange('address1', e.target.value)}
-                    />
-                </FormGroup>
-
-                <FormGroup>
-                    <ControlLabel>Address, line 2 (eg apartment #)</ControlLabel>
-                    <FormControl
-                        style={this.state.address2.length >= minAddress2 ? validStyle : invalidStyle}
-                        type="text"
-                        value={this.state.address2}
-                        placeholder="(Optional)"
-                        onChange={(e: any) => this.handleChange('address2', e.target.value)}
-                    />
-                </FormGroup>
-
-                <FormGroup>
-                    <ControlLabel>City</ControlLabel>
-                    <FormControl
-                        style={this.state.city.length >= minCity ? validStyle : invalidStyle}
-                        type="text"
-                        value={this.state.city}
-                        placeholder="City"
-                        onChange={(e: any) => this.handleChange('city', e.target.value)}
-                    />
-                </FormGroup>
-
-                <FormGroup>
-                    <ControlLabel>State</ControlLabel>
-                    <FormControl
-                        style={this.state.state.length >= minState ? validStyle : invalidStyle}
-                        type="text"
-                        value={this.state.state}
-                        placeholder="State"
-                        onChange={(e: any) => this.handleChange('state', e.target.value)}
-                    />
-                </FormGroup>
-
-                <FormGroup>
-                    <ControlLabel>Postal (ZIP) code</ControlLabel>
-                    <FormControl
-                        style={this.state.postal.length >= minPostal ? validStyle : invalidStyle}
-                        type="text"
-                        value={this.state.postal}
-                        placeholder="Postal code"
-                        onChange={(e: any) => this.handleChange('postal', e.target.value)}
-                    />
-                </FormGroup>
-
-                <FormGroup>
-                    <ControlLabel>Phone number</ControlLabel>
-                    <FormControl
-                        style={this.state.phone.length >=minPhone &&
-                                this.state.phone.length <= maxPhone ? validStyle : invalidStyle}
-                        type="text"
-                        value={this.state.phone}
-                        placeholder="Phone number"
-                        onChange={(e: any) => this.handleChange('phone', e.target.value)}
-                    />
-                </FormGroup>
-            </Form>
-        )
-    }
-}
-
-interface CardFormProps {
+interface CardFormProps {  // Not working for some reason.
     stripe: any
     fontSize: string
     orderCb: Function
@@ -233,6 +220,7 @@ class _CardForm extends React.Component<any, any> {
         if (this.props.stripe) {
             this.props.stripe
                 .createToken()
+
                 .then((payload: any) => {
                         if (payload.token) {
                             this.props.orderCb(payload.token)
@@ -265,11 +253,10 @@ class _CardForm extends React.Component<any, any> {
                     />
                     {
                         this.props.addressValid ?
-                            <Button
-                                type='submit'
-                                style={{marginTop: 30}}
-                                bsStyle='primary'
-                            >Place Order</Button> : null
+                            <div
+                                style={{...buttonStyle, background: primaryColor, marginTop: 30}}
+                                onClick={(e: any) => this.handleSubmit(e)}
+                            >Place Order</div> : null
                     }
                 </FormGroup>
             </Form>
@@ -280,12 +267,13 @@ const CardForm = injectStripe(_CardForm);
 
 
 interface CheckoutProps {
+    address: Address
     orderCb: Function
+    addressCb: Function
 }
 
 interface CheckoutState {
     elementFontSize: string
-    address: Address
 }
 
 class Checkout extends React.Component<CheckoutProps, CheckoutState> {
@@ -293,20 +281,7 @@ class Checkout extends React.Component<CheckoutProps, CheckoutState> {
         super(props)
         this.state = {
             elementFontSize: window.innerWidth < 450 ? '14px' : '18px',
-            address: {
-                name: '',
-                email: '',
-                country: '',
-                address1: '',
-                address2: '',
-                city: '',
-                state: '',
-                postal: '',
-                phone: '',
-            },
         }
-
-        this.changeAddress = this.changeAddress.bind(this)
 
         window.addEventListener('resize', () => {
             if (window.innerWidth < 450 && this.state.elementFontSize !== '14px') {
@@ -320,58 +295,40 @@ class Checkout extends React.Component<CheckoutProps, CheckoutState> {
         })
     }
 
-    changeAddress(name: string, email: string, address1: string, address2: string,
-                  city: string, state: string, postal: string, phone: string) {
-
-        this.setState({
-            address: {
-                name: name,
-                email: email,
-                country: 'usa',
-                address1: address1,
-                address2: address2,
-                city: city,
-                state: state,
-                postal: postal,
-                phone: phone,
-            }
-        })
-    }
-
     render() {
         const {elementFontSize} = this.state
 
 
-        const address = this.state.address
+        const address = this.props.address  // shortener
         let addressValid = false
         if (address.name.length >= minName && address.email.length >= minEmail &&
             address.email.includes('@') && address.email.includes('.') &&
             address.address1.length >= minAddress1 &&
             address.address2.length >= minAddress2 && address.city.length >= minCity &&
             address.state.length >= minState && address.postal.length >= minPostal &&
+            address.postal.length <= maxPostal &&
             address.phone.length >= minPhone && address.phone.length <= maxPhone) {
             addressValid = true
         }
 
-            return (
-                <div style={{margin: '0px auto', maxWidth: 800, boxSizing: 'border-box', padding: '0 5px'}}>
-                    <h3 style={{marginBottom: 50}}>Shipping and payment</h3>
+        return (
+            <div style={{margin: '0px auto', maxWidth: 800, boxSizing: 'border-box', padding: '0 5px'}}>
+                <AddressForm address={this.props.address} cb={this.props.addressCb}/>
 
-                    <AddressForm cb={this.changeAddress}/>
-
-                    <Elements>
-                        <CardForm
-                            fontSize={elementFontSize}
-                            addressValid={addressValid}
-                            orderCb={(token: any) => this.props.orderCb(this.state.address, token)}/>
-                    </Elements>
-                </div>
-            )
+                <Elements>
+                    <CardForm
+                        fontSize={elementFontSize}
+                        addressValid={addressValid}
+                        orderCb={this.props.orderCb}/>
+                </Elements>
+            </div>
+        )
     }
 }
 
-export default ({orderCb, blend, size, price}: {orderCb: Function,
-        blend: Blend, size: number, price: number}) => (
+export default ({blend, size, price, shippingPrice, address, orderCb, addressCb}:
+                    {blend: Blend, size: number, price: number, shippingPrice: number,
+                        address: Address, orderCb: Function, addressCb: Function}) => (
     <div>
         <h2 style={{textAlign: 'center'}}>Your order summary</h2>
 
@@ -385,15 +342,24 @@ export default ({orderCb, blend, size, price}: {orderCb: Function,
             <p style={{textAlign: 'center'}}>{blend.description}</p>
         </div>
 
-        <h3>Your blend</h3>
-        <ul>
-            {blend.ingredients.map(ing => <li key={ing[0].id}>{ing[0].name}</li>)}
-        </ul>
-        <h4 style={{textAlign: 'center'}}>Size: {size + " grams"}</h4>
-        <h4 style={{textAlign: 'center'}}>Price: {"$" + price}</h4>
+        <Row style={{marginBottom: 60}}>
+            <Col xs={6}>
+                <h3>Your blend</h3>
+                <ul>
+                    {blend.ingredients.map(ing => <li key={ing[0].id}>{ing[0].name}</li>)}
+                </ul>
+            </Col>
+
+            <Col xs={6}>
+                <h4 style={{textAlign: 'left'}}>Size: {size + " grams"}</h4>
+                <h4 style={{textAlign: 'left'}}>Price: {"$" + util.priceDisplay(price) + " + $" +
+                util.priceDisplay(shippingPrice) + " shipping"}</h4>
+                <h3 style={{textAlign: 'left'}}>{"Total: $" + util.priceDisplay(price + shippingPrice)}</h3>
+            </Col>
+        </Row>
 
         <StripeProvider apiKey="pk_test_hf9oqK2GfiqI8ZII7cadPM3W">
-            <Checkout orderCb={orderCb} />
+            <Checkout address={address} orderCb={orderCb} addressCb={addressCb} />
         </StripeProvider>
 
     </div>

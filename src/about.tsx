@@ -10,7 +10,7 @@ export default () => (
         <p>Make it as easy as possible to create and order custom tea creations.
             Distraction-free.
             Our passion for high-quality teas and your creativitea make a great combination.
-            
+
             You're passionate about tea and creativitea. We help you
             create unique teas. Wheather it's for yourself or as a gift, we hope
             you enjoy your tea!</p>
@@ -48,9 +48,9 @@ export default () => (
 
         <h4 style={FAQStyle}>Can I register an account to save my blends and shipping/payment info?</h4>
         <p>Not currently. We've decided to keep our order process simple and streamlined by
-        forgoeing user accounts. It's one less thing for you to remember, and the best
-        way to keep your personal info safe is not to store it at all.
-        If you'd like to see this change, send us a message.</p>
+            forgoeing user accounts. It's one less thing for you to remember, and the best
+            way to keep your personal info safe is not to store it at all.
+            If you'd like to see this change, send us a message.</p>
 
         <h4 style={FAQStyle}>Other tea stores advertise health
             and medicinal benefits associated with their
@@ -60,8 +60,12 @@ export default () => (
             to have antioxidant, anticarcinogen, and anti-inflammatory effects in lab studies, but
             there's no evidence that drinking tea offers these benefits. We encourage you to do
             your own
-            research. If it sounds too good to
-            be true...</p>
+            research. If it sounds too good to be true...</p>
+
+        <p>All the ingredients we offer are plant-based, so they
+            contain complex organic molecules that may affect your body. For example, cacao (chocolate)
+            contains theobromine - a stimulent similar to, but weaker than caffeine,
+            and hibiscus contains vitamin C. </p>
 
         <h4 style={FAQStyle}>Does tea expire?</h4>
         <p>Tea lasts for years due to its low moisture content. Store in

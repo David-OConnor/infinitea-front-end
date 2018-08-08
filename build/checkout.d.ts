@@ -1,9 +1,12 @@
 /// <reference types="react" />
-import { Blend } from "./types";
-declare const _default: ({ orderCb, blend, size, price }: {
-    orderCb: Function;
+import { Address, Blend } from "./types";
+declare const _default: ({ blend, size, price, shippingPrice, address, orderCb, addressCb }: {
     blend: Blend;
     size: number;
     price: number;
+    shippingPrice: number;
+    address: Address;
+    orderCb: Function;
+    addressCb: Function;
 }) => JSX.Element;
 export default _default;

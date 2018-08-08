@@ -8,5 +8,11 @@ export function calcPrice(blend: Blend, size: number): number {
         weight = 1 / blend.ingredients.length
         price += ingredient[0].price * weight
     }
-    return Math.round(price * size * 100) / 100
+    return price
+}
+
+
+export function priceDisplay(price: number) {
+    // Handles 0 pad.
+    return (Math.round(price * 100) / 100).toFixed(2);
 }

@@ -2,32 +2,38 @@ import axios from "axios"
 import * as React from 'react'
 import * as ReactDOM from "react-dom"
 import {Button, Grid, Row, Col, ControlLabel,
-    Form, FormGroup, FormControl, ButtonGroup, Image, OverlayTrigger, Panel, Popover} from 'react-bootstrap'
+    Form, FormGroup, FormControl, Image, OverlayTrigger, Panel, Popover} from 'react-bootstrap'
+import { BrowserRouter as Router, Route } from "react-router-dom"
+import createHistory from "history/createBrowserHistory"
 
-import CheckoutForm from './checkout'
 import About from './about'
+import CheckoutForm from './checkout'
 import * as util from './util'
 import {Address, Blend, Ingredient} from "./types"
-// import {stringify} from "querystring";
 
 const HOSTNAME = window && window.location && window.location.hostname
 let ON_HEROKU = false
+
+// const history = createHistory()
 
 if (HOSTNAME === 'infinitea.herokuapp.com' || HOSTNAME === 'www.infinitea.org'
     || HOSTNAME === 'david-oconnor.github.io') {
     ON_HEROKU = true
 }
 
-export const BASE_URL = ON_HEROKU ? 'https://infinitea.herokuapp.com/api/' :
+const BASE_URL = ON_HEROKU ? 'https://infinitea.herokuapp.com/api/' :
     'http://localhost:8000/api/'
+
+const shippingPrice = 7.20  // todo sync this with DB/server-side?
 
 
 const descriptions = [
-    "Definitely an aphrodisiac",
+    "Definitely an aphrodisiac - I'm not teasing!",
     "Orange you glad I contain chocolate?",
     "Drink me",
     "It's always Tea Time",
     "Would you like an adventure now, or shall we have our tea first?",
+    "Made of star stuff",
 ]
 
 // Generate it here, so the same value persists until the page is refreshed.
@@ -56,37 +62,33 @@ const buttonStyle = {
 
 const Menu = ({page, cb}: {page: number, cb: Function}) => {
     let text = "About"
+    let route = 'about'
     let destPage = 1
     if (page === 1) {
         text = "⇐ Your tea"
         destPage = 0
+        route = ''
     }
 
-    return (
+    return <Route render={({history}) => (
         <div
             style={{
                 height: 40,
                 fontSize: '1.5em',
                 ...buttonStyle,
             }}
-            onClick={() => cb(destPage)}
-
+            onClick={() => {
+                cb(destPage)
+                history.push('/' + route)
+                // history.push('/')
+            }}
         >
             {text}
         </div>
-    )
+
+    )} />
+
 }
-
-
-// <div style={{'display': 'flex', 'margin': 'auto'}}>
-//     <ButtonGroup style={{'display': 'flex', 'margin': 'auto'}}>
-//         {
-//             page === 0 ? <Button onClick={() => cb(1)}>About</Button> :
-//                 <Button onClick={() => cb(0)}>Your tea</Button>
-//         }
-//
-//     </ButtonGroup>
-// </div>
 
 const Heading = () => (
     <div style={{
@@ -104,18 +106,23 @@ const Heading = () => (
 const IngredientCard = ({ingredient, selected, selectCb}:
                             {ingredient: Ingredient, selected: boolean, selectCb: Function}) => {
 
+    const imgSrc = './images/' + ingredient.name.toLowerCase() + '.jpg'
+
     const popover = <Popover
         id="0"  // Not sure what this does.
         placement="bottom"  // Appears to be overridden by the trigger.
         positionLeft={0}
         positionTop={0}
         title={ingredient.name}
-    >{ingredient.description}</Popover>
+    >
+        <p>{ingredient.description}</p>
+        <img style={{display: 'flex', margin: 'auto'}} src={imgSrc} />
 
-    let style = {cursor: 'pointer', borderWidth: "5px", borderColor: "#69996a"}
+    </Popover>
+
+    const selectedColor = '#3330ab'
+    let style = {cursor: 'pointer', borderWidth: "5px", borderColor: selectedColor}
     if (selected) {style['borderStyle'] = "solid"}
-    // todo
-    {/*<Image src={'./images/' + ingredient.name.toLocaleLowerCase() + '.jpg'}*/}
 
     return (
         <div>
@@ -123,13 +130,14 @@ const IngredientCard = ({ingredient, selected, selectCb}:
                 <h5 style={selected ? {
                         fontWeight: "bold",
                         fontFamily: '"Lucida Sans Unicode"',
+                        color: selectedColor
                     } :
                     {fontFamily: '"Lucida Sans Unicode"'}}>
                     {ingredient.name}
                 </h5>
 
                 <OverlayTrigger trigger={['hover', 'focus']} placement="bottom" overlay={popover}>
-                    <Image src={'./images/sencha tea.jpg'}
+                    <Image src={imgSrc}
                            style={style}
                            width={64} height={64} circle
                            onClick={() => selectCb(!selected)}
@@ -230,8 +238,8 @@ const OrderDetails = ({sizeSelected, blend, sizeCb}:
     // For selecting amount etc.
     <div>
         <Col xs={12}>
-            <Image src={'./images/bag.png'}
-                   style={{'display': 'flex', 'margin': 'auto'}}
+            <img src={'./images/bag.png'}
+                 style={{'display': 'flex', 'margin': 'auto'}}
             />
 
             <h3>Your blend</h3>
@@ -242,20 +250,24 @@ const OrderDetails = ({sizeSelected, blend, sizeCb}:
             <Panel bsStyle={sizeSelected === 50 ? 'primary' : 'default'}
                    style={{'cursor': 'pointer', 'backgroundColor': sizeSelected === 50 ? '#bccddd': 'white'}}
                    onClick={() => sizeCb(50)}>
-                <Panel.Body>{'50 grams (~1.8 oz):  $' +  util.calcPrice(blend, 50).toString()}</Panel.Body>
+                <Panel.Body>{'50 grams (~1.8 oz): $' +  util.priceDisplay(util.calcPrice(blend, 50))}</Panel.Body>
             </Panel>
 
             <Panel bsStyle={sizeSelected === 100 ? 'primary' : 'default'}
                    style={{'cursor': 'pointer', 'backgroundColor': sizeSelected === 100 ? '#bccddd': 'white'}}
                    onClick={() => sizeCb(100)}>
-                <Panel.Body>{'100 grams (~3.5 oz):  $' +  util.calcPrice(blend, 100).toString()}</Panel.Body>
+                <Panel.Body>{'100 grams (~3.5 oz): $' +  util.priceDisplay(util.calcPrice(blend, 100))}</Panel.Body>
             </Panel>
 
             <Panel bsStyle={sizeSelected === 200 ? 'primary' : 'default'}
                    style={{'cursor': 'pointer', 'backgroundColor': sizeSelected === 200 ? '#bccddd': 'white'}}
                    onClick={() => sizeCb(200)}>
-                <Panel.Body>{'200 grams (~7 oz): $' +  util.calcPrice(blend, 200).toString()}</Panel.Body>
+                <Panel.Body>{'200 grams (~7 oz): $' +  util.priceDisplay(util.calcPrice(blend, 200))}</Panel.Body>
             </Panel>
+
+            <div style={{marginTop: 60}}>
+                <h5>{"Flat-rate shipping: $" + util.priceDisplay(shippingPrice)}, via USPS</h5>
+            </div>
 
         </Col>
 
@@ -457,9 +469,23 @@ interface MainState {
     sizeSelected: number
     title: string
     description: string
-
+    notes: string
+    address: Address
 }
 
+const DispButton = ({text, route, page, primary, cb}: {text: string, route: string,
+    page: number, primary: boolean, cb: Function}) => (
+    <Route render={({history}) => (
+        <div style={primary? {...buttonStyle, background: primaryColor} : buttonStyle}
+             onClick={() => {
+                 cb('mainDisplay', page)
+                 history.push('/' + route)
+                 // history.push('/')
+             }
+             }>{text}
+        </div>
+    )} />
+)
 
 class Main extends React.Component<MainProps, MainState> {
     constructor(props: MainProps) {
@@ -473,6 +499,19 @@ class Main extends React.Component<MainProps, MainState> {
             title: "",
             description: "",
             sizeSelected: 50,
+            notes: '',
+
+            address: {
+                name: "",
+                email: "",
+                country: "usa",
+                address1: "",
+                address2: "",
+                city: "",
+                state: "",
+                postal: "",
+                phone: ""
+            }
         }
 
         // Populate ingredients from the database.
@@ -490,12 +529,20 @@ class Main extends React.Component<MainProps, MainState> {
         )
 
         this.set = this.set.bind(this)
+        this.changeAddress = this.changeAddress.bind(this)
         this.addRemIngredient = this.addRemIngredient.bind(this)
         this.order = this.order.bind(this)
+        this.nav = this.nav.bind(this)
     }
 
     set(attr: string, val: any) {
         this.setState({[attr]: val} as any)
+    }
+
+    changeAddress(attr: string, val: any) {
+        this.setState({
+            address: {...this.state.address, [attr]: val}
+        })
     }
 
     addRemIngredient(id: number, selected: boolean) {
@@ -504,14 +551,14 @@ class Main extends React.Component<MainProps, MainState> {
         this.setState({ingSelection: modifiedSel})
     }
 
-    order(selected: Ingredient[], blend: Blend, address: Address, token: any) {
-        // todo dry from below in render()
+    order(selected: Ingredient[], blend: Blend, token: any) {
         axios.post(
             BASE_URL + 'order',
             {
-                address: address,
+                address: this.state.address,
                 blend: blend,
                 size: this.state.sizeSelected,
+                notes: this.state.notes,
                 stripeToken: token
             }
         ).then(
@@ -526,7 +573,26 @@ class Main extends React.Component<MainProps, MainState> {
         )
     }
 
+    nav() {
+        // Catch what we appended to the URL using the history/router.
+        if (location.href.includes('size')) {
+            this.set('mainDisplay', 1)
+            this.set('page', 0)
+        } else if (location.href.includes('checkout')) {
+            this.set('mainDisplay', 2)
+            this.set('page', 0)
+        } else if (location.href.includes('about')) {
+            this.set('page', 1)
+        } else {  // We're going back to the main page with nothing appended to the url.
+            this.set('mainDisplay', 0)
+            this.set('page', 0)
+        }
+    }
+
     render() {
+        // Todo this handles forward in addition to back.
+        window.onpopstate = this.nav
+
         const selected = this.state.ingredients.filter(ing => this.state.ingSelection.get(ing.id))
         const blend: Blend = {
             title: this.state.title,
@@ -556,13 +622,8 @@ class Main extends React.Component<MainProps, MainState> {
         // Only allow the user to proceed if 1 or more ingredients are selected.
         if (numSelected > 0) {
             nextDisplayButtons = (
-                <div
-                    style={{
-                        ...buttonStyle,
-                        background: primaryColor,
-                    }}
-                    onClick={() => this.set('mainDisplay', 1)}>Size and price
-                </div>
+                <DispButton text="Size and price" route="size" page={1}
+                            primary={true} cb={this.set} />
             )
         }
 
@@ -574,31 +635,30 @@ class Main extends React.Component<MainProps, MainState> {
             />
             nextDisplayButtons = (
                 <div style={{'display': 'flex', 'margin': 'auto'}}>
-                    <div style={buttonStyle} onClick={() =>
-                        this.set('mainDisplay', 0)}>⇐ Change ingredients</div>
-                    <div style={{...buttonStyle, background: primaryColor}}
-                         onClick={() => this.set('mainDisplay', 2)}>Checkout</div>
+                    <DispButton text="⇐ Change inngredients" route="" page={0}
+                                primary={false} cb={this.set} />
+                    <DispButton text="Checkout" route="checkout" page={2}
+                                primary={true} cb={this.set} />
                 </div>
             )
         }
 
         else if (this.state.mainDisplay === 2)  {
             mainDisplay = <CheckoutForm
-                orderCb={(address: Address, token: any) => this.order(selected, blend, address, token)}
                 blend={blend}
                 size={this.state.sizeSelected}
                 price={util.calcPrice(blend, this.state.sizeSelected)}
+                shippingPrice={shippingPrice}
+                address={this.state.address}
+                orderCb={(token: any) => this.order(selected, blend, token)}
+                addressCb={this.changeAddress}
             />
             nextDisplayButtons = (
                 <div style={{'display': 'flex', 'margin': 'auto'}}>
-                    <div style={buttonStyle}
-                         onClick={() =>
-                             this.set('mainDisplay', 0)}>⇐⇐ Change ingredients
-                    </div>
-                    <div style={buttonStyle}
-                         onClick={() =>
-                             this.set('mainDisplay', 1)}>⇐ Size and price
-                    </div>
+                    <DispButton text="⇐⇐ Change ingredients" route="" page={0}
+                                primary={false} cb={this.set} />
+                    <DispButton text="⇐ Size and price" route="size" page={1}
+                                primary={false} cb={this.set} />
                 </div>
             )
         }
@@ -622,34 +682,36 @@ class Main extends React.Component<MainProps, MainState> {
         }
 
         return (
+
             <Grid>
-                <Row>
-                    <Col xs={12} md={10} lg={8} mdOffset={1} lgOffset={2}>
-                        <Heading />
+                <Router>
+                    <Row>
+                        <Col xs={12} md={10} lg={8} mdOffset={1} lgOffset={2}>
+                            <Heading />
+                            <Menu page={this.state.page} cb={(page: number) => this.set('page', page)} />
 
-                        <Menu page={this.state.page} cb={(page: number) => this.set('page', page)} />
+                            <div style={{background: 'white', opacity: mainOpacity, border: "0px solid black", padding: 40}}>
+                                <Row>
+                                    <Col xs={12}>
+                                        {this.state.page === 0 ? mainDisplay : <About />}
+                                    </Col>
+                                </Row>
+                            </div>
 
-                        <div style={{background: 'white', opacity: mainOpacity, border: "0px solid black", padding: 40}}>
-                            <Row>
-                                <Col xs={12}>
-                                    {this.state.page === 0 ? mainDisplay : <About />}
-                                </Col>
-                            </Row>
-                        </div>
+                            {this.state.page === 0 ? (
+                                <Row style={{marginTop: 20}}>
+                                    <Col xs={12} style={{'display': 'flex', 'margin': 'auto'}}>
+                                        {nextDisplayButtons}
+                                    </Col>
+                                </Row>
+                            ) : null }
+                            <Footer />
 
-                        {this.state.page === 0 ? (
-                            <Row style={{marginTop: 20}}>
-                                <Col xs={12} style={{'display': 'flex', 'margin': 'auto'}}>
-                                    {nextDisplayButtons}
-                                </Col>
-                            </Row>
-                        ) : null }
-
-                        <Footer />
-
-                    </Col>
-                </Row>
+                        </Col>
+                    </Row>
+                </Router>
             </Grid>
+
         )
     }
 }

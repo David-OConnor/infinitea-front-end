@@ -2,10 +2,13 @@ export interface Ingredient {
     id: number;
     name: string;
     description: string;
+    category: number;
     caffeine: number;
     astringent: number;
     sweet: number;
     floral: number;
+    tart: number;
+    minty: number;
     chocolate: number;
     spicy: number;
     savory: number;
