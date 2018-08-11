@@ -78,8 +78,7 @@ const Menu = ({page, cb}: {page: number, cb: Function}) => {
             }}
             onClick={() => {
                 cb(destPage)
-                history.push('/' + route)
-                // history.push('/')
+                history.push(window.location.pathname + route)
             }}
         >
             {text}
@@ -476,8 +475,7 @@ const DispButton = ({text, route, page, primary, cb}: {text: string, route: stri
         <div style={primary? {...buttonStyle, background: primaryColor} : buttonStyle}
              onClick={() => {
                  cb('mainDisplay', page)
-                 history.push('/' + route)
-                 // history.push('/')
+                 history.push(window.location.pathname + route)
              }
              }>{text}
         </div>
@@ -696,7 +694,6 @@ class Main extends React.Component<MainProps, MainState> {
                 </div>
             )
         }
-console.log("PATH: ", window.location.pathname)
         return (
 
             <Grid>
