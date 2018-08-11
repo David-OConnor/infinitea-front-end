@@ -19,6 +19,7 @@ if (HOSTNAME === 'infinitea.herokuapp.com' || HOSTNAME === 'www.infinitea.org'
     ON_HEROKU = true
 }
 
+
 const BASE_URL = ON_HEROKU ? 'https://infinitea.herokuapp.com/api/' :
     'http://localhost:8000/api/'
 
@@ -695,7 +696,7 @@ class Main extends React.Component<MainProps, MainState> {
                 </div>
             )
         }
-
+console.log("PATH: ", window.location.pathname)
         return (
 
             <Grid>

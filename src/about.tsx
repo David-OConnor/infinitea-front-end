@@ -4,6 +4,7 @@ import * as React from "react";
 const FAQStyle = {marginTop: 40}
 
 export default () => (
+
     <div>
         <h2>☕ Our mission: </h2>
 
