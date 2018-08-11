@@ -100,7 +100,6 @@ const Heading = () => (
     </div>
 )
 
-// import blackteaImg from '../public/blacktea.jpg'
 
 const IngredientCard = ({ingredient, val, selectCb}:
                             {ingredient: Ingredient, val: number, selectCb: Function}) => {
@@ -115,7 +114,8 @@ const IngredientCard = ({ingredient, val, selectCb}:
         title={ingredient.name}
     >
         <p>{ingredient.description}</p>
-        <img style={{display: 'flex', margin: 'auto'}} src={imgSrc} />
+        <img style={{display: 'flex', margin: 'auto'}} src={imgSrc}
+             height={600} width={600} />
 
     </Popover>
 
