@@ -175,9 +175,9 @@ const Picker = ({ingredients, blend, ingSelection, selectCb, titleCb, descriptio
 
     return (
         <div>
-            <Row style={{marginBottom: 50}}>
+            <Row style={{marginBottom: 0}}>
                 <Col xs={12}>
-                    <h4 style={{textAlign: 'center'}}>{blendText}</h4>
+                    <h4 style={{textAlign: 'center', height: '3em'}}>{blendText}</h4>
                 </Col>
             </Row>
 

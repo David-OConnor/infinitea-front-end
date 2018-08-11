@@ -11,7 +11,8 @@ export function calcPrice(blend: Blend, size: number): number {
         price += ing[0].price * ing[1] / totalVal
     }
 
-    return price * size
+    const markup = 1.3 // todo temp; this will come from ingredient price.
+    return price * size * markup
 }
 
 
