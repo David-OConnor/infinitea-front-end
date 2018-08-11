@@ -127,7 +127,7 @@ const IngredientCard = ({ingredient, val, selectCb}:
 
     return (
         <div>
-            <Col xs={3}>
+            <Col xs={4} md={3} lg={3}>
                 <h5 style={val > 0 ? {
                         fontWeight: "bold",
                         fontFamily: '"Lucida Sans Unicode"',
@@ -143,7 +143,9 @@ const IngredientCard = ({ingredient, val, selectCb}:
                            width={64} height={64} circle
                     />
                 </OverlayTrigger>
-                <Slider min={0} max={sliderPrecision} value={val} vertical={false}
+                <Slider
+                    style={{marginBottom: 40}}
+                    min={0} max={sliderPrecision} value={val} vertical={false}
                         onChange={(sel: number) => selectCb(sel)}
                 />
             </Col>
@@ -699,7 +701,7 @@ class Main extends React.Component<MainProps, MainState> {
             <Grid>
                 <Router>
                     <Row>
-                        <Col xs={12} md={10} lg={8} mdOffset={1} lgOffset={2}>
+                        <Col xs={12} md={10} lg={10} mdOffset={1} lgOffset={1}>
                             <Heading />
                             <Menu page={this.state.page} cb={(page: number) => this.set('page', page)} />
 
