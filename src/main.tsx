@@ -106,16 +106,16 @@ const IngredientCard = ({ingredient, val, selectCb}:
 
     const imgSrc = './images/' + ingredient.name.toLowerCase() + '.jpg'
 
+    const popoverWidth = 400
     const popover = <Popover
+        style={{minWidth:  popoverWidth + 40}}
         id="0"  // Not sure what this does.
         placement="bottom"  // Appears to be overridden by the trigger.
-        positionLeft={0}
-        positionTop={0}
         title={ingredient.name}
     >
         <p>{ingredient.description}</p>
         <img style={{display: 'flex', margin: 'auto'}} src={imgSrc}
-             height={600} width={600} />
+             height={popoverWidth} width={popoverWidth} />
 
     </Popover>
 
