@@ -131,9 +131,10 @@ const IngredientCard = ({ingredient, val, selectCb}:
                 <h5 style={val > 0 ? {
                         fontWeight: "bold",
                         fontFamily: '"Lucida Sans Unicode"',
-                        color: selectedColor
+                        color: selectedColor,
+                        height: '2em',
                     } :
-                    {fontFamily: '"Lucida Sans Unicode"'}}>
+                    {fontFamily: '"Lucida Sans Unicode"', height: '2em',}}>
                     {ingredient.name}
                 </h5>
 
