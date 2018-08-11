@@ -4,8 +4,7 @@ import * as ReactDOM from "react-dom"
 import {Button, Grid, Row, Col, ControlLabel,
     Form, FormGroup, FormControl, Image, OverlayTrigger, Panel, Popover} from 'react-bootstrap'
 import { BrowserRouter as Router, Route } from "react-router-dom"
-// import createHistory from "history/createBrowserHistory"
-import Slider from 'rc-slider'
+import createHistory from "history/createBrowserHistory"
 
 import About from './about'
 import CheckoutForm from './checkout'
@@ -14,6 +13,8 @@ import {Address, Blend, Ingredient} from "./types"
 
 const HOSTNAME = window && window.location && window.location.hostname
 let ON_HEROKU = false
+
+// const history = createHistory()
 
 if (HOSTNAME === 'infinitea.herokuapp.com' || HOSTNAME === 'www.infinitea.org'
     || HOSTNAME === 'david-oconnor.github.io') {
@@ -30,7 +31,7 @@ const descriptions = [
     "Definitely an aphrodisiac - I'm not teasing!",
     "Orange you glad I contain chocolate?",
     "Drink me",
-    "It's always tea time",
+    "It's always Tea Time",
     "Would you like an adventure now, or shall we have our tea first?",
     "Made of star stuff",
 ]
@@ -96,45 +97,42 @@ const Heading = () => (
 
     }}>
         <h1>Infini·tea ∞ </h1>
-        <h3>Unique blends, designed by you</h3>
+        <h3>For your personalitea</h3>
     </div>
 )
 
+// import blackteaImg from '../public/blacktea.jpg'
 
-const IngredientCard = ({ingredient, val, selectCb}:
-                            {ingredient: Ingredient, val: number, selectCb: Function}) => {
+const IngredientCard = ({ingredient, selected, selectCb}:
+                            {ingredient: Ingredient, selected: boolean, selectCb: Function}) => {
 
     const imgSrc = './images/' + ingredient.name.toLowerCase() + '.jpg'
 
-    const popoverWidth = 400
     const popover = <Popover
-        style={{minWidth:  popoverWidth + 40}}
         id="0"  // Not sure what this does.
         placement="bottom"  // Appears to be overridden by the trigger.
+        positionLeft={0}
+        positionTop={0}
         title={ingredient.name}
     >
         <p>{ingredient.description}</p>
-        <img style={{display: 'flex', margin: 'auto'}} src={imgSrc}
-             height={popoverWidth} width={popoverWidth} />
+        <img style={{display: 'flex', margin: 'auto'}} src={imgSrc} />
 
     </Popover>
 
     const selectedColor = '#3330ab'
     let style = {cursor: 'pointer', borderWidth: "5px", borderColor: selectedColor}
-    if (val > 0) {style['borderStyle'] = "solid"}
-
-    const sliderPrecision = 100
+    if (selected) {style['borderStyle'] = "solid"}
 
     return (
         <div>
-            <Col xs={4} md={3} lg={3}>
-                <h5 style={val > 0 ? {
+            <Col xs={3}>
+                <h5 style={selected ? {
                         fontWeight: "bold",
                         fontFamily: '"Lucida Sans Unicode"',
-                        color: selectedColor,
-                        height: '2em',
+                        color: selectedColor
                     } :
-                    {fontFamily: '"Lucida Sans Unicode"', height: '2em',}}>
+                    {fontFamily: '"Lucida Sans Unicode"'}}>
                     {ingredient.name}
                 </h5>
 
@@ -142,13 +140,10 @@ const IngredientCard = ({ingredient, val, selectCb}:
                     <Image src={imgSrc}
                            style={style}
                            width={64} height={64} circle
+                           onClick={() => selectCb(!selected)}
+                        // onMouseOver={() => }
                     />
                 </OverlayTrigger>
-                <Slider
-                    style={{marginBottom: 40}}
-                    min={0} max={sliderPrecision} value={val} vertical={false}
-                        onChange={(sel: number) => selectCb(sel)}
-                />
             </Col>
 
         </div>
@@ -156,19 +151,18 @@ const IngredientCard = ({ingredient, val, selectCb}:
 }
 
 const BlendDisplay = ({ingredients, ingSelection}:
-                          {ingredients: Ingredient[], ingSelection: Map<number, number>}) => (
+                          {ingredients: Ingredient[], ingSelection: Map<number, boolean>}) => (
     <div>
 
     </div>
 )
 
 const Picker = ({ingredients, blend, ingSelection, selectCb, titleCb, descriptionCb}:
-                    {ingredients: Ingredient[], blend: Blend, ingSelection: Map<number, number>
+                    {ingredients: Ingredient[], blend: Blend, ingSelection: Map<number, boolean>
                         selectCb: Function, titleCb: Function, descriptionCb: Function}) => {
 
-    const selected = ingredients.filter(ing => ingSelection.get(ing.id) > 0)
-    let selectedDisplay = selected.reduce((acc, ing) => (acc + " " + ing.name + ": " +
-        util.ingPortion(blend, ingSelection.get(ing.id)) +  "%,"), "")
+    const selected = ingredients.filter(ing => ingSelection.get(ing.id))
+    let selectedDisplay = selected.reduce((acc, ing) => (acc + " " + ing.name + ","), "")
     selectedDisplay = selectedDisplay.slice(0, -1)  // Remove final trailing comma.
 
     const blendText = selected.length > 0 ? "Your blend: " + selectedDisplay :
@@ -188,8 +182,8 @@ const Picker = ({ingredients, blend, ingSelection, selectCb, titleCb, descriptio
                         key={ing.id}
                         ingredient={ing}
                         // TS bug where includes is rejected.
-                        val={ingSelection.get(ing.id)}
-                        selectCb={(val: number) => selectCb(ing.id, val)}
+                        selected={ingSelection.get(ing.id)}
+                        selectCb={(selected: boolean) => selectCb(ing.id, selected)}
                     />)}
                 </Col>
             </Row>
@@ -239,17 +233,6 @@ const Picker = ({ingredients, blend, ingSelection, selectCb, titleCb, descriptio
     )
 }
 
-const YourBlend = ({blend}: {blend: Blend}) => (
-    <div>
-        <h3>Your blend</h3>
-        <ul>
-            {blend.ingredients.map(ing => <li key={ing[0].id}>
-                {ing[0].name + ' ' + util.ingPortion(blend, ing[1]) + '%'}
-            </li>)}
-        </ul>
-    </div>
-)
-
 const OrderDetails = ({sizeSelected, blend, sizeCb}:
                           {sizeSelected: number, blend: Blend, sizeCb: Function}) => (
     // For selecting amount etc.
@@ -259,7 +242,10 @@ const OrderDetails = ({sizeSelected, blend, sizeCb}:
                  style={{'display': 'flex', 'margin': 'auto'}}
             />
 
-            <YourBlend blend={blend} />
+            <h3>Your blend</h3>
+            <ul>
+                {blend.ingredients.map(ing => <li key={ing[0].id}>{ing[0].name}</li>)}
+            </ul>
 
             <Panel bsStyle={sizeSelected === 50 ? 'primary' : 'default'}
                    style={{'cursor': 'pointer', 'backgroundColor': sizeSelected === 50 ? '#bccddd': 'white'}}
@@ -469,6 +455,23 @@ const OrderFailed = () => (
     </div>
 )
 
+interface MainProps {
+    // state: any
+    // dispatch: Function
+}
+
+interface MainState {
+    page: number
+    mainDisplay: number // 0 for picker, 1 for order details, 2 for payment
+    ingredients: Ingredient[]  // Second param is if selected.
+
+    ingSelection: Map<number, boolean> // <ingredient id, selected>
+    sizeSelected: number
+    title: string
+    description: string
+    notes: string
+    address: Address
+}
 
 const DispButton = ({text, route, page, primary, cb}: {text: string, route: string,
     page: number, primary: boolean, cb: Function}) => (
@@ -483,22 +486,6 @@ const DispButton = ({text, route, page, primary, cb}: {text: string, route: stri
         </div>
     )} />
 )
-
-interface MainProps {
-}
-
-interface MainState {
-    page: number
-    mainDisplay: number // 0 for picker, 1 for order details, 2 for payment
-    ingredients: Ingredient[]
-
-    ingSelection: Map<number, number> // <ingredient id, amount selected, 0 - 1.>
-    sizeSelected: number
-    title: string
-    description: string
-    notes: string
-    address: Address
-}
 
 class Main extends React.Component<MainProps, MainState> {
     constructor(props: MainProps) {
@@ -535,7 +522,7 @@ class Main extends React.Component<MainProps, MainState> {
                 this.setState({ingredients: ingredients})
                 let ingSelection = new Map()
                 for (let ing of ingredients) {
-                    ingSelection.set(ing, 0)
+                    ingSelection.set((ing as any).id, false)
                 }
                 this.setState({ingSelection: ingSelection})
             }
@@ -543,7 +530,7 @@ class Main extends React.Component<MainProps, MainState> {
 
         this.set = this.set.bind(this)
         this.changeAddress = this.changeAddress.bind(this)
-        this.changeIngVal = this.changeIngVal.bind(this)
+        this.addRemIngredient = this.addRemIngredient.bind(this)
         this.order = this.order.bind(this)
         this.nav = this.nav.bind(this)
     }
@@ -558,9 +545,9 @@ class Main extends React.Component<MainProps, MainState> {
         })
     }
 
-    changeIngVal(id: number, val: number) {
+    addRemIngredient(id: number, selected: boolean) {
         let modifiedSel = this.state.ingSelection
-        modifiedSel.set(id, val)
+        modifiedSel.set(id, selected)
         this.setState({ingSelection: modifiedSel})
     }
 
@@ -606,20 +593,18 @@ class Main extends React.Component<MainProps, MainState> {
         // Todo this handles forward in addition to back.
         window.onpopstate = this.nav
 
-        const selected = this.state.ingredients.filter(ing => this.state.ingSelection.get(ing.id) > 0)
-        const ingredients = selected.map(s => ([s, this.state.ingSelection.get(s.id)]))
-
+        const selected = this.state.ingredients.filter(ing => this.state.ingSelection.get(ing.id))
         const blend: Blend = {
             title: this.state.title,
             description: this.state.description,
-            ingredients: ingredients as any
+            ingredients: selected.map(s => ([s, 1.0])) as any
         }
 
         let mainDisplay = <Picker
             ingredients={this.state.ingredients}
             blend={blend}
             ingSelection={this.state.ingSelection}
-            selectCb={this.changeIngVal}
+            selectCb={this.addRemIngredient}
             titleCb={(title: string) => this.set('title', title)}
             descriptionCb={(descrip: string) => this.set('description', descrip)}
         />
@@ -650,7 +635,7 @@ class Main extends React.Component<MainProps, MainState> {
             />
             nextDisplayButtons = (
                 <div style={{'display': 'flex', 'margin': 'auto'}}>
-                    <DispButton text="⇐ Change ingredients" route="" page={0}
+                    <DispButton text="⇐ Change inngredients" route="" page={0}
                                 primary={false} cb={this.set} />
                     <DispButton text="Checkout" route="checkout" page={2}
                                 primary={true} cb={this.set} />
@@ -672,7 +657,6 @@ class Main extends React.Component<MainProps, MainState> {
                 <div style={{'display': 'flex', 'margin': 'auto'}}>
                     <DispButton text="⇐⇐ Change ingredients" route="" page={0}
                                 primary={false} cb={this.set} />
-                    <span style={{width: 10}}/>
                     <DispButton text="⇐ Size and price" route="size" page={1}
                                 primary={false} cb={this.set} />
                 </div>
@@ -702,7 +686,7 @@ class Main extends React.Component<MainProps, MainState> {
             <Grid>
                 <Router>
                     <Row>
-                        <Col xs={12} md={10} lg={10} mdOffset={1} lgOffset={1}>
+                        <Col xs={12} md={10} lg={8} mdOffset={1} lgOffset={2}>
                             <Heading />
                             <Menu page={this.state.page} cb={(page: number) => this.set('page', page)} />
 

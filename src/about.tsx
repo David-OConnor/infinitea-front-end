@@ -7,10 +7,13 @@ export default () => (
     <div>
         <h2>☕ Our mission: </h2>
 
-        <p>Make it as fast and easy as possible to create and order custom tea creations -
-            distraction-free. You're creative, and passionate about tea; we can help.
-            Wheather it's for yourself or as a gift, we hope
-            you enjoy your unique tea!</p>
+        <p>Make it as easy as possible to create and order custom tea creations.
+            Distraction-free.
+            Our passion for high-quality teas and your creativitea make a great combination.
+
+            You're passionate about tea and creativitea. We help you
+            create unique teas. Wheather it's for yourself or as a gift, we hope
+            you enjoy your tea!</p>
 
         <p>We'd love to hear what you think. Suggestions? Questions about your order?
             Critique? Use the 'Send us a message' button at the bottom to get in touch.</p>
@@ -22,11 +25,12 @@ export default () => (
             online tea shops?</h4>
         <p>We focus on the experience of creating personalized teas.
             While a few
-            other shops will make custom blends, our goal is to make
+            existing shops will make custom blends, our goal is to make
             this as easy
-            as possible. We think we've succeeded! We focus on high-quality teas, with a
+            as possible. We focus on high-quality teas, with a
             user-friendly
-            design page. Enjoy the quality and taste, without hassle or distractions.</p>
+            design page. Enjoy the quality and taste, blended with your
+            creativitea.</p>
 
         <h4 style={FAQStyle}>Do you ship outside the US?</h4>
         <p>Not at this time. We'd like to in the future though!</p>
