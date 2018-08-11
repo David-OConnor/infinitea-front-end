@@ -66,28 +66,39 @@ const handleFocus = () => {
 };
 const handleReady = () => {
     // console.log('[ready]');
-};
+}
 
-const createOptions = (fontSize: string) => {
-    const padding = 10
+// todo duped from main!
+const YourBlend = ({blend}: {blend: Blend}) => (
+    <div>
+        <h3>Your blend</h3>
+        <ul>
+            {blend.ingredients.map(ing => <li key={ing[0].id}>
+                {ing[0].name + ' ' + util.ingPortion(blend, ing[1]) + '%'}
+            </li>)}
+        </ul>
+    </div>
+)
+
+const cardOptions = (fontSize: string) => {
     return {
         style: {
             base: {
                 fontSize,
                 color: '#424770',
+                // border: '5px solid orange',
                 letterSpacing: '0.025em',
                 fontFamily: 'Source Code Pro, monospace',
                 '::placeholder': {
                     color: '#aab7c4',
                 },
-                // padding: padding,
             },
             invalid: {
                 color: '#9e576d',
             },
         },
-    };
-};
+    }
+}
 
 const inputStyle = {
     display: 'block',
@@ -106,7 +117,7 @@ const inputStyle = {
 const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
     const validStyle = {borderColor: 'green'}
     const invalidStyle = {borderColor: '#b4677e'}
-    
+
     return (
         <Form>
             <h5> Only orders to US addresses accepted at this time.
@@ -211,26 +222,30 @@ interface CardFormProps {  // Not working for some reason.
     fontSize: string
     orderCb: Function
     addressValid: boolean
+    processing: boolean
+    processingCb: Function
 }
 
 
 class _CardForm extends React.Component<any, any> {
     handleSubmit = (ev: Event) => {
-        ev.preventDefault();
+        this.props.processingCb(true)
         if (this.props.stripe) {
             this.props.stripe
                 .createToken()
-
                 .then((payload: any) => {
                         if (payload.token) {
+                            this.props.processingCb(false)
                             this.props.orderCb(payload.token)
                         }
                         else {
+                            this.props.processingCb(false)
                             console.log("OOps, payment error :(")
                         }
                     }
                 )
         } else {
+            this.props.processingCb(false)
             console.log("Stripe.js hasn't loaded yet.");
         }
     }
@@ -249,10 +264,10 @@ class _CardForm extends React.Component<any, any> {
                         onChange={handleChange}
                         onFocus={handleFocus}
                         onReady={handleReady}
-                        {...createOptions(this.props.fontSize)}
+                        {...cardOptions(this.props.fontSize)}
                     />
                     {
-                        this.props.addressValid ?
+                        this.props.addressValid && !this.props.processing ?
                             <div
                                 style={{...buttonStyle, background: primaryColor, marginTop: 30}}
                                 onClick={(e: any) => this.handleSubmit(e)}
@@ -274,6 +289,7 @@ interface CheckoutProps {
 
 interface CheckoutState {
     elementFontSize: string
+    processing: boolean  // Weather we're processing the order.
 }
 
 class Checkout extends React.Component<CheckoutProps, CheckoutState> {
@@ -281,6 +297,7 @@ class Checkout extends React.Component<CheckoutProps, CheckoutState> {
         super(props)
         this.state = {
             elementFontSize: window.innerWidth < 450 ? '14px' : '18px',
+            processing: false
         }
 
         window.addEventListener('resize', () => {
@@ -293,6 +310,12 @@ class Checkout extends React.Component<CheckoutProps, CheckoutState> {
                 this.setState({elementFontSize: '18px'});
             }
         })
+
+    this.setProcessing = this.setProcessing.bind(this)
+    }
+
+    setProcessing(val: boolean) {
+        this.setState({processing: val})
     }
 
     render() {
@@ -319,8 +342,13 @@ class Checkout extends React.Component<CheckoutProps, CheckoutState> {
                     <CardForm
                         fontSize={elementFontSize}
                         addressValid={addressValid}
-                        orderCb={this.props.orderCb}/>
+                        processing={this.state.processing}
+                        orderCb={this.props.orderCb}
+                        processingCb={this.setProcessing}
+                    />
                 </Elements>
+
+                {this.state.processing ? <h4>Processing your order...</h4> : null}
             </div>
         )
     }
@@ -344,10 +372,7 @@ export default ({blend, size, price, shippingPrice, address, orderCb, addressCb}
 
         <Row style={{marginBottom: 60}}>
             <Col xs={6}>
-                <h3>Your blend</h3>
-                <ul>
-                    {blend.ingredients.map(ing => <li key={ing[0].id}>{ing[0].name}</li>)}
-                </ul>
+                <YourBlend blend={blend} />
             </Col>
 
             <Col xs={6}>
