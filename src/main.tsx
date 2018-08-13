@@ -11,6 +11,7 @@ import Rheostat from 'rheostat'
 import About from './about'
 import CheckoutForm from './checkout'
 import Privacy from './privacy'
+import Terms from './terms'
 import * as util from './util'
 import {Address, Blend, Ingredient} from "./types"
 
@@ -45,9 +46,9 @@ const mainOpacity = 0.85
 
 const Menu = ({page, cb}: {page: number, cb: Function}) => {
     let text = "About"
-    let route = 'about'
     let destPage = 1
-    if (page === 1 || page === 2) {
+    let route = 'about'
+    if (page === 1 || page === 2 || page === 3) {
         text = "⇐ Your tea"
         destPage = 0
         route = ''
@@ -446,12 +447,21 @@ class Footer extends React.Component<FooterProps, FooterState> {
                     </div>: null}
 
                 <Route render={({history}) => (
-                    <h5 style={{textAlign: 'center', color: 'white', cursor: 'pointer'}}
-                        onClick={() => {
-                            history.push(window.location.pathname + 'privacy')
-                            this.props.setPage(2)
-                        }}
-                    >Privacy policy</h5>
+                        <h5 style={{textAlign: 'center', color: 'white', cursor: 'pointer', textDecoration: 'underline'}}>
+                        <span
+                            onClick={() => {
+                                history.push('/' + 'privacy')
+                                this.props.setPage(2)
+                            }}
+                        >Privacy policy</span>
+
+                        <span style={{marginLeft: '1em'}}
+                            onClick={() => {
+                                history.push('/' + 'terms')
+                                this.props.setPage(3)
+                            }}
+                        >Terms & conditions</span>
+                    </h5>
                 )} />
 
                 <h5 style={{textAlign: 'center', color: 'white'}}>© 2018 Infinitea.org</h5>
@@ -706,6 +716,8 @@ class Main extends React.Component<MainProps, MainState> {
             display = <About />
         } else if (this.state.page === 2) {
             display = <Privacy />
+        } else if (this.state.page === 3) {
+            display = <Terms />
         }
 
         return (

@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from "react"
 
 
 const FAQStyle = {marginTop: 40}
@@ -11,7 +11,7 @@ export default () => (
         <p>Make it as easy as possible to create and order custom tea.
             Our passion for high-quality tea and your creativitea make a great combination.
 
-            Wheather it's for yourself or as a gift, we hope
+            Whether it's for yourself or as a gift, we hope
             you enjoy your tea!</p>
 
         <p>We'd love to hear what you think. Suggestions? Questions about your order?
