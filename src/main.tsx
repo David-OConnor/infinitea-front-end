@@ -113,7 +113,6 @@ const IngredientCard = ({ingredient, val, selectCb}:
         <p>{ingredient.description}</p>
         <img style={{display: 'flex', margin: 'auto'}} src={imgSrc}
              height={popoverWidth} width={popoverWidth} />
-
     </Popover>
 
     const selectedColor = '#3330ab'
@@ -139,7 +138,7 @@ const IngredientCard = ({ingredient, val, selectCb}:
                            width={64} height={64} circle
                     />
                 </OverlayTrigger>
-                {/*  textAlign left or slider will be in wrong place. */}
+                {/*  textAlign left or slider will be in the wrong place. */}
                 <div style={{marginTop: 30, marginBottom: 30, textAlign: 'left'}}>
                     <Rheostat
                         min={0}
@@ -171,12 +170,15 @@ const Picker = ({ingredients, blend, ingSelection, selectCb, titleCb, descriptio
 
     const blendText = selected.length > 0 ? "Your blend: " + selectedDisplay :
         "Pick an ingredient to get started"
-
+    console.log(window.innerWidth, "W")
     return (
         <div>
             <Row style={{marginBottom: 0}}>
                 <Col xs={12}>
-                    <h4 style={{textAlign: 'center', height: '3em'}}>{blendText}</h4>
+                    {/* Ensure the height's large enough to prevent the line changing
+                     sizes or overlapping text when many ingredients are selected. */}
+                    <h4 style={{textAlign: 'center', height: window.innerWidth < 450 ? '5em' : '3em'}}>{blendText}</h4>
+                    {/*<h4 style={{textAlign: 'center', height: '3em'}}>{blendText}</h4>*/}
                 </Col>
             </Row>
 
