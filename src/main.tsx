@@ -450,7 +450,7 @@ class Footer extends React.Component<FooterProps, FooterState> {
                     <h5 style={{textAlign: 'center', color: 'white', cursor: 'pointer', textDecoration: 'underline'}}>
                         <span
                             onClick={() => {
-                                history.push('/' + 'privacy')
+                                history.push(window.location.pathname + 'privacy')
                                 this.props.setPage(2)
                                 window.scrollTo(0, 0)
                             }}
@@ -458,7 +458,7 @@ class Footer extends React.Component<FooterProps, FooterState> {
 
                         <span style={{marginLeft: '1em'}}
                               onClick={() => {
-                                  history.push('/' + 'terms')
+                                  history.push(window.location.pathname + 'terms')
                                   this.props.setPage(3)
                                   window.scrollTo(0, 0)
                               }}
