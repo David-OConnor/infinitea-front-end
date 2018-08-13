@@ -98,14 +98,6 @@ const Heading = () => (
     </div>
 )
 
-// const Handle = (Slider as any).Handle
-// const handle = ({value, dragging, index, ...restProps}:
-//                     {value: number, dragging: boolean, index: number, restProps: any}) => (
-//     // const { value, dragging, index, ...restProps } = props;
-//     <Handle value={value} {...restProps} size={20}/>
-// )
-
-
 const IngredientCard = ({ingredient, val, selectCb}:
                             {ingredient: Ingredient, val: number, selectCb: Function}) => {
 
@@ -128,8 +120,6 @@ const IngredientCard = ({ingredient, val, selectCb}:
     let style = {cursor: 'pointer', borderWidth: "5px", borderColor: selectedColor}
     if (val > 0) {style['borderStyle'] = "solid"}
 
-    const sliderPrecision = 100
-
     return (
         <div>
             <Col xs={4} md={3} lg={3}>
@@ -150,12 +140,6 @@ const IngredientCard = ({ingredient, val, selectCb}:
                     />
                 </OverlayTrigger>
 
-                {/*<Slider*/}
-                    {/*style={{marginBottom: 40}}*/}
-                    {/*min={0} max={sliderPrecision} value={val} vertical={false}*/}
-                    {/*handle={handle}*/}
-                    {/**/}
-                {/*/>*/}
                 <Rheostat
                     min={1}
                     max={100}

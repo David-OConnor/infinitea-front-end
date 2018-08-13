@@ -1,1 +1,1 @@
-export {};
+import 'rheostat/initialize';
