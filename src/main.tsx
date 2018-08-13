@@ -140,12 +140,14 @@ const IngredientCard = ({ingredient, val, selectCb}:
                     />
                 </OverlayTrigger>
 
-                <Rheostat
-                    min={1}
-                    max={100}
-                    values={[val]}
-                    onChange={(e: any) => selectCb(e.values[0])}
-                />
+                <div style={{marginTop: 30 marginBottom: 30}}>
+                    <Rheostat
+                        min={1}
+                        max={100}
+                        values={[val]}
+                        onChange={(e: any) => selectCb(e.values[0])}
+                    />
+                </div>
             </Col>
         </div>
     )
