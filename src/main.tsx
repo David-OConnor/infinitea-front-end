@@ -4,12 +4,15 @@ import * as ReactDOM from "react-dom"
 import {Button, Grid, Row, Col, ControlLabel,
     Form, FormGroup, FormControl, Image, OverlayTrigger, Panel, Popover} from 'react-bootstrap'
 import { BrowserRouter as Router, Route } from "react-router-dom"
-import Slider from 'rc-slider'
+// import Slider from 'rc-slider'
+import 'rheostat/initialize'
+import Rheostat from 'rheostat'
 
 import About from './about'
 import CheckoutForm from './checkout'
 import * as util from './util'
 import {Address, Blend, Ingredient} from "./types"
+
 
 const HOSTNAME = window && window.location && window.location.hostname
 let ON_HEROKU = false
@@ -19,12 +22,10 @@ if (HOSTNAME === 'infinitea.herokuapp.com' || HOSTNAME === 'www.infinitea.org'
     ON_HEROKU = true
 }
 
-
 const BASE_URL = ON_HEROKU ? 'https://infinitea.herokuapp.com/api/' :
     'http://localhost:8000/api/'
 
 const shippingPrice = 7.20  // todo sync this with DB/server-side?
-
 
 const descriptions = [
     "Definitely an aphrodisiac - I'm not teasing!",
@@ -37,7 +38,6 @@ const descriptions = [
 
 // Generate it here, so the same value persists until the page is refreshed.
 const description = descriptions[Math.floor(Math.random()*descriptions.length)]
-
 
 const primaryColor = '#9091c2'
 const mainOpacity = 0.85
@@ -85,7 +85,6 @@ const Menu = ({page, cb}: {page: number, cb: Function}) => {
         </div>
 
     )} />
-
 }
 
 const Heading = () => (
@@ -98,6 +97,13 @@ const Heading = () => (
         <h3>Unique blends, designed by you</h3>
     </div>
 )
+
+// const Handle = (Slider as any).Handle
+// const handle = ({value, dragging, index, ...restProps}:
+//                     {value: number, dragging: boolean, index: number, restProps: any}) => (
+//     // const { value, dragging, index, ...restProps } = props;
+//     <Handle value={value} {...restProps} size={20}/>
+// )
 
 
 const IngredientCard = ({ingredient, val, selectCb}:
@@ -144,13 +150,19 @@ const IngredientCard = ({ingredient, val, selectCb}:
                     />
                 </OverlayTrigger>
 
-                <Slider
-                    style={{marginBottom: 40}}
-                    min={0} max={sliderPrecision} value={val} vertical={false}
-                        onChange={(sel: number) => selectCb(sel)}
+                {/*<Slider*/}
+                    {/*style={{marginBottom: 40}}*/}
+                    {/*min={0} max={sliderPrecision} value={val} vertical={false}*/}
+                    {/*handle={handle}*/}
+                    {/**/}
+                {/*/>*/}
+                <Rheostat
+                    min={1}
+                    max={100}
+                    values={[val]}
+                    onChange={(e: any) => selectCb(e.values[0])}
                 />
             </Col>
-
         </div>
     )
 }
