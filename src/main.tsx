@@ -109,7 +109,7 @@ const IngredientCard = ({ingredient, val, selectCb}:
     const popover = <Popover
         style={{minWidth:  popoverWidth + 40}}
         id="0"  // Not sure what this does.
-        placement="bottom"  // Appears to be overridden by the trigger.
+        placement="left"  // Appears to be overridden by the trigger.
         title={ingredient.name}
     >
         <p>{ingredient.description}</p>
@@ -143,6 +143,7 @@ const IngredientCard = ({ingredient, val, selectCb}:
                            width={64} height={64} circle
                     />
                 </OverlayTrigger>
+
                 <Slider
                     style={{marginBottom: 40}}
                     min={0} max={sliderPrecision} value={val} vertical={false}
