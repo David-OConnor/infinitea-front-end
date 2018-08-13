@@ -172,7 +172,7 @@ const Picker = ({ingredients, blend, ingSelection, selectCb, titleCb, descriptio
                      sizes or overlapping text when many ingredients are selected. */}
                     <h4 style={{textAlign: 'center', height: util.onMobile() ? '5em' : '3em'}}>
                         {blendText}
-                        </h4>
+                    </h4>
                     {/*<h4 style={{textAlign: 'center', height: '3em'}}>{blendText}</h4>*/}
                 </Col>
             </Row>
@@ -445,10 +445,15 @@ class Footer extends React.Component<FooterProps, FooterState> {
                         </h4>
                     </div>: null}
 
+                <Route render={({history}) => (
+                    <h5 style={{textAlign: 'center', color: 'white', cursor: 'pointer'}}
+                        onClick={() => {
+                            history.push(window.location.pathname + 'privacy')
+                            this.props.setPage(2)
+                        }}
+                    >Privacy policy</h5>
+                )} />
 
-                <h5 style={{textAlign: 'center', color: 'white', cursor: 'pointer'}}
-                     onClick={() => this.props.setPage(2)}
-                >Privacy policy</h5>
                 <h5 style={{textAlign: 'center', color: 'white'}}>© 2018 Infinitea.org</h5>
             </div>
         )
