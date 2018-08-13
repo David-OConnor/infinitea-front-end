@@ -27,6 +27,8 @@ if (HOSTNAME === 'infinitea.herokuapp.com' || HOSTNAME === 'www.infinitea.org'
 const BASE_URL = ON_HEROKU ? 'https://infinitea.herokuapp.com/api/' :
     'http://localhost:8000/api/'
 
+const indexUrl = window.location.pathname
+
 const shippingPrice = 7.20  // todo sync this with DB/server-side?
 
 const descriptions = [
@@ -63,7 +65,7 @@ const Menu = ({page, cb}: {page: number, cb: Function}) => {
             }}
             onClick={() => {
                 cb(destPage)
-                history.push(window.location.pathname + route)
+                history.push(indexUrl + route)
             }}
         >
             {text}
@@ -450,7 +452,7 @@ class Footer extends React.Component<FooterProps, FooterState> {
                     <h5 style={{textAlign: 'center', color: 'white', cursor: 'pointer', textDecoration: 'underline'}}>
                         <span
                             onClick={() => {
-                                history.push(window.location.pathname + 'privacy')
+                                history.push(indexUrl + 'privacy')
                                 this.props.setPage(2)
                                 window.scrollTo(0, 0)
                             }}
@@ -458,7 +460,7 @@ class Footer extends React.Component<FooterProps, FooterState> {
 
                         <span style={{marginLeft: '1em'}}
                               onClick={() => {
-                                  history.push(window.location.pathname + 'terms')
+                                  history.push(indexUrl + 'terms')
                                   this.props.setPage(3)
                                   window.scrollTo(0, 0)
                               }}
