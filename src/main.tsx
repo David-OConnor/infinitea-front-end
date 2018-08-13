@@ -121,7 +121,7 @@ const IngredientCard = ({ingredient, val, selectCb}:
     if (val > 0) {style['borderStyle'] = "solid"}
 
     return (
-        <div>
+        <div style={{textAlign: 'center'}}>
             <Col xs={4} md={3} lg={3}>
                 <h5 style={val > 0 ? {
                         fontWeight: "bold",
@@ -140,7 +140,7 @@ const IngredientCard = ({ingredient, val, selectCb}:
                     />
                 </OverlayTrigger>
 
-                <div style={{marginTop: 30 marginBottom: 30}}>
+                <div style={{marginTop: 30, marginBottom: 30}}>
                     <Rheostat
                         min={1}
                         max={100}
