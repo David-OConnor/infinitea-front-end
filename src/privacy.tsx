@@ -5,17 +5,25 @@ export default () => (
     <div>
         <h1>Privacy Policy</h1>
 
-
         <p>Effective date: August 13, 2018</p>
 
-        <p>This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data./a>.</p>
+        <h4 style={{color: '#1e16c1'}}>Bottom line: We collect your contact info when you place an order, so
+        we know where to send your tea, and how to reach you. We don't store your credit card
+        info, and we don't use your contact info for any other purpose.</h4>
 
-        <p>We use your data to provide and improve the Service. By using the Service, you agree to the collection and use of information in accordance with this policy. Unless otherwise defined in this Privacy Policy, the terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, accessible from https://infinitea.org</p>
+        <hr style={{marginTop: 40, marginBottom: 40}} />
+
+        <p>This page informs you of our policies regarding the collection, use, and
+            disclosure of personal data when you use our Service and the choices you
+            have associated with that data.</p>
+
+        <p>We use your data to provide and improve the Service. By using the Service,
+            you agree to the collection and use of information in accordance with this policy.
+            Unless otherwise defined in this Privacy Policy, the terms used in this
+            Privacy Policy have the same meanings as in our Terms and Conditions, accessible from https://infinitea.org</p>
 
 
         <h2>Information Collection And Use</h2>
-
-        <p>We collect several different types of information for various purposes to provide and improve our Service to you.</p>
 
         <h3>Types of Data Collected</h3>
 
@@ -79,7 +87,6 @@ export default () => (
         <h2>Service Providers</h2>
         <p>We may employ third party companies and individuals to facilitate our Service ("Service Providers"), to provide the Service on our behalf, to perform Service-related services or to assist us in analyzing how our Service is used.</p>
         <p>These third parties have access to your Personal Data only to perform these tasks on our behalf and are obligated not to disclose or use it for any other purpose.</p>
-
 
 
         <h2>Links To Other Sites</h2>

@@ -64,7 +64,7 @@ export default () => (
 
         <h2>Assignment</h2>
 
-        <p>The Infinitea is allowed to assign, transfer, and subcontract its rights and/or obligations under these Terms without any notification. However, you are not allowed to assign, transfer, or subcontract any of your rights and/or obligations under these Terms.</p>
+        <p>Infinitea is allowed to assign, transfer, and subcontract its rights and/or obligations under these Terms without any notification. However, you are not allowed to assign, transfer, or subcontract any of your rights and/or obligations under these Terms.</p>
 
         <h2>Entire Agreement</h2>
 

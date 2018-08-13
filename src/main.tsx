@@ -447,19 +447,21 @@ class Footer extends React.Component<FooterProps, FooterState> {
                     </div>: null}
 
                 <Route render={({history}) => (
-                        <h5 style={{textAlign: 'center', color: 'white', cursor: 'pointer', textDecoration: 'underline'}}>
+                    <h5 style={{textAlign: 'center', color: 'white', cursor: 'pointer', textDecoration: 'underline'}}>
                         <span
                             onClick={() => {
                                 history.push('/' + 'privacy')
                                 this.props.setPage(2)
+                                window.scrollTo(0, 0)
                             }}
                         >Privacy policy</span>
 
                         <span style={{marginLeft: '1em'}}
-                            onClick={() => {
-                                history.push('/' + 'terms')
-                                this.props.setPage(3)
-                            }}
+                              onClick={() => {
+                                  history.push('/' + 'terms')
+                                  this.props.setPage(3)
+                                  window.scrollTo(0, 0)
+                              }}
                         >Terms & conditions</span>
                     </h5>
                 )} />
