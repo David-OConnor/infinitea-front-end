@@ -2,6 +2,7 @@ const path = require('path');
 
 module.exports = {
     entry: path.join(__dirname, '/src/main.tsx'),
+
     output: {
         filename: 'build/main.js',
         path: __dirname

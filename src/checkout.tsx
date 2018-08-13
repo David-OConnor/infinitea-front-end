@@ -21,25 +21,6 @@ import {Address, Blend, Ingredient} from "./types";
 import * as util from './util'
 
 
-// todo duped from main.
-const buttonStyle = {
-    cursor: 'pointer',
-    background: '#c4ddd2',
-    height: 40,
-    width: 200,
-
-    margin: 'auto',
-    paddingTop: 6,
-    display: 'block',
-    // lineHeight: 40,
-    textAlign: 'center' as any,  // wtf?
-    // verticalAlign: 'middle',
-    color: 'black',
-    fontFamily: '"Lucida Sans Unicode"',
-    fontSize: '1.2em',
-}
-const primaryColor = '#9091c2'
-
 // Min lengths for address validation
 const minName = 3
 const minEmail = 4
@@ -269,7 +250,7 @@ class _CardForm extends React.Component<any, any> {
                     {
                         this.props.addressValid && !this.props.processing ?
                             <div
-                                style={{...buttonStyle, background: primaryColor, marginTop: 30}}
+                                style={{...util.buttonStyle, background: util.primaryColor, marginTop: 30}}
                                 onClick={(e: any) => this.handleSubmit(e)}
                             >Place Order</div> : null
                     }
@@ -296,15 +277,15 @@ class Checkout extends React.Component<CheckoutProps, CheckoutState> {
     constructor(props: CheckoutProps) {
         super(props)
         this.state = {
-            elementFontSize: window.innerWidth < 450 ? '14px' : '18px',
+            elementFontSize: util.onMobile() ? '14px' : '18px',
             processing: false
         }
 
         window.addEventListener('resize', () => {
-            if (window.innerWidth < 450 && this.state.elementFontSize !== '14px') {
+            if (util.onMobile() && this.state.elementFontSize !== '14px') {
                 this.setState({elementFontSize: '14px'});
             } else if (
-                window.innerWidth >= 450 &&
+                !util.onMobile() &&
                 this.state.elementFontSize !== '18px'
             ) {
                 this.setState({elementFontSize: '18px'});

@@ -10,6 +10,7 @@ import Rheostat from 'rheostat'
 
 import About from './about'
 import CheckoutForm from './checkout'
+import Privacy from './privacy'
 import * as util from './util'
 import {Address, Blend, Ingredient} from "./types"
 
@@ -39,31 +40,14 @@ const descriptions = [
 // Generate it here, so the same value persists until the page is refreshed.
 const description = descriptions[Math.floor(Math.random()*descriptions.length)]
 
-const primaryColor = '#9091c2'
 const mainOpacity = 0.85
 
-const buttonStyle = {
-    cursor: 'pointer',
-    background: '#c4ddd2',
-    height: 40,
-    width: 200,
-
-    margin: 'auto',
-    paddingTop: 6,
-    display: 'block',
-    // lineHeight: 40,
-    textAlign: 'center' as any,  // wtf?
-    // verticalAlign: 'middle',
-    color: 'black',
-    fontFamily: '"Lucida Sans Unicode"',
-    fontSize: '1.2em',
-}
 
 const Menu = ({page, cb}: {page: number, cb: Function}) => {
     let text = "About"
     let route = 'about'
     let destPage = 1
-    if (page === 1) {
+    if (page === 1 || page === 2) {
         text = "⇐ Your tea"
         destPage = 0
         route = ''
@@ -74,7 +58,7 @@ const Menu = ({page, cb}: {page: number, cb: Function}) => {
             style={{
                 height: 40,
                 fontSize: '1.5em',
-                ...buttonStyle,
+                ...util.buttonStyle,
             }}
             onClick={() => {
                 cb(destPage)
@@ -104,6 +88,14 @@ const IngredientCard = ({ingredient, val, selectCb}:
     const imgSrc = './images/' + ingredient.name.toLowerCase() + '.jpg'
 
     const popoverWidth = 400
+
+    let organicTag = null
+    if (ingredient.organic === 1) {
+        organicTag = <h5>USDA certified organic</h5>
+    } else if (ingredient.organic === 2) {
+        organicTag = <h5>Organic</h5>
+    }
+
     const popover = <Popover
         style={{minWidth:  popoverWidth + 40}}
         id="0"  // Not sure what this does.
@@ -111,6 +103,7 @@ const IngredientCard = ({ingredient, val, selectCb}:
         title={ingredient.name}
     >
         <p>{ingredient.description}</p>
+        {organicTag}
         <img style={{display: 'flex', margin: 'auto'}} src={imgSrc}
              height={popoverWidth} width={popoverWidth} />
     </Popover>
@@ -170,14 +163,16 @@ const Picker = ({ingredients, blend, ingSelection, selectCb, titleCb, descriptio
 
     const blendText = selected.length > 0 ? "Your blend: " + selectedDisplay :
         "Pick an ingredient to get started"
-    console.log(window.innerWidth, "W")
+
     return (
         <div>
             <Row style={{marginBottom: 0}}>
                 <Col xs={12}>
                     {/* Ensure the height's large enough to prevent the line changing
                      sizes or overlapping text when many ingredients are selected. */}
-                    <h4 style={{textAlign: 'center', height: window.innerWidth < 450 ? '5em' : '3em'}}>{blendText}</h4>
+                    <h4 style={{textAlign: 'center', height: util.onMobile() ? '5em' : '3em'}}>
+                        {blendText}
+                        </h4>
                     {/*<h4 style={{textAlign: 'center', height: '3em'}}>{blendText}</h4>*/}
                 </Col>
             </Row>
@@ -354,7 +349,7 @@ class ContactForm extends React.Component<ContactProps, ContactState> {
 
                 <div style={{display: 'flex', margin: 'auto'}}>
                     <div
-                        style={{...buttonStyle, background: primaryColor}}
+                        style={{...util.buttonStyle, background: util.primaryColor}}
                         onClick={() => {
                             sendMessage(
                                 this.state.name, this.state.email, this.state.message
@@ -367,7 +362,7 @@ class ContactForm extends React.Component<ContactProps, ContactState> {
                         }}>Submit</div>
 
                     <div
-                        style={buttonStyle}
+                        style={util.buttonStyle}
                         onClick={() => {
                             this.handleChange('name', "")
                             this.props.showCb(false)
@@ -379,6 +374,7 @@ class ContactForm extends React.Component<ContactProps, ContactState> {
 }
 
 interface FooterProps {
+    setPage: Function
 }
 
 interface FooterState {
@@ -414,7 +410,7 @@ class Footer extends React.Component<FooterProps, FooterState> {
 
                     <div
                         style={{
-                            ...buttonStyle,
+                            ...util.buttonStyle,
                             height: 60,
                         }}
                         onClick={() => {
@@ -449,6 +445,10 @@ class Footer extends React.Component<FooterProps, FooterState> {
                         </h4>
                     </div>: null}
 
+
+                <h5 style={{textAlign: 'center', color: 'white', cursor: 'pointer'}}
+                     onClick={() => this.props.setPage(2)}
+                >Privacy policy</h5>
                 <h5 style={{textAlign: 'center', color: 'white'}}>© 2018 Infinitea.org</h5>
             </div>
         )
@@ -473,7 +473,7 @@ const OrderFailed = () => (
 const DispButton = ({text, route, page, primary, cb}: {text: string, route: string,
     page: number, primary: boolean, cb: Function}) => (
     <Route render={({history}) => (
-        <div style={primary? {...buttonStyle, background: primaryColor} : buttonStyle}
+        <div style={primary? {...util.buttonStyle, background: util.primaryColor} : util.buttonStyle}
              onClick={() => {
                  cb('mainDisplay', page)
                  history.push(window.location.pathname + route)
@@ -695,6 +695,14 @@ class Main extends React.Component<MainProps, MainState> {
                 </div>
             )
         }
+
+        let display = mainDisplay
+        if (this.state.page === 1) {
+            display = <About />
+        } else if (this.state.page === 2) {
+            display = <Privacy />
+        }
+
         return (
 
             <Grid>
@@ -706,9 +714,7 @@ class Main extends React.Component<MainProps, MainState> {
 
                             <div style={{background: 'white', opacity: mainOpacity, border: "0px solid black", padding: 40}}>
                                 <Row>
-                                    <Col xs={12}>
-                                        {this.state.page === 0 ? mainDisplay : <About />}
-                                    </Col>
+                                    <Col xs={12}>{display}</Col>
                                 </Row>
                             </div>
 
@@ -719,8 +725,7 @@ class Main extends React.Component<MainProps, MainState> {
                                     </Col>
                                 </Row>
                             ) : null }
-                            <Footer />
-
+                            <Footer setPage={(page: number) => this.set('page', page)} />
                         </Col>
                     </Row>
                 </Router>

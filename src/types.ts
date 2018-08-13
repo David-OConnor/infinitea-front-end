@@ -16,6 +16,7 @@ export interface Ingredient {
     savory: number
     price: number
     inventory: number
+    organic: number
 }
 
 export interface Blend {
