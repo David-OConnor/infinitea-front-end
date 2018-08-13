@@ -139,10 +139,10 @@ const IngredientCard = ({ingredient, val, selectCb}:
                            width={64} height={64} circle
                     />
                 </OverlayTrigger>
-
-                <div style={{marginTop: 30, marginBottom: 30}}>
+                {/*  textAlign left or slider will be in wrong place. */}
+                <div style={{marginTop: 30, marginBottom: 30, textAlign: 'left'}}>
                     <Rheostat
-                        min={1}
+                        min={0}
                         max={100}
                         values={[val]}
                         onChange={(e: any) => selectCb(e.values[0])}
