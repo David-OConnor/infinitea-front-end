@@ -41,7 +41,7 @@ const invalidStyle = {borderColor: '#b4677e'}
 // todo duped from main!
 const YourBlend = ({blend}: {blend: Blend}) => (
     <div>
-        <h3>Your blend</h3>
+        <h4>Your blend</h4>
         <ul>
             {blend.ingredients.map(ing => <li key={ing[0].id}>
                 {ing[0].name + ' ' + util.ingPortion(blend, ing[1]) + '%'}

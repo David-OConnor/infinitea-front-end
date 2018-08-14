@@ -92,7 +92,7 @@ const IngredientCard = ({ingredient, val, selectCb}:
 
     const imgSrc = './images/' + ingredient.name.toLowerCase() + '.jpg'
 
-    const popoverWidth = 400
+    const popoverWidth = util.onMobile()? 200 : 400
 
     let organicTag = null
     if (ingredient.organic === 1) {
@@ -280,7 +280,7 @@ const OrderDetails = ({sizeSelected, blend, sizeCb}:
             </Panel>
 
             <div style={{marginTop: 60}}>
-                <h5>{"Flat-rate shipping: $" + util.priceDisplay(shippingPrice)}, via USPS</h5>
+                <h5>{"Flat-rate shipping: $" + util.priceDisplay(shippingPrice)}, via USPS Priority Mail</h5>
             </div>
 
         </Col>
