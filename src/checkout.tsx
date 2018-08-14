@@ -19,6 +19,7 @@ import {
 
 import {Address, Blend, Ingredient} from "./types";
 import * as util from './util'
+import axios from "axios";
 
 
 // Min lengths for address validation
@@ -33,21 +34,9 @@ const maxPostal = 10
 const minPhone = 10
 const maxPhone = 15
 
-const handleBlur = () => {
-    // console.log('[blur]');
-};
-const handleChange = (change: any) => {
-    // console.log('[change]', change);
-};
-const handleClick = () => {
-    // console.log('[click]');
-};
-const handleFocus = () => {
-    // console.log('[focus]');
-};
-const handleReady = () => {
-    // console.log('[ready]');
-}
+
+const validStyle = {borderColor: 'green'}
+const invalidStyle = {borderColor: '#b4677e'}
 
 // todo duped from main!
 const YourBlend = ({blend}: {blend: Blend}) => (
@@ -61,21 +50,27 @@ const YourBlend = ({blend}: {blend: Blend}) => (
     </div>
 )
 
-const cardOptions = (fontSize: string) => {
+
+// todo lots of messy code relating to styling the Stripe card element.
+const cardOptions = () => {
     return {
         style: {
             base: {
-                fontSize,
-                color: '#424770',
+                color: 'black',
                 // border: '5px solid orange',
-                letterSpacing: '0.025em',
-                fontFamily: 'Source Code Pro, monospace',
+                // letterSpacing: '0.025em',
+                // fontFamily: 'Source Code Pro, monospace',
+                // fontFamily: 'Helvetica Neue",Helvetica,Arial,sans-serif',
+                // fontSize: '14px',
+                // padding: '6px 14px',
                 '::placeholder': {
                     color: '#aab7c4',
+                    fontFamily: 'Helvetica Neue",Helvetica,Arial,sans-serif',
+                    fontSize: '14px',
                 },
             },
             invalid: {
-                color: '#9e576d',
+                color: '#b4677e',
             },
         },
     }
@@ -84,26 +79,23 @@ const cardOptions = (fontSize: string) => {
 const inputStyle = {
     display: 'block',
     margin: '10px 0 20px 0',
-    maxWidth: 500,
-    padding: "10px 14px",
-    fontSize: '1em',
-    fontFamily: "'Source Code Pro', monospace",
+    padding: '6px 14px',
+    fontSize: 14,
+    fontFamily: 'Helvetica Neue",Helvetica,Arial,sans-serif',
+    // fontFamily: "'Source Code Pro', monospace",
     boxShadow: "rgba(50, 50, 93, 0.14902) 0px 1px 3px, rgba(0, 0, 0, 0.0196078) 0px 1px 0px",
-    border: 2,
+    border: '2px solid black',
     borderRadius: 4,
     background: 'white',
     // backgroundCo: '#ff1111'
 }
 
 const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
-    const validStyle = {borderColor: 'green'}
-    const invalidStyle = {borderColor: '#b4677e'}
-
     return (
         <Form>
             <h5> Only orders to US addresses accepted at this time.
                 Expect international shipping in the future!</h5>
-            <h4> Shipping address</h4>
+            <h4>Shipping address</h4>
 
             <FormGroup>
                 <ControlLabel>Your name</ControlLabel>
@@ -209,6 +201,18 @@ interface CardFormProps {  // Not working for some reason.
 
 
 class _CardForm extends React.Component<any, any> {
+
+    constructor(props: any) {
+        super(props)
+        this.state = {
+           cardValid: false
+        }
+
+        this.setValid = this.setValid.bind(this)
+    }
+
+    setValid = (valid: boolean) => this.setState({cardValid: valid})
+
     handleSubmit = (ev: Event) => {
         this.props.processingCb(true)
         if (this.props.stripe) {
@@ -238,17 +242,29 @@ class _CardForm extends React.Component<any, any> {
                 onSubmit={this.handleSubmit as any}>
                 <FormGroup>
                     <ControlLabel>Card details</ControlLabel>
+                    <div style={{
+                        display: 'block',
+                        padding: '6px 12px',
+                        border: '1px solid',
+                        borderColor: this.state.cardValid ? 'green' : '#b4677e',
+                        borderRadius: 4,
+                        height: 34,
+                        fontSize: 14,
+                        lineHeight: 1.4286,
+                        color: '#555',
 
-                    <CardElement
-                        style={inputStyle}
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        onFocus={handleFocus}
-                        onReady={handleReady}
-                        {...cardOptions(this.props.fontSize)}
-                    />
+                    }}>
+                        <CardElement
+                            style={inputStyle}
+                            onChange={(e) => {
+                                this.setValid(e.complete && e.error === undefined)
+                            }}
+                            {...cardOptions()}
+
+                        />
+                    </div>
                     {
-                        this.props.addressValid && !this.props.processing ?
+                        this.props.addressValid && this.state.cardValid && !this.props.processing ?
                             <div
                                 style={{...util.primaryStyle, marginTop: 30}}
                                 onClick={(e: any) => this.handleSubmit(e)}
@@ -292,7 +308,7 @@ class Checkout extends React.Component<CheckoutProps, CheckoutState> {
             }
         })
 
-    this.setProcessing = this.setProcessing.bind(this)
+        this.setProcessing = this.setProcessing.bind(this)
     }
 
     setProcessing(val: boolean) {
@@ -360,7 +376,7 @@ export default ({blend, size, price, shippingPrice, address, orderCb, addressCb}
                 <h4 style={{textAlign: 'left'}}>Size: {size + " grams"}</h4>
                 <h4 style={{textAlign: 'left'}}>Price: {"$" + util.priceDisplay(price) + " + $" +
                 util.priceDisplay(shippingPrice) + " shipping"}</h4>
-                <h3 style={{textAlign: 'left'}}>{"Total: $" + util.priceDisplay(price + shippingPrice)}</h3>
+                <h4 style={{textAlign: 'left'}}>{"Total: $" + util.priceDisplay(price + shippingPrice)}</h4>
             </Col>
         </Row>
 
