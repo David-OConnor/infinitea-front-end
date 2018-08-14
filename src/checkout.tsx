@@ -250,7 +250,7 @@ class _CardForm extends React.Component<any, any> {
                     {
                         this.props.addressValid && !this.props.processing ?
                             <div
-                                style={{...util.buttonStyle, background: util.primaryColor, marginTop: 30}}
+                                style={{...util.primaryStyle, marginTop: 30}}
                                 onClick={(e: any) => this.handleSubmit(e)}
                             >Place Order</div> : null
                     }

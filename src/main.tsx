@@ -27,6 +27,8 @@ if (HOSTNAME === 'infinitea.herokuapp.com' || HOSTNAME === 'www.infinitea.org'
 const BASE_URL = ON_HEROKU ? 'https://infinitea.herokuapp.com/api/' :
     'http://localhost:8000/api/'
 
+// Keep this index url fixed here, rather than calling window.location.pathname
+// each time we use it: That can produce bogus results.
 const indexUrl = window.location.pathname
 
 const shippingPrice = 7.20  // todo sync this with DB/server-side?
@@ -352,7 +354,7 @@ class ContactForm extends React.Component<ContactProps, ContactState> {
 
                 <div style={{display: 'flex', margin: 'auto'}}>
                     <div
-                        style={{...util.buttonStyle, background: util.primaryColor}}
+                        style={util.primaryStyle}
                         onClick={() => {
                             sendMessage(
                                 this.state.name, this.state.email, this.state.message
@@ -492,10 +494,10 @@ const OrderFailed = () => (
 const DispButton = ({text, route, page, primary, cb}: {text: string, route: string,
     page: number, primary: boolean, cb: Function}) => (
     <Route render={({history}) => (
-        <div style={primary? {...util.buttonStyle, background: util.primaryColor} : util.buttonStyle}
+        <div style={primary? util.primaryStyle : util.buttonStyle}
              onClick={() => {
                  cb('mainDisplay', page)
-                 history.push(window.location.pathname + route)
+                 history.push(indexUrl + route)
              }
              }>{text}
         </div>
@@ -655,7 +657,7 @@ class Main extends React.Component<MainProps, MainState> {
         // Only allow the user to proceed if 1 or more ingredients are selected.
         if (numSelected > 0) {
             nextDisplayButtons = (
-                <DispButton text="Size and price" route="size" page={1}
+                <DispButton text="Continue ⇒" route="size" page={1}
                             primary={true} cb={this.set} />
             )
         }
@@ -670,7 +672,7 @@ class Main extends React.Component<MainProps, MainState> {
                 <div style={{'display': 'flex', 'margin': 'auto'}}>
                     <DispButton text="⇐ Change ingredients" route="" page={0}
                                 primary={false} cb={this.set} />
-                    <DispButton text="Checkout" route="checkout" page={2}
+                    <DispButton text="Checkout ⇒" route="checkout" page={2}
                                 primary={true} cb={this.set} />
                 </div>
             )

@@ -17,6 +17,8 @@ export default () => (
         <p>We'd love to hear what you think. Suggestions? Questions about your order?
             Critique? Use the 'Send us a message' button at the bottom to get in touch.</p>
 
+        <p>We're based in Raleigh, North Carolina</p>
+
         <hr style={{marginTop: 50}} />
         <h2 style={{marginTop: 50}}>🍵 FAQ</h2>
 

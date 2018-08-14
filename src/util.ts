@@ -47,6 +47,10 @@ export const buttonStyle = {
     fontFamily: '"Lucida Sans Unicode"',
     fontSize: '1.2em',
 }
-export const primaryColor = '#9091c2'
+export const primaryStyle = {
+    ...buttonStyle,
+    background: '#9091c2',
+    fontWeight: 600
+}
 
 export const onMobile = () => window.innerWidth < 450

@@ -15,5 +15,18 @@ export declare const buttonStyle: {
     fontFamily: string;
     fontSize: string;
 };
-export declare const primaryColor = "#9091c2";
+export declare const primaryStyle: {
+    background: string;
+    fontWeight: number;
+    cursor: string;
+    height: number;
+    width: number;
+    margin: string;
+    paddingTop: number;
+    display: string;
+    textAlign: any;
+    color: string;
+    fontFamily: string;
+    fontSize: string;
+};
 export declare const onMobile: () => boolean;
