@@ -95,7 +95,7 @@ const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
         <Form>
             <h5> Only orders to US addresses accepted at this time.
                 Expect international shipping in the future!</h5>
-            <h4>Shipping address</h4>
+            <h4 style={{marginBottom: 20}}>Shipping address</h4>
 
             <FormGroup>
                 <ControlLabel>Your name</ControlLabel>
@@ -205,7 +205,7 @@ class _CardForm extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
         this.state = {
-           cardValid: false
+            cardValid: false
         }
 
         this.setValid = this.setValid.bind(this)
@@ -240,6 +240,11 @@ class _CardForm extends React.Component<any, any> {
             <Form
                 style={{marginTop: 60}}
                 onSubmit={this.handleSubmit as any}>
+                <h4 style={{marginBottom: 20}}>
+                    Payment, processed by <a href={'https://stripe.com'}>Stripe</a>
+                </h4>
+                <p>We don't collect or store your card information, and it's removed once you leave this page. <a
+                    href={'https://stripe.com/docs/security/stripe'}>Details about security</a></p>
                 <FormGroup>
                     <ControlLabel>Card details</ControlLabel>
                     <div style={{

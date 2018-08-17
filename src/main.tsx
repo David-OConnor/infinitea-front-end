@@ -4,32 +4,18 @@ import * as ReactDOM from "react-dom"
 import {Button, Grid, Row, Col, ControlLabel,
     Form, FormGroup, FormControl, Image, OverlayTrigger, Panel, Popover} from 'react-bootstrap'
 import { BrowserRouter as Router, Route } from "react-router-dom"
-// import Slider from 'rc-slider'
 import 'rheostat/initialize'
 import Rheostat from 'rheostat'
 
 import About from './about'
 import CheckoutForm from './checkout'
+import Footer from './footer'
+import FlavorPicker from './flavor'
 import Privacy from './privacy'
 import Terms from './terms'
 import * as util from './util'
 import {Address, Blend, Ingredient} from "./types"
 
-
-const HOSTNAME = window && window.location && window.location.hostname
-let ON_HEROKU = false
-
-if (HOSTNAME === 'infinitea.herokuapp.com' || HOSTNAME === 'www.infinitea.org'
-    || HOSTNAME === 'david-oconnor.github.io') {
-    ON_HEROKU = true
-}
-
-const BASE_URL = ON_HEROKU ? 'https://infinitea.herokuapp.com/api/' :
-    'http://localhost:8000/api/'
-
-// Keep this index url fixed here, rather than calling window.location.pathname
-// each time we use it: That can produce bogus results.
-const indexUrl = window.location.pathname
 
 const shippingPrice = 7.20  // todo sync this with DB/server-side?
 
@@ -45,46 +31,79 @@ const descriptions = [
 // Generate it here, so the same value persists until the page is refreshed.
 const description = descriptions[Math.floor(Math.random()*descriptions.length)]
 
-const mainOpacity = 0.85
 
 
-const Menu = ({page, cb}: {page: number, cb: Function}) => {
+const Menu = ({page, subPage, flavorMode, setPage, setSubPage}:
+                  {page: number, subPage: number, flavorMode: boolean,
+                      setPage: Function, setSubPage: Function}) => {
     let text = "About"
     let destPage = 1
     let route = 'about'
-    if (page === 1 || page === 2 || page === 3) {
+    if (page !== 0) {
         text = "⇐ Your tea"
         destPage = 0
-        route = ''
+        route = flavorMode ? 'flavors' : 'ingredients'
     }
+    // todo This function/comp is organized inconsistently.
 
+    // We need this double-wrapped div apparently to make the buttons center.  Not sure why.
     return <Route render={({history}) => (
-        <div
-            style={{
-                height: 40,
-                fontSize: '1.5em',
-                ...util.buttonStyle,
-            }}
-            onClick={() => {
-                cb(destPage)
-                history.push(indexUrl + route)
-            }}
-        >
-            {text}
-        </div>
+        <div style={{display: 'flex', margin: 'auto'}}>
+            <div style={{display: 'flex', margin: 'auto'}}>
+                <div
+                    style={{...util.buttonStyle}}
+                    onClick={() => {
+                        setPage(destPage)
+                        history.push(util.indexUrl + route)
+                    }}
+                >
+                    {text}
+                </div>
 
+                {page === 0 && (subPage === 0 || subPage === 5) ? <span style={{width: 10}}/> : null}
+
+                {page === 0 && subPage === 0 ? <div
+                    style={{...util.buttonStyle}}
+                    onClick={() => {
+                        setSubPage(5)
+                        history.push(util.indexUrl + 'flavors')
+                    }}
+                >
+                    Pick flavors
+                </div> : null}
+
+                {page === 0 && subPage === 5 ? <div
+                    style={{...util.buttonStyle}}
+                    onClick={() => {
+                        setSubPage(0)
+                        history.push(util.indexUrl + 'ingredients')
+                    }}
+                >
+                    Pick ingredients
+                </div> : null}
+            </div>
+        </div>
     )} />
 }
 
-const Heading = () => (
-    <div style={{
-        textAlign: 'center',
-        fontFamily: '"Georgia", "times"',
+const Heading = ({set}: {set: Function}) => (
+    <Route render={({history}) => (
+        <div style={{
+            textAlign: 'center',
+            fontFamily: '"Georgia", "times"',
+        }}>
+            <h1
+                style={{cursor: 'pointer'}}
+                onClick={() => {
+                    set('page', 0)
+                    set('subPage', 6)
+                    history.push(util.indexUrl)
+                }}
+            >Infini·tea ∞ </h1>
+            <h3>Unique blends, designed by you</h3>
+        </div>
+    )} />
 
-    }}>
-        <h1>Infini·tea ∞ </h1>
-        <h3>Unique blends, designed by you</h3>
-    </div>
 )
 
 const IngredientCard = ({ingredient, val, selectCb}:
@@ -116,6 +135,8 @@ const IngredientCard = ({ingredient, val, selectCb}:
     const selectedColor = '#3330ab'
     let style = {cursor: 'pointer', borderWidth: "5px", borderColor: selectedColor}
     if (val > 0) {style['borderStyle'] = "solid"}
+
+    console.log()
 
     return (
         <div style={{textAlign: 'center'}}>
@@ -288,193 +309,6 @@ const OrderDetails = ({sizeSelected, blend, sizeCb}:
     </div>
 )
 
-function sendMessage(name: string, email: string, message: string) {
-    axios.post(
-        BASE_URL + 'contact',
-        {name: name, email: email, message: message}
-    )
-}
-
-
-interface ContactProps {
-    showCb: Function
-    confirmationCb: Function
-}
-
-interface ContactState {
-    name: string
-    email: string
-    message: string
-}
-
-class ContactForm extends React.Component<ContactProps, ContactState> {
-    constructor(props: ContactProps) {
-        super(props)
-        this.state = {
-            name: "",
-            email: "",
-            message: ""
-        }
-
-    }
-    handleChange(attr: string, text: string) {
-        this.setState({[attr]: text} as any)
-    }
-
-    render() {
-        return (
-            <Form style={{background: 'white', opacity: mainOpacity, padding: 40}}>
-                <FormGroup>
-                    <ControlLabel>Your name</ControlLabel>
-                    <FormControl
-                        type="text"
-                        value={this.state.name}
-                        placeholder="Name"
-                        onChange={(e: any) => this.handleChange('name', e.target.value)}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <ControlLabel>Your email</ControlLabel>
-                    <FormControl
-                        type="text"
-                        value={this.state.email}
-                        placeholder="Email address"
-                        onChange={(e: any) => this.handleChange('email', e.target.value)}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <ControlLabel>Message</ControlLabel>
-                    <FormControl
-                        componentClass="textarea"
-                        value={this.state.message}
-                        placeholder="Your message"
-                        onChange={(e: any) => this.handleChange('message', e.target.value)}
-                    />
-                </FormGroup>
-
-                <div style={{display: 'flex', margin: 'auto'}}>
-                    <div
-                        style={util.primaryStyle}
-                        onClick={() => {
-                            sendMessage(
-                                this.state.name, this.state.email, this.state.message
-                            )
-                            // Now reset the form and show confirmation.
-                            this.handleChange('name', "")
-                            this.props.showCb(false)
-                            this.props.confirmationCb(true)
-
-                        }}>Submit</div>
-
-                    <div
-                        style={util.buttonStyle}
-                        onClick={() => {
-                            this.handleChange('name', "")
-                            this.props.showCb(false)
-                        }}>Discard</div>
-                </div>
-            </Form>
-        )
-    }
-}
-
-interface FooterProps {
-    setPage: Function
-}
-
-interface FooterState {
-    showContact: boolean
-    showConfirmation: boolean
-}
-
-
-class Footer extends React.Component<FooterProps, FooterState> {
-    constructor(props: FooterProps) {
-        super(props)
-        this.state = {showContact: false, showConfirmation: false}
-
-        this.setContactForm = this.setContactForm.bind(this)
-        this.setConfirmation = this.setConfirmation.bind(this)
-    }
-
-    setContactForm(show: boolean) {
-        this.setState({showContact: show})
-    }
-    setConfirmation(show: boolean) {
-        this.setState({showConfirmation: show})
-    }
-
-    render() {
-        return (
-            <div>
-                <br />
-                <br />
-
-                {/*<h4 style={{textAlign: 'center'}}>Questions? Feedback?</h4>*/}
-                {!this.state.showContact ?
-
-                    <div
-                        style={{
-                            ...util.buttonStyle,
-                            height: 60,
-                        }}
-                        onClick={() => {
-                            this.setContactForm(true)
-                            this.setConfirmation(false)
-                        }}>
-                        Questions? Feedback?
-                        Send us a message
-                    </div>
-
-                    : null}
-                {this.state.showContact ? <ContactForm
-                    showCb={this.setContactForm}
-                    confirmationCb={this.setConfirmation}
-
-                /> : null}
-                {this.state.showConfirmation ?
-                    <div style={{
-                        display: 'flex',
-                        margin: 'auto',
-                        marginTop: 40,
-                        paddingTop: 20,
-                        paddingLeft: 30,
-                        background: 'white',
-                        opacity: mainOpacity,
-                        textAlign: 'center',
-                        width: 300,
-                        height: 80,
-                    }}>
-                        <h4>
-                            Thanks for your message! 🙂
-                        </h4>
-                    </div>: null}
-
-                <Route render={({history}) => (
-                    <h5 style={{textAlign: 'center', color: 'white', cursor: 'pointer', textDecoration: 'underline'}}>
-                        <span
-                            onClick={() => {
-                                history.push(indexUrl + 'privacy')
-                                this.props.setPage(2)
-                                window.scrollTo(0, 0)
-                            }}
-                        >Privacy policy</span>
-
-                        <span style={{marginLeft: '1em'}}
-                              onClick={() => {
-                                  history.push(indexUrl + 'terms')
-                                  this.props.setPage(3)
-                                  window.scrollTo(0, 0)
-                              }}
-                        >Terms & conditions</span>
-                    </h5>
-                )} />
-
-                <h5 style={{textAlign: 'center', color: 'white'}}>© 2018 Infinitea.org</h5>
-            </div>
-        )
-    }
-}
 
 const OrderPlaced = () => (
     <div>
@@ -491,41 +325,77 @@ const OrderFailed = () => (
 )
 
 
-const DispButton = ({text, route, page, primary, cb}: {text: string, route: string,
-    page: number, primary: boolean, cb: Function}) => (
+
+
+const DispButton = ({text, route, subPage, primary, set}: {text: string, route: string,
+    subPage: number, primary: boolean, set: Function}) => (
     <Route render={({history}) => (
         <div style={primary? util.primaryStyle : util.buttonStyle}
              onClick={() => {
-                 cb('mainDisplay', page)
-                 history.push(indexUrl + route)
+                 set('subPage', subPage)
+                 history.push(util.indexUrl + route)
              }
              }>{text}
         </div>
     )} />
 )
 
+const Start = ({setPage}: {setPage: Function}) => (
+    <div style={{height: 400}}>
+        <Col xs={6} style={{margin: 0, padding: 0, textAlign: 'center'}}>
+            <div style={{
+                verticalAlign: 'middle',
+                lineHeight: 400,
+                cursor: 'pointer',
+                margin: 0,
+                padding: 50,
+                background: '#cfeaf6',
+                height: 400,
+            }}
+                 onClick={() => setPage(5)}>
+                <h3>Pick flavors - we'll find ingredients to match</h3>
+            </div>
+        </Col>
+        <Col xs={6} style={{margin: 0, padding: 0, textAlign: 'center'}}>
+            <div style={{
+                cursor: 'pointer',
+                margin: 0,
+                padding: 50,
+                background: '#ffd5cd',
+                height: 400,
+            }}
+                 onClick={() => setPage(0)}>
+                <h3>Create it yourself, exactly how you like</h3>
+            </div>
+        </Col>
+    </div>
+)
+
 interface MainProps {
+    initialPage: number
 }
 
 interface MainState {
-    page: number
-    mainDisplay: number // 0 for picker, 1 for order details, 2 for payment
-    ingredients: Ingredient[]
+    page: number  // 0: Tea  1: About  2: Privacy  3: Terms
+    // 0: Ingredient picker  1:  Size  2: Checkout  3: Order placed  4: Order failed  5: Flavor picker  6: Start
+    subPage: number
+    ingredients: Ingredient[]  // All ingredients, passed from the DB.
 
-    ingSelection: Map<number, number> // <ingredient id, amount selected, 0 - 1.>
+    ingSelection: Map<number, number> // <ingredient id, amount selected>
     sizeSelected: number
     title: string
     description: string
     notes: string
     address: Address
+    flavorMode: boolean
 }
 
 class Main extends React.Component<MainProps, MainState> {
     constructor(props: MainProps) {
         super(props)
         this.state = {
-            page: 0,
-            mainDisplay: 0,
+            page: this.props.initialPage,
+            subPage: 6,
             ingredients: [],
 
             ingSelection: new Map(),
@@ -544,11 +414,12 @@ class Main extends React.Component<MainProps, MainState> {
                 state: "",
                 postal: "",
                 phone: ""
-            }
+            },
+            flavorMode: false
         }
 
         // Populate ingredients from the database.
-        axios.get(BASE_URL + 'ingredients').then(
+        axios.get(util.BASE_URL + 'ingredients').then(
             (resp) =>{
                 const ingredients: Ingredient[] = resp.data.results
 
@@ -586,7 +457,7 @@ class Main extends React.Component<MainProps, MainState> {
 
     order(selected: Ingredient[], blend: Blend, token: any) {
         axios.post(
-            BASE_URL + 'order',
+            util.BASE_URL + 'order',
             {
                 address: this.state.address,
                 blend: blend,
@@ -598,9 +469,9 @@ class Main extends React.Component<MainProps, MainState> {
             (resp) => {
                 console.log("RESP FROM DJANGO:", resp)
                 if (resp.data.success) {
-                    this.set('mainDisplay', 3)
+                    this.set('subPage', 3)
                 } else {
-                    this.set('mainDisplay', 4)
+                    this.set('subPage', 4)
                 }
             }
         )
@@ -609,16 +480,16 @@ class Main extends React.Component<MainProps, MainState> {
     nav() {
         // Catch what we appended to the URL using the history/router.
         if (location.href.includes('size')) {
-            this.set('mainDisplay', 1)
-            this.set('page', 0)
+            this.set('subPage', 1)
+            this.set('subPage', 0)
         } else if (location.href.includes('checkout')) {
-            this.set('mainDisplay', 2)
-            this.set('page', 0)
+            this.set('subPage', 2)
+            this.set('subPage', 0)
         } else if (location.href.includes('about')) {
-            this.set('page', 1)
+            this.set('subPage', 1)
         } else {  // We're going back to the main page with nothing appended to the url.
-            this.set('mainDisplay', 0)
-            this.set('page', 0)
+            this.set('subPage', 0)
+            this.set('subPage', 0)
         }
     }
 
@@ -655,14 +526,14 @@ class Main extends React.Component<MainProps, MainState> {
         let nextDisplayButtons = (<div />)
 
         // Only allow the user to proceed if 1 or more ingredients are selected.
-        if (numSelected > 0) {
+        if (numSelected > 0 && this.state.subPage !== 5) {
             nextDisplayButtons = (
-                <DispButton text="Continue ⇒" route="size" page={1}
-                            primary={true} cb={this.set} />
+                <DispButton text="Continue ⇒" route="size" subPage={1}
+                            primary={true} set={this.set} />
             )
         }
 
-        if (this.state.mainDisplay === 1) {
+        if (this.state.subPage === 1) {
             mainDisplay = <OrderDetails
                 sizeSelected={this.state.sizeSelected}
                 blend={blend}
@@ -670,15 +541,19 @@ class Main extends React.Component<MainProps, MainState> {
             />
             nextDisplayButtons = (
                 <div style={{'display': 'flex', 'margin': 'auto'}}>
-                    <DispButton text="⇐ Change ingredients" route="" page={0}
-                                primary={false} cb={this.set} />
-                    <DispButton text="Checkout ⇒" route="checkout" page={2}
-                                primary={true} cb={this.set} />
+                    {this.state.flavorMode ? <DispButton text="⇐ Change flavors" route="flavors" subPage={5}
+                                                         primary={false} set={this.set}/>
+                        :
+                        <DispButton text="⇐ Change ingredients" route="ingredients" subPage={0}
+                                    primary={false} set={this.set}/>
+                    }
+                    <DispButton text="Checkout ⇒" route="checkout" subPage={2}
+                                primary={true} set={this.set} />
                 </div>
             )
         }
 
-        else if (this.state.mainDisplay === 2)  {
+        else if (this.state.subPage === 2)  {
             mainDisplay = <CheckoutForm
                 blend={blend}
                 size={this.state.sizeSelected}
@@ -690,16 +565,22 @@ class Main extends React.Component<MainProps, MainState> {
             />
             nextDisplayButtons = (
                 <div style={{'display': 'flex', 'margin': 'auto'}}>
-                    <DispButton text="⇐⇐ Change ingredients" route="" page={0}
-                                primary={false} cb={this.set} />
+                    {this.state.flavorMode ?
+                        <DispButton text="⇐⇐ Change flavors" route="flavors"
+                                    subPage={5}
+                                    primary={false} set={this.set}/> :
+                        <DispButton text="⇐⇐ Change ingredients" route="ingredients"
+                                    subPage={0}
+                                    primary={false} set={this.set}/>
+                    }
                     <span style={{width: 10}}/>
-                    <DispButton text="⇐ Size and price" route="size" page={1}
-                                primary={false} cb={this.set} />
+                    <DispButton text="⇐ Size and price" route="size" subPage={1}
+                                primary={false} set={this.set} />
                 </div>
             )
         }
 
-        else if (this.state.mainDisplay === 3)  {
+        else if (this.state.subPage === 3)  {
             mainDisplay = <OrderPlaced />
             nextDisplayButtons = (
                 <div style={{'display': 'flex', 'margin': 'auto'}}>
@@ -708,7 +589,7 @@ class Main extends React.Component<MainProps, MainState> {
             )
         }
 
-        else if (this.state.mainDisplay === 4)  {
+        else if (this.state.subPage === 4)  {
             mainDisplay = <OrderFailed />
             nextDisplayButtons = (
                 <div style={{'display': 'flex', 'margin': 'auto'}}>
@@ -716,6 +597,18 @@ class Main extends React.Component<MainProps, MainState> {
                 </div>
             )
         }
+
+        else if (this.state.subPage === 5)  {
+            mainDisplay = <FlavorPicker ingredients={this.state.ingredients}/>
+            // Keep the same buttons as the ingredient picker, set by default above.
+        }
+
+        else if (this.state.subPage === 6)  {
+            mainDisplay = <Start setPage={(page: number) => this.set('subPage', page)}/>
+            nextDisplayButtons = null
+        }
+
+        else if (this.state.subPage > 6) { console.log("Invalid subpage set") }
 
         let display = mainDisplay
         if (this.state.page === 1) {
@@ -732,10 +625,14 @@ class Main extends React.Component<MainProps, MainState> {
                 <Router>
                     <Row>
                         <Col xs={12} md={10} lg={10} mdOffset={1} lgOffset={1}>
-                            <Heading />
-                            <Menu page={this.state.page} cb={(page: number) => this.set('page', page)} />
+                            <Heading set={this.set} />
+                            <Menu page={this.state.page}
+                                  subPage={this.state.subPage}
+                                  flavorMode={this.state.flavorMode}
+                                  setPage={(page: number) => this.set('page', page)}
+                                  setSubPage={(page: number) => this.set('subPage', page)} />
 
-                            <div style={{background: 'white', opacity: mainOpacity, border: "0px solid black", padding: 40}}>
+                            <div style={{background: 'white', opacity: util.mainOpacity, border: "0px solid black", padding: 40}}>
                                 <Row>
                                     <Col xs={12}>{display}</Col>
                                 </Row>
@@ -748,7 +645,7 @@ class Main extends React.Component<MainProps, MainState> {
                                     </Col>
                                 </Row>
                             ) : null }
-                            <Footer setPage={(page: number) => this.set('page', page)} />
+                            <Footer setPage={(page: number) => this.set('subPage', page)} />
                         </Col>
                     </Row>
                 </Router>
@@ -758,6 +655,6 @@ class Main extends React.Component<MainProps, MainState> {
     }
 }
 
-ReactDOM.render(<Main />, document.getElementById('root') as HTMLElement)
+ReactDOM.render(<Main initialPage={0}/>, document.getElementById('root') as HTMLElement)
 
 

@@ -8,6 +8,7 @@ export interface Ingredient {
     caffeine: number
     astringent: number
     sweet: number
+    citrus: number
     floral: number
     tart: number
     minty: number
