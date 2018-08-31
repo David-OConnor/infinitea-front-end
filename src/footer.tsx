@@ -1,10 +1,8 @@
 import * as React from "react"
-import {Form, FormControl, FormGroup, ControlLabel} from 'react-bootstrap'
 import {Route} from "react-router-dom"
 import axios from "axios"
 
 import * as util from "./util"
-
 
 
 function sendMessage(name: string, email: string, message: string) {
@@ -42,57 +40,65 @@ class ContactForm extends React.Component<ContactProps, ContactState> {
 
     render() {
         return (
-            <Form style={{background: 'white', opacity: util.mainOpacity, padding: 40}}>
-                <FormGroup>
-                    <ControlLabel>Your name</ControlLabel>
-                    <FormControl
+            <form style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: 500,
+                margin: 'auto',
+                background: 'white',
+                opacity: util.mainOpacity,
+                padding: 20
+            }}>
+                <div style={{margin: 'auto'}}>
+                    <h4>Your name</h4>
+                    <input
                         type="text"
+                        style={{marginBottom: 10}}
                         value={this.state.name}
                         placeholder="Name"
                         onChange={(e: any) => this.handleChange('name', e.target.value)}
                     />
-                </FormGroup>
-                <FormGroup>
-                    <ControlLabel>Your email</ControlLabel>
-                    <FormControl
+
+                    <h4>Your email</h4>
+                    <input
                         type="text"
+                        style={{marginBottom: 10}}
                         value={this.state.email}
                         placeholder="Email address"
                         onChange={(e: any) => this.handleChange('email', e.target.value)}
                     />
-                </FormGroup>
-                <FormGroup>
-                    <ControlLabel>Message</ControlLabel>
-                    <FormControl
-                        componentClass="textarea"
+
+                    <h4>Message</h4>
+                    <textarea
+                        style={{height: '8em'}}
                         value={this.state.message}
                         placeholder="Your message"
                         onChange={(e: any) => this.handleChange('message', e.target.value)}
                     />
-                </FormGroup>
 
-                <div style={{display: 'flex', margin: 'auto'}}>
-                    <div
-                        style={util.primaryStyle}
-                        onClick={() => {
-                            sendMessage(
-                                this.state.name, this.state.email, this.state.message
-                            )
-                            // Now reset the form and show confirmation.
-                            this.handleChange('name', "")
-                            this.props.showCb(false)
-                            this.props.confirmationCb(true)
+                    <div style={{display: 'flex', margin: 'auto', marginTop: 20}}>
+                        <div
+                            style={util.primaryStyle}
+                            onClick={() => {
+                                sendMessage(
+                                    this.state.name, this.state.email, this.state.message
+                                )
+                                // Now reset the form and show confirmation.
+                                this.handleChange('name', "")
+                                this.props.showCb(false)
+                                this.props.confirmationCb(true)
 
-                        }}>Submit</div>
+                            }}>Submit</div>
 
-                    <div
-                        style={util.buttonStyle}
-                        onClick={() => {
-                            this.handleChange('name', "")
-                            this.props.showCb(false)
-                        }}>Discard</div>
+                        <div
+                            style={util.buttonStyle}
+                            onClick={() => {
+                                this.handleChange('name', "")
+                                this.props.showCb(false)
+                            }}>Discard</div>
+                    </div>
                 </div>
-            </Form>
+            </form>
         )
     }
 }
@@ -129,7 +135,6 @@ export default class _ extends React.Component<FooterProps, FooterState> {
                 <br />
                 <br />
 
-                {/*<h4 style={{textAlign: 'center'}}>Questions? Feedback?</h4>*/}
                 {!this.state.showContact ?
 
                     <div
@@ -170,7 +175,7 @@ export default class _ extends React.Component<FooterProps, FooterState> {
                     </div>: null}
 
                 <Route render={({history}) => (
-                    <h5 style={{textAlign: 'center', color: 'white', cursor: 'pointer', textDecoration: 'underline'}}>
+                    <h4 style={{textAlign: 'center', color: 'black', cursor: 'pointer', textDecoration: 'underline'}}>
                         <span
                             onClick={() => {
                                 history.push(util.indexUrl + 'privacy')
@@ -186,10 +191,10 @@ export default class _ extends React.Component<FooterProps, FooterState> {
                                   window.scrollTo(0, 0)
                               }}
                         >Terms & conditions</span>
-                    </h5>
+                    </h4>
                 )} />
 
-                <h5 style={{textAlign: 'center', color: 'white'}}>© 2018 Infinitea.org</h5>
+                <h4 style={{textAlign: 'center', color: 'black'}}>© 2018 Infinitea.org</h4>
             </div>
         )
     }

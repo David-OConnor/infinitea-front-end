@@ -9,17 +9,9 @@ import {
     StripeProvider,
     injectStripe,
 } from "react-stripe-elements"
-import {
-    Col,
-    ControlLabel,
-    Form,
-    FormControl,
-    FormGroup, Row
-} from 'react-bootstrap'
 
-import {Address, Blend, Ingredient} from "./types";
+import {Address, Blend} from "./types";
 import * as util from './util'
-import axios from "axios";
 
 
 // Min lengths for address validation
@@ -33,10 +25,6 @@ const minPostal = 5
 const maxPostal = 10
 const minPhone = 10
 const maxPhone = 15
-
-
-const validStyle = {borderColor: 'green'}
-const invalidStyle = {borderColor: '#b4677e'}
 
 // todo duped from main!
 const YourBlend = ({blend}: {blend: Blend}) => (
@@ -59,14 +47,18 @@ const cardOptions = () => {
                 color: 'black',
                 // border: '5px solid orange',
                 // letterSpacing: '0.025em',
-                // fontFamily: 'Source Code Pro, monospace',
-                // fontFamily: 'Helvetica Neue",Helvetica,Arial,sans-serif',
                 // fontSize: '14px',
+                // fontFamily: 'Karla, sans-serif',
                 // padding: '6px 14px',
                 '::placeholder': {
                     color: '#aab7c4',
-                    fontFamily: 'Helvetica Neue",Helvetica,Arial,sans-serif',
-                    fontSize: '14px',
+                    // height: '2em',
+                    // padding: '5px 12px',
+                    // fontFamily: 'Karla',
+                    // marginLeft: 30,
+                    // marginRight: 30,
+                    // marginTop: 40,
+                    // fontSize: '14px',
                 },
             },
             invalid: {
@@ -76,117 +68,113 @@ const cardOptions = () => {
     }
 }
 
-const inputStyle = {
-    display: 'block',
-    margin: '10px 0 20px 0',
-    padding: '6px 14px',
-    fontSize: 14,
-    fontFamily: 'Helvetica Neue",Helvetica,Arial,sans-serif',
-    // fontFamily: "'Source Code Pro', monospace",
-    boxShadow: "rgba(50, 50, 93, 0.14902) 0px 1px 3px, rgba(0, 0, 0, 0.0196078) 0px 1px 0px",
-    border: '2px solid black',
-    borderRadius: 4,
-    background: 'white',
-    // backgroundCo: '#ff1111'
+// const inputStyle = {
+//     display: 'block',
+//     margin: '10px 0 20px 0',
+//     padding: '6px 14px',
+//     fontSize: 14,
+//     fontFamily: 'Helvetica Neue",Helvetica,Arial,sans-serif',
+//     // fontFamily: "'Source Code Pro', monospace",
+//     boxShadow: "rgba(50, 50, 93, 0.14902) 0px 1px 3px, rgba(0, 0, 0, 0.0196078) 0px 1px 0px",
+//     border: '2px solid black',
+//     borderRadius: 4,
+//     background: 'white',
+//     // backgroundCo: '#ff1111'
+// }
+
+const inputStyle = {  // todo duped from style.css
+    padding: '5px 12px',
+    height: 32,
+    marginLeft: 30,
+    marginRight: 30,
 }
+
+const validStyle = {borderColor: 'green'}
+const invalidStyle = {borderColor: '#b4677e'}
+
 
 const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
     return (
-        <Form>
-            <h5> Only orders to US addresses accepted at this time.
-                Expect international shipping in the future!</h5>
-            <h4 style={{marginBottom: 20}}>Shipping address</h4>
+        <form>
+            <h4> Only orders to US addresses accepted at this time.
+                Expect international shipping in the future!</h4>
+            <h3 style={{marginBottom: 20}}>Shipping address</h3>
 
-            <FormGroup>
-                <ControlLabel>Your name</ControlLabel>
-                <FormControl
-                    style={address.name.length >= minName ? validStyle : invalidStyle}
-                    type="text"
-                    value={address.name}
-                    placeholder="Name"
-                    onChange={(e: any) => cb('name', e.target.value)}
-                />
-            </FormGroup>
+            <h4 style={{marginBottom: 0}}>Your name</h4>
+            <input
+                style={address.name.length >= minName ? validStyle : invalidStyle}
+                // style={validStyle}
+                type="text"
+                value={address.name}
+                placeholder="Name"
+                onChange={(e: any) => cb('name', e.target.value)}
+            />
 
-            <FormGroup>
-                <ControlLabel>Email address</ControlLabel>
-                <FormControl
-                    style={address.email.length >= minEmail && address.email.includes('@') &&
-                    address.email.includes('.') ? validStyle : invalidStyle}
-                    type="text"
-                    value={address.email}
-                    placeholder="Email"
-                    onChange={(e: any) => cb('email', e.target.value)}
-                />
-            </FormGroup>
+            <h4 style={{marginBottom: 0}}>Email address</h4>
+            <input
+                style={address.email.length >= minEmail && address.email.includes('@') &&
+                address.email.includes('.') ? validStyle : invalidStyle}
+                type="text"
+                value={address.email}
+                placeholder="Email"
+                onChange={(e: any) => cb('email', e.target.value)}
+            />
 
-            <FormGroup>
-                <ControlLabel>Address, line 1</ControlLabel>
-                <FormControl
-                    style={address.address1.length >= minAddress1 ? validStyle : invalidStyle}
-                    type="text"
-                    value={address.address1}
-                    placeholder="Address 1"
-                    onChange={(e: any) => cb('address1', e.target.value)}
-                />
-            </FormGroup>
+            <h4 style={{marginBottom: 0}}>Address, line 1</h4>
+            <input
+                style={address.address1.length >= minAddress1 ? validStyle : invalidStyle}
+                type="text"
+                value={address.address1}
+                placeholder="Address 1"
+                onChange={(e: any) => cb('address1', e.target.value)}
+            />
 
-            <FormGroup>
-                <ControlLabel>Address, line 2 (eg apartment #)</ControlLabel>
-                <FormControl
-                    style={address.address2.length >= minAddress2 ? validStyle : invalidStyle}
-                    type="text"
-                    value={address.address2}
-                    placeholder="(Optional)"
-                    onChange={(e: any) => cb('address2', e.target.value)}
-                />
-            </FormGroup>
+            <h4 style={{marginBottom: 0}}>Address, line 2 (eg apartment #)</h4>
+            <input
+                style={address.address2.length >= minAddress2 ? validStyle : invalidStyle}
+                type="text"
+                value={address.address2}
+                placeholder="(Optional)"
+                onChange={(e: any) => cb('address2', e.target.value)}
+            />
 
-            <FormGroup>
-                <ControlLabel>City</ControlLabel>
-                <FormControl
-                    style={address.city.length >= minCity ? validStyle : invalidStyle}
-                    type="text"
-                    value={address.city}
-                    placeholder="City"
-                    onChange={(e: any) => cb('city', e.target.value)}
-                />
-            </FormGroup>
+            <h4 style={{marginBottom: 0}}>City</h4>
+            <input
+                style={address.city.length >= minCity ? validStyle : invalidStyle}
+                type="text"
+                value={address.city}
+                placeholder="City"
+                onChange={(e: any) => cb('city', e.target.value)}
+            />
 
-            <FormGroup>
-                <ControlLabel>State</ControlLabel>
-                <FormControl
-                    style={address.state.length >= minState ? validStyle : invalidStyle}
-                    type="text"
-                    value={address.state}
-                    placeholder="State"
-                    onChange={(e: any) => cb('state', e.target.value)}
-                />
-            </FormGroup>
+            <h4 style={{marginBottom: 0}}>State</h4>
+            <input
+                style={address.state.length >= minState ? validStyle : invalidStyle}
+                type="text"
+                value={address.state}
+                placeholder="State"
+                onChange={(e: any) => cb('state', e.target.value)}
+            />
 
-            <FormGroup>
-                <ControlLabel>Postal (ZIP) code</ControlLabel>
-                <FormControl
-                    style={address.postal.length >= minPostal && address.postal.length <= maxPostal ? validStyle : invalidStyle}
-                    type="text"
-                    value={address.postal}
-                    placeholder="Postal code"
-                    onChange={(e: any) => cb('postal', e.target.value)}
-                />
-            </FormGroup>
+            <h4 style={{marginBottom: 0}}>Postal (ZIP) code</h4>
+            <input
+                style={address.postal.length >= minPostal && address.postal.length <= maxPostal ? validStyle : invalidStyle}
+                type="text"
+                value={address.postal}
+                placeholder="Postal code"
+                onChange={(e: any) => cb('postal', e.target.value)}
+            />
 
-            <FormGroup>
-                <ControlLabel>Phone number</ControlLabel>
-                <FormControl
-                    style={address.phone.length >=minPhone &&
-                    address.phone.length <= maxPhone ? validStyle : invalidStyle}
-                    type="text"
-                    value={address.phone}
-                    placeholder="Phone number"
-                    onChange={(e: any) => cb('phone', e.target.value)}
-                />
-            </FormGroup>
-        </Form>
+            <h4 style={{marginBottom: 0}}>Phone number</h4>
+            <input
+                style={address.phone.length >=minPhone &&
+                address.phone.length <= maxPhone ? validStyle : invalidStyle}
+                type="text"
+                value={address.phone}
+                placeholder="Phone number"
+                onChange={(e: any) => cb('phone', e.target.value)}
+            />
+        </form>
     )
 }
 
@@ -237,46 +225,33 @@ class _CardForm extends React.Component<any, any> {
 
     render() {
         return (
-            <Form
+            <form
                 style={{marginTop: 60}}
                 onSubmit={this.handleSubmit as any}>
-                <h4 style={{marginBottom: 20}}>
+                <h3 style={{marginBottom: 20}}>
                     Payment, processed by <a href={'https://stripe.com'}>Stripe</a>
-                </h4>
+                </h3>
                 <p>We don't collect or store your card information, and it's removed once you leave this page. <a
                     href={'https://stripe.com/docs/security/stripe'}>Details about security</a></p>
-                <FormGroup>
-                    <ControlLabel>Card details</ControlLabel>
-                    <div style={{
-                        display: 'block',
-                        padding: '6px 12px',
-                        border: '1px solid',
-                        borderColor: this.state.cardValid ? 'green' : '#b4677e',
-                        borderRadius: 4,
-                        height: 34,
-                        fontSize: 14,
-                        lineHeight: 1.4286,
-                        color: '#555',
 
-                    }}>
-                        <CardElement
-                            style={inputStyle}
-                            onChange={(e) => {
-                                this.setValid(e.complete && e.error === undefined)
-                            }}
-                            {...cardOptions()}
+                <h4 style={{marginBottom: 0}}>Card details</h4>
+                <div className='card' style={{margin: 'auto'}}>
+                    <CardElement
+                        onChange={(e) => {
+                            this.setValid(e.complete && e.error === undefined)
+                        }}
+                        {...cardOptions()}
 
-                        />
-                    </div>
-                    {
-                        this.props.addressValid && this.state.cardValid && !this.props.processing ?
-                            <div
-                                style={{...util.primaryStyle, marginTop: 30}}
-                                onClick={(e: any) => this.handleSubmit(e)}
-                            >Place Order</div> : null
-                    }
-                </FormGroup>
-            </Form>
+                    />
+                </div>
+                {
+                    this.props.addressValid && this.state.cardValid && !this.props.processing ?
+                        <div
+                            style={{...util.primaryStyle, marginTop: 30}}
+                            onClick={(e: any) => this.handleSubmit(e)}
+                        >Place Order</div> : null
+                }
+            </form>
         );
     }
 }
@@ -340,15 +315,17 @@ class Checkout extends React.Component<CheckoutProps, CheckoutState> {
             <div style={{margin: '0px auto', maxWidth: 800, boxSizing: 'border-box', padding: '0 5px'}}>
                 <AddressForm address={this.props.address} cb={this.props.addressCb}/>
 
-                <Elements>
-                    <CardForm
-                        fontSize={elementFontSize}
-                        addressValid={addressValid}
-                        processing={this.state.processing}
-                        orderCb={this.props.orderCb}
-                        processingCb={this.setProcessing}
-                    />
-                </Elements>
+                <StripeProvider apiKey="pk_test_hf9oqK2GfiqI8ZII7cadPM3W">
+                    <Elements>
+                        <CardForm
+                            fontSize={elementFontSize}
+                            addressValid={addressValid}
+                            processing={this.state.processing}
+                            orderCb={this.props.orderCb}
+                            processingCb={this.setProcessing}
+                        />
+                    </Elements>
+                </StripeProvider>
 
                 {this.state.processing ? <h4>Processing your order...</h4> : null}
             </div>
@@ -359,36 +336,45 @@ class Checkout extends React.Component<CheckoutProps, CheckoutState> {
 export default ({blend, size, price, shippingPrice, address, orderCb, addressCb}:
                     {blend: Blend, size: number, price: number, shippingPrice: number,
                         address: Address, orderCb: Function, addressCb: Function}) => (
-    <div>
-        <h2 style={{textAlign: 'center'}}>Your order summary</h2>
+    <div
+        style={{
+            display: 'grid',
+            gridTemplateRows: '60px 180px auto',
+            gridTemplateColumns: '1fm 1fm',
+            gridTemplateAreas: '"title title" "topleft topright" "form form"',
+            alignItems: 'center',
+            justifyItems: 'center',
+            marginBottom: 60
+        }}
+    >
+        <div style={{gridArea: 'title'}}>
+            <h2 style={{textAlign: 'center'}}>Your order summary</h2>
 
-        <div style={{
-            marginTop: 50,
-            fontFamily: 'Georgia',
-            background: '#c9d1e7',
-
-        }}>
-            <h3 style={{textAlign: 'center'}}>{blend.title}</h3>
-            <p style={{textAlign: 'center'}}>{blend.description}</p>
+            <div style={{
+                marginTop: 50,
+                background: '#c9d1e7',
+            }}>
+                <h3 style={{textAlign: 'center'}}>{blend.title}</h3>
+                <p style={{textAlign: 'center'}}>{blend.description}</p>
+            </div>
         </div>
 
-        <Row style={{marginBottom: 60}}>
-            <Col xs={6}>
-                <YourBlend blend={blend} />
-            </Col>
+        <div style={{gridArea: 'topleft'}}>
+            <YourBlend blend={blend} />
+        </div>
 
-            <Col xs={6}>
-                <h4 style={{textAlign: 'left'}}>Size: {size + " grams"}</h4>
-                <h4 style={{textAlign: 'left'}}>Price: {"$" + util.priceDisplay(price) + " + $" +
-                util.priceDisplay(shippingPrice) + " shipping"}</h4>
-                <h4 style={{textAlign: 'left'}}>{"Total: $" + util.priceDisplay(price + shippingPrice)}</h4>
-            </Col>
-        </Row>
+        <div style={{gridArea: 'topright'}}>
+            <h4 style={{textAlign: 'left'}}>Size: {size + " grams"}</h4>
+            <h4 style={{textAlign: 'left'}}>Price: {"$" + util.priceDisplay(price) + " + $" +
+            util.priceDisplay(shippingPrice) + " shipping"}</h4>
+            <h4 style={{textAlign: 'left'}}>{"Total: $" + util.priceDisplay(price + shippingPrice)}</h4>
+        </div>
 
-        <StripeProvider apiKey="pk_test_hf9oqK2GfiqI8ZII7cadPM3W">
+        <div style={{gridArea: 'form', textAlign: 'center'}}>
+
             <Checkout address={address} orderCb={orderCb} addressCb={addressCb} />
-        </StripeProvider>
 
+        </div>
     </div>
 )
 

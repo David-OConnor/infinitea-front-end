@@ -2,9 +2,10 @@ import * as React from "react";
 import { Ingredient } from "./types";
 interface FlavorProps {
     ingredients: Ingredient[];
+    selection: Map<number, boolean>;
+    selectionCb: Function;
 }
 interface FlavorState {
-    flavorsSelected: Map<number, boolean>;
     ingRecs: [number, number][];
 }
 export default class _ extends React.Component<FlavorProps, FlavorState> {

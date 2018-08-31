@@ -1,6 +1,8 @@
 import * as React from "react";
 import * as util from "./util";
 import {Ingredient} from "./types";
+import {Col, Row} from "react-bootstrap";
+
 
 function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [number, number][] {
     const targetNumIngreds = 5
@@ -93,10 +95,11 @@ const FlavorCard = ({index, name, selected, toggleCb}:
 
 interface FlavorProps {
     ingredients: Ingredient[]
+    selection: Map<number, boolean>
+    selectionCb: Function
 }
 
 interface FlavorState {
-    flavorsSelected: Map<number, boolean>
     ingRecs: [number, number][]  // like ingSelection in Main
 }
 
@@ -105,7 +108,6 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
         super(props)
 
         this.state = {
-            flavorsSelected: new Map(),
             ingRecs: []
         }
 
@@ -113,9 +115,9 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
     }
 
     toggleFlavor(flavor: number) {
-        let newSelection = this.state.flavorsSelected
+        let newSelection = this.props.selection
         newSelection.set(flavor, !newSelection.get(flavor))
-        this.setState({flavorsSelected: newSelection})
+        this.props.selectionCb(newSelection)
     }
 
     render() {
@@ -128,7 +130,7 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
         flavors.set(3, 'Chocolate 🍫')
         flavors.set(4, 'Tart 🍒')
         flavors.set(5, 'Minty 🌿')
-        flavors.set(6, 'Savory')
+        flavors.set(6, 'Savory 🥓')
         flavors.set(8, 'Floral 🌺')
 
         // Not sure why this isn't working directly in the return portion.
@@ -138,18 +140,22 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
                 key={i}
                 index={i}
                 name={name}
-                selected={this.state.flavorsSelected.get(i)}
+                selected={this.props.selection.get(i)}
                 toggleCb={() => this.toggleFlavor(i)}
             />)
         )
 
         return (
             <div>
-                {items}
+                <h4 style={{textAlign: 'center', marginBottom: 40}}>We'll build a tea from your choices</h4>
+
+                <div style={{display: 'flex', flexFlow: 'row wrap'}}>
+                    {items}
+                </div>
                 <div
-                    style={util.primaryStyle}
+                    style={{...util.primaryStyle, marginTop: 40}}
                     onClick={() => this.setState({ingRecs: recommend(
-                            this.state.flavorsSelected, this.props.ingredients
+                            this.props.selection, this.props.ingredients
                         )})}
                 >Create my tea ⇒</div>
             </div>

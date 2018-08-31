@@ -19,7 +19,7 @@ export const BASE_URL = ON_HEROKU ? 'https://infinitea.herokuapp.com/api/' :
 // for back/fwd, but bookmarking and refreshing always effectively point to the base url.
 export const indexUrl = window.location.pathname + '#/'
 
-export const mainOpacity = 0.85
+export const mainOpacity = 0.9
 
 
 export function calcPrice(blend: Blend, size: number): number {
@@ -66,7 +66,7 @@ export const buttonStyle = {
     // verticalAlign: 'middle',
     color: 'black',
     fontFamily: '"Lucida Sans Unicode"',
-    fontSize: '1.2em',
+    fontSize: '1em',
 }
 export const primaryStyle = {
     ...buttonStyle,

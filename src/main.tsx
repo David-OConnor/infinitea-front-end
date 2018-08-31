@@ -1,8 +1,7 @@
 import axios from "axios"
 import * as React from 'react'
 import * as ReactDOM from "react-dom"
-import {Button, Grid, Row, Col, ControlLabel,
-    Form, FormGroup, FormControl, Image, OverlayTrigger, Panel, Popover} from 'react-bootstrap'
+import {Button, OverlayTrigger, Panel, Popover} from 'react-bootstrap'
 import { BrowserRouter as Router, Route } from "react-router-dom"
 import 'rheostat/initialize'
 import Rheostat from 'rheostat'
@@ -90,7 +89,6 @@ const Heading = ({set}: {set: Function}) => (
     <Route render={({history}) => (
         <div style={{
             textAlign: 'center',
-            fontFamily: '"Georgia", "times"',
         }}>
             <h1
                 style={{cursor: 'pointer'}}
@@ -115,13 +113,13 @@ const IngredientCard = ({ingredient, val, selectCb}:
 
     let organicTag = null
     if (ingredient.organic === 1) {
-        organicTag = <h5>USDA certified organic</h5>
+        organicTag = <h4>USDA certified organic</h4>
     } else if (ingredient.organic === 2) {
-        organicTag = <h5>Organic</h5>
+        organicTag = <h4>Organic</h4>
     }
 
     const popover = <Popover
-        style={{minWidth:  popoverWidth + 40}}
+        style={{width:  popoverWidth + 40}}
         id="0"  // Not sure what this does.
         placement="left"  // Appears to be overridden by the trigger.
         title={ingredient.name}
@@ -133,50 +131,50 @@ const IngredientCard = ({ingredient, val, selectCb}:
     </Popover>
 
     const selectedColor = '#3330ab'
-    let style = {cursor: 'pointer', borderWidth: "5px", borderColor: selectedColor}
+    let style = {
+        cursor: 'pointer',
+        borderWidth: "5px",
+        borderColor: selectedColor,
+        borderRadius: '50%'
+    }
+
     if (val > 0) {style['borderStyle'] = "solid"}
 
-    console.log()
-
     return (
-        <div style={{textAlign: 'center'}}>
-            <Col xs={4} md={3} lg={3}>
-                <h5 style={val > 0 ? {
-                        fontWeight: "bold",
-                        fontFamily: '"Lucida Sans Unicode"',
-                        color: selectedColor,
-                        height: '2em',
-                    } :
-                    {fontFamily: '"Lucida Sans Unicode"', height: '2em',}}>
-                    {ingredient.name}
-                </h5>
+        <div style={{textAlign: 'center', width: 160, padding: 20}}>
+            <h4 style={val > 0 ? {
+                    color: selectedColor,
+                    height: '2em',
+                } :
+                {height: '2em',}}>
+                {ingredient.name}
+            </h4>
 
-                <OverlayTrigger trigger={['hover', 'focus']} placement="bottom" overlay={popover}>
-                    <Image src={imgSrc}
-                           style={style}
-                           width={64} height={64} circle
-                    />
-                </OverlayTrigger>
-                {/*  textAlign left or slider will be in the wrong place. */}
-                <div style={{marginTop: 30, marginBottom: 30, textAlign: 'left'}}>
-                    <Rheostat
-                        min={0}
-                        max={100}
-                        values={[val]}
-                        onChange={(e: any) => selectCb(e.values[0])}
-                    />
-                </div>
-            </Col>
+            <OverlayTrigger trigger={['hover', 'focus']} placement="bottom" overlay={popover}>
+                <img src={imgSrc}
+                      style={style}
+                      width={64} height={64}
+                />
+            </OverlayTrigger>
+            {/*  textAlign left or slider will be in the wrong place. */}
+            <div style={{marginTop: 30, marginBottom: 0, textAlign: 'left', cursor: 'pointer'}}>
+                <Rheostat
+                    min={0}
+                    max={100}
+                    values={[val]}
+                    onChange={(e: any) => selectCb(e.values[0])}
+                />
+            </div>
         </div>
     )
 }
 
-const BlendDisplay = ({ingredients, ingSelection}:
-                          {ingredients: Ingredient[], ingSelection: Map<number, number>}) => (
-    <div>
-
-    </div>
-)
+// const BlendDisplay = ({ingredients, ingSelection}:
+//                           {ingredients: Ingredient[], ingSelection: Map<number, number>}) => (
+//     <div>
+//
+//     </div>
+// )
 
 const Picker = ({ingredients, blend, ingSelection, selectCb, titleCb, descriptionCb}:
                     {ingredients: Ingredient[], blend: Blend, ingSelection: Map<number, number>
@@ -191,70 +189,57 @@ const Picker = ({ingredients, blend, ingSelection, selectCb, titleCb, descriptio
         "Pick an ingredient to get started"
 
     return (
-        <div>
-            <Row style={{marginBottom: 0}}>
-                <Col xs={12}>
-                    {/* Ensure the height's large enough to prevent the line changing
+        <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fm',
+            gridTemplateRows: '50px auto 250px',
+            gridTemplateAreas: '"instructions" "ingredients" "title"',
+            justifyItems: 'center',
+            alignItems: 'center'
+        }}>
+
+            <div style={{gridArea: 'instructions'}}>
+                {/* Ensure the height's large enough to prevent the line changing
                      sizes or overlapping text when many ingredients are selected. */}
-                    <h4 style={{textAlign: 'center', height: util.onMobile() ? '5em' : '3em'}}>
-                        {blendText}
-                    </h4>
-                    {/*<h4 style={{textAlign: 'center', height: '3em'}}>{blendText}</h4>*/}
-                </Col>
-            </Row>
+                <h4 style={{textAlign: 'center', height: util.onMobile() ? '5em' : '3em'}}>
+                    {blendText}
+                </h4>
+            </div>
 
-            <Row>
-                <Col xs={12}>
-                    {ingredients.map(ing => <IngredientCard
-                        key={ing.id}
-                        ingredient={ing}
-                        // TS bug where includes is rejected.
-                        val={ingSelection.get(ing.id)}
-                        selectCb={(val: number) => selectCb(ing.id, val)}
-                    />)}
-                </Col>
-            </Row>
+            <div style={{gridArea: 'ingredients', display: 'flex', flexWrap: 'wrap'}}>
+                {ingredients.map(ing => <IngredientCard
+                    key={ing.id}
+                    ingredient={ing}
+                    // TS bug where includes is rejected.
+                    val={ingSelection.get(ing.id)}
+                    selectCb={(val: number) => selectCb(ing.id, val)}
+                />)}
+            </div>
 
-            <Row>
-                <Col xs={12}>
-                    <BlendDisplay ingredients={ingredients} ingSelection={ingSelection}/>
-                </Col>
-            </Row>
+            {/*<BlendDisplay ingredients={ingredients} ingSelection={ingSelection}/>*/}
 
+            <div style={{gridArea: 'title', margin: 'auto', textAlign: 'center'}}>
+                <form>
+                        <h4>Title</h4>
+                        <input
+                            type="text"
+                            value={blend.title}
+                            placeholder="Serious? Fun?"
+                            onChange={(e: any) => titleCb(e.target.value)}
+                        />
 
+                        <h4>Description</h4>
+                        <input
+                            type="text"
+                            value={blend.description}
+                            // Random description.
+                            placeholder={description}
+                            onChange={(e: any) => descriptionCb(e.target.value)}
+                        />
+                </form>
 
-            <Row style={{marginTop: 30}}>
-                <Col xs={10} xsOffset={1}>
-                    <Form>
-                        <FormGroup>
-                            <ControlLabel>Title</ControlLabel>
-                            <FormControl
-                                type="text"
-                                value={blend.title}
-                                placeholder="Serious? Fun?"
-                                onChange={(e: any) => titleCb(e.target.value)}
-                            />
-                        </FormGroup>
-
-                        <FormGroup>
-                            <ControlLabel>Description</ControlLabel>
-                            <FormControl
-                                type="text"
-                                value={blend.description}
-                                // Random description.
-                                placeholder={description}
-                                onChange={(e: any) => descriptionCb(e.target.value)}
-                            />
-                        </FormGroup>
-                    </Form>
-                </Col>
-            </Row>
-
-            <Row>
-                <Col xs={12}>
-                    <h5 style={{textAlign: 'center'}}>More ingredients coming soon!</h5>
-                </Col>
-            </Row>
+                <h4 style={{textAlign: 'center'}}>More ingredients coming soon!</h4>
+            </div>
 
         </div>
     )
@@ -271,41 +256,47 @@ const YourBlend = ({blend}: {blend: Blend}) => (
     </div>
 )
 
-const OrderDetails = ({sizeSelected, blend, sizeCb}:
-                          {sizeSelected: number, blend: Blend, sizeCb: Function}) => (
+const OrderDetails = ({sizeSelected, blend, title, description, sizeCb}:
+                          {sizeSelected: number, blend: Blend,
+                              title: string, description: string, sizeCb: Function}) => (
     // For selecting amount etc.
-    <div>
-        <Col xs={12}>
-            <img src={'./images/bag.png'}
-                 style={{'display': 'flex', 'margin': 'auto'}}
+    <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        margin: 'auto',
+    }}>
+        {/* Overlay the title over the image.*/}
+        <div style={{display: 'flex', position: 'relative', margin: 'auto', textAlign: 'center'}}>
+            <img src={'./images/bag.jpg'}
+                 style={{'display': 'flex', margin: 'auto', width: 240}}
             />
+            <h4 style={{position: 'absolute', top: 50, left: 20, width: 130, fontSize: 8}}>{title}</h4>
+            <p style={{position: 'absolute', top: 80, left: 20, width: 130, fontSize: 6, fontStyle: 'italic'}}>{description}</p>
+        </div>
 
-            <YourBlend blend={blend} />
+        <YourBlend blend={blend} />
 
-            <Panel bsStyle={sizeSelected === 50 ? 'primary' : 'default'}
-                   style={{'cursor': 'pointer', 'backgroundColor': sizeSelected === 50 ? '#bccddd': 'white'}}
-                   onClick={() => sizeCb(50)}>
-                <Panel.Body>{'50 grams (~1.8 oz): $' +  util.priceDisplay(util.calcPrice(blend, 50))}</Panel.Body>
-            </Panel>
+        <Panel bsStyle={sizeSelected === 50 ? 'primary' : 'default'}
+               style={{'cursor': 'pointer', 'backgroundColor': sizeSelected === 50 ? '#bccddd': 'white'}}
+               onClick={() => sizeCb(50)}>
+            <Panel.Body>{'50 grams (~1.8 oz): $' +  util.priceDisplay(util.calcPrice(blend, 50))}</Panel.Body>
+        </Panel>
 
-            <Panel bsStyle={sizeSelected === 100 ? 'primary' : 'default'}
-                   style={{'cursor': 'pointer', 'backgroundColor': sizeSelected === 100 ? '#bccddd': 'white'}}
-                   onClick={() => sizeCb(100)}>
-                <Panel.Body>{'100 grams (~3.5 oz): $' +  util.priceDisplay(util.calcPrice(blend, 100))}</Panel.Body>
-            </Panel>
+        <Panel bsStyle={sizeSelected === 100 ? 'primary' : 'default'}
+               style={{'cursor': 'pointer', 'backgroundColor': sizeSelected === 100 ? '#bccddd': 'white'}}
+               onClick={() => sizeCb(100)}>
+            <Panel.Body>{'100 grams (~3.5 oz): $' +  util.priceDisplay(util.calcPrice(blend, 100))}</Panel.Body>
+        </Panel>
 
-            <Panel bsStyle={sizeSelected === 200 ? 'primary' : 'default'}
-                   style={{'cursor': 'pointer', 'backgroundColor': sizeSelected === 200 ? '#bccddd': 'white'}}
-                   onClick={() => sizeCb(200)}>
-                <Panel.Body>{'200 grams (~7 oz): $' +  util.priceDisplay(util.calcPrice(blend, 200))}</Panel.Body>
-            </Panel>
+        <Panel bsStyle={sizeSelected === 200 ? 'primary' : 'default'}
+               style={{'cursor': 'pointer', 'backgroundColor': sizeSelected === 200 ? '#bccddd': 'white'}}
+               onClick={() => sizeCb(200)}>
+            <Panel.Body>{'200 grams (~7 oz): $' +  util.priceDisplay(util.calcPrice(blend, 200))}</Panel.Body>
+        </Panel>
 
-            <div style={{marginTop: 60}}>
-                <h5>{"Flat-rate shipping: $" + util.priceDisplay(shippingPrice)}, via USPS Priority Mail</h5>
-            </div>
-
-        </Col>
-
+        <div style={{marginTop: 60}}>
+            <h4>{"Flat-rate shipping: $" + util.priceDisplay(shippingPrice)}, via USPS Priority Mail</h4>
+        </div>
     </div>
 )
 
@@ -324,9 +315,6 @@ const OrderFailed = () => (
     </div>
 )
 
-
-
-
 const DispButton = ({text, route, subPage, primary, set}: {text: string, route: string,
     subPage: number, primary: boolean, set: Function}) => (
     <Route render={({history}) => (
@@ -341,33 +329,24 @@ const DispButton = ({text, route, subPage, primary, set}: {text: string, route: 
 )
 
 const Start = ({setPage}: {setPage: Function}) => (
-    <div style={{height: 400}}>
-        <Col xs={6} style={{margin: 0, padding: 0, textAlign: 'center'}}>
-            <div style={{
-                verticalAlign: 'middle',
-                lineHeight: 400,
-                cursor: 'pointer',
-                margin: 0,
-                padding: 50,
-                background: '#cfeaf6',
-                height: 400,
-            }}
-                 onClick={() => setPage(5)}>
-                <h3>Pick flavors - we'll find ingredients to match</h3>
-            </div>
-        </Col>
-        <Col xs={6} style={{margin: 0, padding: 0, textAlign: 'center'}}>
-            <div style={{
-                cursor: 'pointer',
-                margin: 0,
-                padding: 50,
-                background: '#ffd5cd',
-                height: 400,
-            }}
-                 onClick={() => setPage(0)}>
-                <h3>Create it yourself, exactly how you like</h3>
-            </div>
-        </Col>
+    <div style={{display: 'flex', height: 300, textAlign: 'center'}}>
+        <div style={{
+            padding: '100px 30px',
+            cursor: 'pointer',
+            background: '#cfeaf6',
+        }}
+             onClick={() => setPage(5)}>
+            <h3>Pick flavors - we'll find ingredients to match</h3>
+        </div>
+
+        <div style={{
+            padding: '100px 30px',
+            cursor: 'pointer',
+            background: '#ffd5cd',
+        }}
+             onClick={() => setPage(0)}>
+            <h3>Create it yourself, exactly how you like</h3>
+        </div>
     </div>
 )
 
@@ -382,6 +361,8 @@ interface MainState {
     ingredients: Ingredient[]  // All ingredients, passed from the DB.
 
     ingSelection: Map<number, number> // <ingredient id, amount selected>
+    flavorSelection: Map<number, boolean>
+
     sizeSelected: number
     title: string
     description: string
@@ -399,6 +380,7 @@ class Main extends React.Component<MainProps, MainState> {
             ingredients: [],
 
             ingSelection: new Map(),
+            flavorSelection: new Map(),
             title: "",
             description: "",
             sizeSelected: 50,
@@ -537,6 +519,8 @@ class Main extends React.Component<MainProps, MainState> {
             mainDisplay = <OrderDetails
                 sizeSelected={this.state.sizeSelected}
                 blend={blend}
+                title={this.state.title}
+                description={this.state.description}
                 sizeCb={(size: number) => this.set('sizeSelected', size)}
             />
             nextDisplayButtons = (
@@ -599,18 +583,20 @@ class Main extends React.Component<MainProps, MainState> {
         }
 
         else if (this.state.subPage === 5)  {
-            mainDisplay = <FlavorPicker ingredients={this.state.ingredients}/>
+            mainDisplay = <FlavorPicker
+                ingredients={this.state.ingredients}
+                selection={this.state.flavorSelection}
+                selectionCb={(sel: Map<number, boolean>) => this.setState({flavorSelection: sel})}
+            />
             // Keep the same buttons as the ingredient picker, set by default above.
         }
 
         else if (this.state.subPage === 6)  {
             mainDisplay = <Start setPage={(page: number) => this.set('subPage', page)}/>
             nextDisplayButtons = null
-        }
+        } else if (this.state.subPage > 6) { console.log("Invalid subpage set") }
 
-        else if (this.state.subPage > 6) { console.log("Invalid subpage set") }
-
-        let display = mainDisplay
+         let display = mainDisplay
         if (this.state.page === 1) {
             display = <About />
         } else if (this.state.page === 2) {
@@ -620,36 +606,50 @@ class Main extends React.Component<MainProps, MainState> {
         }
 
         return (
+            <Router>
+                <div style={{
+                    display: 'grid',
+                    width: '80%',
+                    margin: 'auto',
+                    gridTemplateColumns: '1fm',
+                    gridTemplateRows: '130px 40px auto 40px 300px',
+                    gridTemplateAreas: '"header" "menu" "content" "menu2" "footer"',
+                    // gridGap: 20
+                }}>
+                    <div style={{gridArea: 'header'}}>
+                        <Heading set={this.set} />
+                    </div>
 
-            <Grid>
-                <Router>
-                    <Row>
-                        <Col xs={12} md={10} lg={10} mdOffset={1} lgOffset={1}>
-                            <Heading set={this.set} />
-                            <Menu page={this.state.page}
-                                  subPage={this.state.subPage}
-                                  flavorMode={this.state.flavorMode}
-                                  setPage={(page: number) => this.set('page', page)}
-                                  setSubPage={(page: number) => this.set('subPage', page)} />
+                    <div style={{gridArea: 'menu'}}>
+                        <Menu page={this.state.page}
+                              subPage={this.state.subPage}
+                              flavorMode={this.state.flavorMode}
+                              setPage={(page: number) => this.set('page', page)}
+                              setSubPage={(page: number) => this.set('subPage', page)}
+                        />
+                    </div>
 
-                            <div style={{background: 'white', opacity: util.mainOpacity, border: "0px solid black", padding: 40}}>
-                                <Row>
-                                    <Col xs={12}>{display}</Col>
-                                </Row>
-                            </div>
+                    <div style={{
+                        gridArea: 'content',
+                        background: 'white',
+                        opacity: util.mainOpacity,
+                        justifySelf: this.state.subPage === 6? 'center': 'stretch',
+                        border: "0px solid black",
+                        padding: 40
+                    }}>
+                        {display}
+                    </div>
 
-                            {this.state.page === 0 ? (
-                                <Row style={{marginTop: 20}}>
-                                    <Col xs={12} style={{'display': 'flex', 'margin': 'auto'}}>
-                                        {nextDisplayButtons}
-                                    </Col>
-                                </Row>
-                            ) : null }
-                            <Footer setPage={(page: number) => this.set('subPage', page)} />
-                        </Col>
-                    </Row>
-                </Router>
-            </Grid>
+                    <div style={{gridArea: 'menu2'}}>
+                        {this.state.page === 0 ? nextDisplayButtons : null }
+                    </div>
+
+                    <div style={{gridArea: 'footer'}}>
+                        <Footer setPage={(page: number) => this.set('page', page)} />
+                    </div>
+
+                </div>
+            </Router>
 
         )
     }

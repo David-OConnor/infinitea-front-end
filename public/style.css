@@ -1,0 +1,99 @@
+body {
+    background-size: 100%;
+    background-color: #cecece;
+    background: url("../images/background.jpg") no-repeat top center;
+
+
+    font-family: 'Karla', sans-serif;
+}
+
+#toSetBgOpacity {
+    /*position: relative;*/
+
+    /*opacity: .4;*/
+    /*z-index: 99;*/
+}
+
+h1 {
+    font-family: 'Karla', sans-serif;
+}
+
+h2 {
+    font-family: 'Karla', sans-serif;
+}
+
+h3 {
+    font-weight: normal;
+    font-family: 'Karla', sans-serif;
+}
+
+h4 {
+    font-weight: normal;
+    font-family: 'Karla', sans-serif;
+}
+
+/*h2 {*/
+    /*font-family: times, Georgia, Verdana, Helvetica, sans-serif;*/
+/*}*/
+/*h3 {*/
+    /*font-family: times, Georgia, Verdana, Helvetica, sans-serif;*/
+/*}*/
+
+/*@media (min-width: 0px) {*/
+    /*body {*/
+        /*background-image: url("../images/background-portrait.jpg");*/
+    /*}*/
+/*}*/
+
+/*@media (min-width: 800px) {*/
+    /*body {*/
+        /*background-image: url("../images/background.jpg");*/
+    /*}*/
+/*}*/
+
+/*span {*/
+    /*font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif*/
+/*}*/
+
+/*div {*/
+    /*font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif*/
+/*}*/
+
+input {
+    padding: 5px 12px;
+    height: 2em;
+    margin-left: 30px;
+    margin-right: 30px;
+    border: 1px solid black;
+    width: 400px;
+}
+
+textarea {
+    padding: 5px 12px;
+    height: 2em;
+    margin-left: 30px;
+    margin-right: 30px;
+    border: 1px solid black;
+    width: 400px;
+}
+
+.card {
+    padding: 5px 12px;
+    height: 2em;
+    margin-left: 30px;
+    margin-right: 30px;
+    border: 1px solid black;
+    width: 400px;
+}
+
+select {
+    padding: 5px 12px;
+    height: 2em;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+button {
+    /* Required for rheostat.*/
+    cursor: pointer;
+}
