@@ -1,3 +1,5 @@
+import * as React from 'react'
+
 import {Blend} from "./types"
 
 
@@ -59,8 +61,7 @@ export const buttonStyle = {
     width: 200,
 
     margin: 'auto',
-    paddingTop: 6,
-    display: 'block',
+    paddingTop: 9,
     // lineHeight: 40,
     textAlign: 'center' as any,  // wtf?
     // verticalAlign: 'middle',
@@ -74,7 +75,7 @@ export const primaryStyle = {
     fontWeight: 600
 }
 
-export const onMobile = () => window.innerWidth < 450
+export const onMobile = () => window.innerWidth < 650
 
 export function randInt(min: number, max: number) {
     return Math.floor(Math.random() * (max + 1 - min) + min)
@@ -83,3 +84,46 @@ export function randInt(min: number, max: number) {
 export function randChoice(items: any[]) {
     return items[Math.floor(Math.random() * items.length)]
 }
+
+const descriptions = [
+    "Definitely an aphrodisiac - I'm not teasing!",
+    "Orange you glad I contain chocolate?",
+    "Drink me",
+    "It's always tea time",
+    "Would you like an adventure now, or shall we have our tea first?",
+    "Made of star stuff",
+]
+
+// Generate it here, so the same value persists until the page is refreshed.
+const description2 = descriptions[Math.floor(Math.random()*descriptions.length)]
+
+export const TitleForm = ({title, descrip, titleCb, descripCb}:
+                       {title: string, descrip: string, titleCb: Function, descripCb: Function}) => (
+    <div style={{
+        gridArea: 'title',
+        margin: 'auto',
+        textAlign: 'center'
+    }}>
+        <form>
+            <h4>Title</h4>
+            <input
+                type="text"
+                value={title}
+                placeholder="Serious? Fun?"
+                onChange={(e: any) => titleCb(e.target.value)}
+            />
+
+            <h4>Description</h4>
+            <input
+                type="text"
+                value={descrip}
+                // Random description.
+                placeholder={description2}
+                onChange={(e: any) => descripCb(e.target.value)}
+            />
+        </form>
+
+        <h4 style={{textAlign: 'center'}}>More ingredients coming
+            soon!</h4>
+    </div>
+)

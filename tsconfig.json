@@ -3,7 +3,7 @@
     "baseUrl": ".",
     "outDir": "./build",
     "module": "esnext",
-    "target": "es6",
+    "target": "esnext",
     "sourceMap": true,
     "jsx": "react",
     "moduleResolution": "node",

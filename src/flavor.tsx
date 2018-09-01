@@ -1,7 +1,8 @@
 import * as React from "react";
+import {Route} from "react-router-dom"
+
 import * as util from "./util";
 import {Ingredient} from "./types";
-import {Col, Row} from "react-bootstrap";
 
 
 function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [number, number][] {
@@ -19,9 +20,10 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
     for (let flavor of selectedArr) {
         suitableIngs = []
         for (let ing of ingredients) {
+            // This must sync up with the buttons.
             switch(flavor) {
                 case 0:
-                    val = ing.sweet
+                    val = ing.caffeine
                     break;
                 case 1:
                     val = ing.citrus
@@ -33,16 +35,16 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
                     val = ing.chocolate
                     break;
                 case 4:
-                    val = ing.minty
+                    val = ing.tart
                     break;
                 case 5:
-                    val = ing.savory
+                    val = ing.minty
                     break;
                 case 6:
-                    val = ing.astringent
+                    val = ing.savory
                     break;
                 case 7:
-                    val = ing.spicy
+                    val = ing.sweet
                     break;
                 case 8:
                     val = ing.floral
@@ -68,8 +70,16 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
         }
     }
 
-    return result.map(i => [i.id, 1] as any)
-    // todo dedupe
+    let deduped: Ingredient[] = []
+    for (let ing of result) {
+        if (!deduped.map(i => i.id).includes(ing.id)) {
+            deduped.push(ing)
+        }
+    }
+
+    // Set the value to a 0-100 val so that the sliders under ingred selection
+    // make sense.
+    return deduped.map(i => [i.id, 50] as any)
 }
 
 const FlavorCard = ({index, name, selected, toggleCb}:
@@ -96,7 +106,14 @@ const FlavorCard = ({index, name, selected, toggleCb}:
 interface FlavorProps {
     ingredients: Ingredient[]
     selection: Map<number, boolean>
-    selectionCb: Function
+    flavSelCb: Function
+    ingSelCb: Function
+    subPageCb: Function
+
+    title: string
+    descrip: string
+    titleCb: Function
+    descripCb: Function
 }
 
 interface FlavorState {
@@ -104,6 +121,7 @@ interface FlavorState {
 }
 
 export default class _ extends React.Component<FlavorProps, FlavorState> {
+    // todo you can possibly convert to a func component
     constructor(props: FlavorProps) {
         super(props)
 
@@ -117,8 +135,9 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
     toggleFlavor(flavor: number) {
         let newSelection = this.props.selection
         newSelection.set(flavor, !newSelection.get(flavor))
-        this.props.selectionCb(newSelection)
+        this.props.flavSelCb(newSelection)
     }
+
 
     render() {
         // Reference models.py; could find a clever way to automatically set this.
@@ -130,7 +149,8 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
         flavors.set(3, 'Chocolate 🍫')
         flavors.set(4, 'Tart 🍒')
         flavors.set(5, 'Minty 🌿')
-        flavors.set(6, 'Savory 🥓')
+        // flavors.set(6, 'Savory 🥓')
+        flavors.set(6, 'Savory 🍄')
         flavors.set(8, 'Floral 🌺')
 
         // Not sure why this isn't working directly in the return portion.
@@ -145,19 +165,45 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
             />)
         )
 
+        // At least one flavor must be selected to make a blend.
+        let ready = false
+        this.props.selection.forEach(
+            (sel, i, map) => {
+                if (sel) {
+                    ready = true
+                }
+            }
+        )
+
         return (
             <div>
-                <h4 style={{textAlign: 'center', marginBottom: 40}}>We'll build a tea from your choices</h4>
+                <h4 style={{textAlign: 'center', marginBottom: 40}}>
+                    We'll build a blend from your choices
+                </h4>
 
                 <div style={{display: 'flex', flexFlow: 'row wrap'}}>
                     {items}
                 </div>
-                <div
+
+                <util.TitleForm title={this.props.title} descrip={this.props.descrip}
+                                titleCb={this.props.titleCb} descripCb={this.props.descripCb} />
+
+                {ready ?
+
+                    <Route render={({history}) => (
+                    <div
                     style={{...util.primaryStyle, marginTop: 40}}
-                    onClick={() => this.setState({ingRecs: recommend(
-                            this.props.selection, this.props.ingredients
-                        )})}
+                    onClick={() => {
+                        this.props.ingSelCb(
+                            recommend(this.props.selection, this.props.ingredients)
+                        )
+                        this.props.subPageCb(1)
+                        history.push(util.indexUrl + 'size')
+                    }}
                 >Create my tea ⇒</div>
+                        )} />
+
+                        : null }
             </div>
         )
     }

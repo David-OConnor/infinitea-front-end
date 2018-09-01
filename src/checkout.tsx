@@ -29,7 +29,7 @@ const maxPhone = 15
 // todo duped from main!
 const YourBlend = ({blend}: {blend: Blend}) => (
     <div>
-        <h4>Your blend</h4>
+        <h3>Your blend</h3>
         <ul>
             {blend.ingredients.map(ing => <li key={ing[0].id}>
                 {ing[0].name + ' ' + util.ingPortion(blend, ing[1]) + '%'}
@@ -339,7 +339,7 @@ export default ({blend, size, price, shippingPrice, address, orderCb, addressCb}
     <div
         style={{
             display: 'grid',
-            gridTemplateRows: '60px 180px auto',
+            gridTemplateRows: 'auto 180px auto',
             gridTemplateColumns: '1fm 1fm',
             gridTemplateAreas: '"title title" "topleft topright" "form form"',
             alignItems: 'center',
@@ -347,15 +347,12 @@ export default ({blend, size, price, shippingPrice, address, orderCb, addressCb}
             marginBottom: 60
         }}
     >
-        <div style={{gridArea: 'title'}}>
+        <div style={{gridArea: 'title', display: 'flex', flexDirection: 'column'}}>
             <h2 style={{textAlign: 'center'}}>Your order summary</h2>
 
-            <div style={{
-                marginTop: 50,
-                background: '#c9d1e7',
-            }}>
-                <h3 style={{textAlign: 'center'}}>{blend.title}</h3>
-                <p style={{textAlign: 'center'}}>{blend.description}</p>
+            <div>
+                <h2 style={{textAlign: 'center'}}>{blend.title}</h2>
+                <p style={{textAlign: 'center', fontStyle: 'italic'}}>{blend.description}</p>
             </div>
         </div>
 

@@ -3,7 +3,13 @@ import { Ingredient } from "./types";
 interface FlavorProps {
     ingredients: Ingredient[];
     selection: Map<number, boolean>;
-    selectionCb: Function;
+    flavSelCb: Function;
+    ingSelCb: Function;
+    subPageCb: Function;
+    title: string;
+    descrip: string;
+    titleCb: Function;
+    descripCb: Function;
 }
 interface FlavorState {
     ingRecs: [number, number][];

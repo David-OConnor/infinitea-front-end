@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { Blend } from "./types";
 export declare const BASE_URL: string;
 export declare const indexUrl: string;
@@ -12,7 +13,6 @@ export declare const buttonStyle: {
     width: number;
     margin: string;
     paddingTop: number;
-    display: string;
     textAlign: any;
     color: string;
     fontFamily: string;
@@ -26,7 +26,6 @@ export declare const primaryStyle: {
     width: number;
     margin: string;
     paddingTop: number;
-    display: string;
     textAlign: any;
     color: string;
     fontFamily: string;
@@ -35,3 +34,9 @@ export declare const primaryStyle: {
 export declare const onMobile: () => boolean;
 export declare function randInt(min: number, max: number): number;
 export declare function randChoice(items: any[]): any;
+export declare const TitleForm: ({ title, descrip, titleCb, descripCb }: {
+    title: string;
+    descrip: string;
+    titleCb: Function;
+    descripCb: Function;
+}) => JSX.Element;

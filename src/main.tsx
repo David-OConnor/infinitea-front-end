@@ -1,7 +1,7 @@
 import axios from "axios"
 import * as React from 'react'
 import * as ReactDOM from "react-dom"
-import {Button, OverlayTrigger, Panel, Popover} from 'react-bootstrap'
+import {OverlayTrigger, Popover} from 'react-bootstrap'
 import { BrowserRouter as Router, Route } from "react-router-dom"
 import 'rheostat/initialize'
 import Rheostat from 'rheostat'
@@ -18,18 +18,8 @@ import {Address, Blend, Ingredient} from "./types"
 
 const shippingPrice = 7.20  // todo sync this with DB/server-side?
 
-const descriptions = [
-    "Definitely an aphrodisiac - I'm not teasing!",
-    "Orange you glad I contain chocolate?",
-    "Drink me",
-    "It's always tea time",
-    "Would you like an adventure now, or shall we have our tea first?",
-    "Made of star stuff",
-]
-
-// Generate it here, so the same value persists until the page is refreshed.
-const description = descriptions[Math.floor(Math.random()*descriptions.length)]
-
+const flavorColor = '#dbeef6'
+const ingredColor = '#ffe5e5'
 
 
 const Menu = ({page, subPage, flavorMode, setPage, setSubPage}:
@@ -62,7 +52,7 @@ const Menu = ({page, subPage, flavorMode, setPage, setSubPage}:
                 {page === 0 && (subPage === 0 || subPage === 5) ? <span style={{width: 10}}/> : null}
 
                 {page === 0 && subPage === 0 ? <div
-                    style={{...util.buttonStyle}}
+                    style={{...util.buttonStyle, background: flavorColor}}
                     onClick={() => {
                         setSubPage(5)
                         history.push(util.indexUrl + 'flavors')
@@ -72,7 +62,7 @@ const Menu = ({page, subPage, flavorMode, setPage, setSubPage}:
                 </div> : null}
 
                 {page === 0 && subPage === 5 ? <div
-                    style={{...util.buttonStyle}}
+                    style={{...util.buttonStyle, background: ingredColor}}
                     onClick={() => {
                         setSubPage(0)
                         history.push(util.indexUrl + 'ingredients')
@@ -134,30 +124,30 @@ const IngredientCard = ({ingredient, val, selectCb}:
     let style = {
         cursor: 'pointer',
         borderWidth: "5px",
-        borderColor: selectedColor,
+        borderStyle: 'solid',
+        borderColor: 'white',  // not-selected
         borderRadius: '50%'
     }
 
-    if (val > 0) {style['borderStyle'] = "solid"}
+    // Select color rather than style to keep the card from changing size.
+    if (val > 0) {style['borderColor'] = selectedColor}
 
     return (
-        <div style={{textAlign: 'center', width: 160, padding: 20}}>
-            <h4 style={val > 0 ? {
-                    color: selectedColor,
-                    height: '2em',
-                } :
-                {height: '2em',}}>
+        <div style={{textAlign: 'center', width: 110, marginLeft: 20, marginRight: 20,
+
+        }}>
+            <h4 style={{color: val > 0 ? selectedColor : 'black', height: '1.1em'}}>
                 {ingredient.name}
             </h4>
 
             <OverlayTrigger trigger={['hover', 'focus']} placement="bottom" overlay={popover}>
                 <img src={imgSrc}
-                      style={style}
-                      width={64} height={64}
+                     style={style}
+                     width={64} height={64}
                 />
             </OverlayTrigger>
             {/*  textAlign left or slider will be in the wrong place. */}
-            <div style={{marginTop: 30, marginBottom: 0, textAlign: 'left', cursor: 'pointer'}}>
+            <div style={{marginTop: 20, marginBottom: 0, textAlign: 'left', cursor: 'pointer'}}>
                 <Rheostat
                     min={0}
                     max={100}
@@ -176,37 +166,58 @@ const IngredientCard = ({ingredient, val, selectCb}:
 //     </div>
 // )
 
-const Picker = ({ingredients, blend, ingSelection, selectCb, titleCb, descriptionCb}:
-                    {ingredients: Ingredient[], blend: Blend, ingSelection: Map<number, number>
-                        selectCb: Function, titleCb: Function, descriptionCb: Function}) => {
+interface PickerProps {
+    ingredients: Ingredient[]
+    title: string
+    description: string
+    blend: Blend
+    ingSelection: Map<number, number>
+    selectCB: Function
+    titleCb: Function
+    descriptionCb: Function
+}
 
+interface PickerState {
+    title: string
+    description: string
+}
+
+const Picker = ({ingredients, title, descrip, blend, ingSelection, selectCb, titleCb, descripCb}:
+                    {ingredients: Ingredient[], title: string, descrip: string,
+                        blend: Blend, ingSelection: Map<number, number>
+                        selectCb: Function, titleCb: Function, descripCb: Function}) => {
+
+    // todo text entry is so slow.
     const selected = ingredients.filter(ing => ingSelection.get(ing.id) > 0)
     let selectedDisplay = selected.reduce((acc, ing) => (acc + " " + ing.name + ": " +
-        util.ingPortion(blend, ingSelection.get(ing.id)) +  "%,"), "")
+        util.ingPortion(blend, ingSelection.get(ing.id)) + "%,"), "")
     selectedDisplay = selectedDisplay.slice(0, -1)  // Remove final trailing comma.
 
     const blendText = selected.length > 0 ? "Your blend: " + selectedDisplay :
         "Pick an ingredient to get started"
 
+    // Ensure the instruction height's large enough to prevent the line changing
+    // sizes or overlapping text when many ingredients are selected.
     return (
         <div style={{
             display: 'grid',
             gridTemplateColumns: '1fm',
-            gridTemplateRows: '50px auto 250px',
+            gridTemplateRows: util.onMobile() ? '5em' : '3em' + ' auto 250px',
             gridTemplateAreas: '"instructions" "ingredients" "title"',
             justifyItems: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
         }}>
 
             <div style={{gridArea: 'instructions'}}>
-                {/* Ensure the height's large enough to prevent the line changing
-                     sizes or overlapping text when many ingredients are selected. */}
-                <h4 style={{textAlign: 'center', height: util.onMobile() ? '5em' : '3em'}}>
-                    {blendText}
-                </h4>
+
+                <h4>{blendText}</h4>
             </div>
 
-            <div style={{gridArea: 'ingredients', display: 'flex', flexWrap: 'wrap'}}>
+            <div style={{
+                gridArea: 'ingredients',
+                display: 'flex',
+                flexWrap: 'wrap',
+            }}>
                 {ingredients.map(ing => <IngredientCard
                     key={ing.id}
                     ingredient={ing}
@@ -217,33 +228,12 @@ const Picker = ({ingredients, blend, ingSelection, selectCb, titleCb, descriptio
             </div>
 
             {/*<BlendDisplay ingredients={ingredients} ingSelection={ingSelection}/>*/}
-
-            <div style={{gridArea: 'title', margin: 'auto', textAlign: 'center'}}>
-                <form>
-                        <h4>Title</h4>
-                        <input
-                            type="text"
-                            value={blend.title}
-                            placeholder="Serious? Fun?"
-                            onChange={(e: any) => titleCb(e.target.value)}
-                        />
-
-                        <h4>Description</h4>
-                        <input
-                            type="text"
-                            value={blend.description}
-                            // Random description.
-                            placeholder={description}
-                            onChange={(e: any) => descriptionCb(e.target.value)}
-                        />
-                </form>
-
-                <h4 style={{textAlign: 'center'}}>More ingredients coming soon!</h4>
-            </div>
+            <util.TitleForm title={title} descrip={descrip} titleCb={titleCb} descripCb={descripCb} />
 
         </div>
     )
 }
+
 
 const YourBlend = ({blend}: {blend: Blend}) => (
     <div>
@@ -256,6 +246,19 @@ const YourBlend = ({blend}: {blend: Blend}) => (
     </div>
 )
 
+function blendNameSimple(blend: Blend) {
+    return "Ingredients: " + blend.ingredients.map(ing => ing[0].name).join(', ')
+}
+
+const sizeSelStyle = {
+    cursor: 'pointer',
+    height: 60,
+    border: '1px solid black',
+    marginTop: 20,
+    // paddingTop: 30,
+    paddingLeft: 20,
+}
+
 const OrderDetails = ({sizeSelected, blend, title, description, sizeCb}:
                           {sizeSelected: number, blend: Blend,
                               title: string, description: string, sizeCb: Function}) => (
@@ -264,37 +267,49 @@ const OrderDetails = ({sizeSelected, blend, title, description, sizeCb}:
         display: 'flex',
         flexDirection: 'column',
         margin: 'auto',
+        justifyContent: 'center',
     }}>
         {/* Overlay the title over the image.*/}
         <div style={{display: 'flex', position: 'relative', margin: 'auto', textAlign: 'center'}}>
-            <img src={'./images/bag.jpg'}
-                 style={{'display': 'flex', margin: 'auto', width: 240}}
-            />
-            <h4 style={{position: 'absolute', top: 50, left: 20, width: 130, fontSize: 8}}>{title}</h4>
-            <p style={{position: 'absolute', top: 80, left: 20, width: 130, fontSize: 6, fontStyle: 'italic'}}>{description}</p>
+            <img src={'./images/bag.jpg'} style={{maxHeight: 400}}/>
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                textAlign: 'left',
+                width: 200,
+                position: 'absolute',
+                top: 50, left: 20,
+            }}>
+                <h4 style={{fontSize: 8, marginBottom: 5}}>{title}</h4>
+                <p style={{fontSize: 6, marginTop: 0, marginBottom: 5, fontStyle: 'italic'}}>{description}</p>
+                <p style={{fontSize: 6, marginTop: 0}}>{blendNameSimple(blend)}</p>
+            </div>
         </div>
 
         <YourBlend blend={blend} />
 
-        <Panel bsStyle={sizeSelected === 50 ? 'primary' : 'default'}
-               style={{'cursor': 'pointer', 'backgroundColor': sizeSelected === 50 ? '#bccddd': 'white'}}
-               onClick={() => sizeCb(50)}>
-            <Panel.Body>{'50 grams (~1.8 oz): $' +  util.priceDisplay(util.calcPrice(blend, 50))}</Panel.Body>
-        </Panel>
+        <div
+            style={{...sizeSelStyle, backgroundColor: sizeSelected === 50 ? '#bccddd': 'white'}}
+            onClick={() => sizeCb(50)}
+        >
+            <h4>{'50 grams (~1.8 oz): $' +  util.priceDisplay(util.calcPrice(blend, 50))}</h4>
+        </div>
 
-        <Panel bsStyle={sizeSelected === 100 ? 'primary' : 'default'}
-               style={{'cursor': 'pointer', 'backgroundColor': sizeSelected === 100 ? '#bccddd': 'white'}}
-               onClick={() => sizeCb(100)}>
-            <Panel.Body>{'100 grams (~3.5 oz): $' +  util.priceDisplay(util.calcPrice(blend, 100))}</Panel.Body>
-        </Panel>
+        <div
+            style={{...sizeSelStyle, backgroundColor: sizeSelected === 100 ? '#bccddd': 'white'}}
+            onClick={() => sizeCb(100)}
+        >
+            <h4>{'100 grams (~3.5 oz): $' +  util.priceDisplay(util.calcPrice(blend, 100))}</h4>
+        </div>
 
-        <Panel bsStyle={sizeSelected === 200 ? 'primary' : 'default'}
-               style={{'cursor': 'pointer', 'backgroundColor': sizeSelected === 200 ? '#bccddd': 'white'}}
-               onClick={() => sizeCb(200)}>
-            <Panel.Body>{'200 grams (~7 oz): $' +  util.priceDisplay(util.calcPrice(blend, 200))}</Panel.Body>
-        </Panel>
+        <div
+            style={{...sizeSelStyle, backgroundColor: sizeSelected === 200 ? '#bccddd': 'white'}}
+            onClick={() => sizeCb(200)}
+        >
+            <h4>{'200 grams (~7 oz): $' +  util.priceDisplay(util.calcPrice(blend, 200))}</h4>
+        </div>
 
-        <div style={{marginTop: 60}}>
+        <div style={{marginTop: 20}}>
             <h4>{"Flat-rate shipping: $" + util.priceDisplay(shippingPrice)}, via USPS Priority Mail</h4>
         </div>
     </div>
@@ -328,27 +343,41 @@ const DispButton = ({text, route, subPage, primary, set}: {text: string, route: 
     )} />
 )
 
-const Start = ({setPage}: {setPage: Function}) => (
-    <div style={{display: 'flex', height: 300, textAlign: 'center'}}>
-        <div style={{
-            padding: '100px 30px',
-            cursor: 'pointer',
-            background: '#cfeaf6',
-        }}
-             onClick={() => setPage(5)}>
-            <h3>Pick flavors - we'll find ingredients to match</h3>
-        </div>
+const Start = ({setPage}: {setPage: Function}) => {
+    const style={
+        cursor: 'pointer',
+        padding: 30,
+        height: 200,
+        flexBasis: '100%',
+    }
 
-        <div style={{
-            padding: '100px 30px',
-            cursor: 'pointer',
-            background: '#ffd5cd',
-        }}
-             onClick={() => setPage(0)}>
-            <h3>Create it yourself, exactly how you like</h3>
+    return (
+        <div style={{display: 'flex', height: 300, alignItems: 'center',
+            textAlign: 'center'}}>
+            <Route render={({history}) => (
+                <div style={{...style, background: flavorColor}}
+                     onClick={() => {
+                         setPage(5)
+                         history.push(util.indexUrl + 'flavors')
+                     }}>
+                    <h3>Pick flavors - we'll build your tea</h3>
+                    <h4>(Fast and easy)</h4>
+                </div>
+            )} />
+
+            <Route render={({history}) => (
+                <div style={{...style, background: ingredColor}}
+                     onClick={() => {
+                         setPage(0)
+                         history.push(util.indexUrl + 'ingredients')
+                     }}>
+                    <h3>Create it yourself, exactly how you like</h3>
+                    <h4>(Fully customizable)</h4>
+                </div>
+            )} />
         </div>
-    </div>
-)
+    )
+}
 
 interface MainProps {
     initialPage: number
@@ -419,6 +448,7 @@ class Main extends React.Component<MainProps, MainState> {
         this.changeIngVal = this.changeIngVal.bind(this)
         this.order = this.order.bind(this)
         this.nav = this.nav.bind(this)
+        this.ingSelFromAr = this.ingSelFromAr.bind(this)
     }
 
     set(attr: string, val: any) {
@@ -449,7 +479,6 @@ class Main extends React.Component<MainProps, MainState> {
             }
         ).then(
             (resp) => {
-                console.log("RESP FROM DJANGO:", resp)
                 if (resp.data.success) {
                     this.set('subPage', 3)
                 } else {
@@ -463,16 +492,39 @@ class Main extends React.Component<MainProps, MainState> {
         // Catch what we appended to the URL using the history/router.
         if (location.href.includes('size')) {
             this.set('subPage', 1)
-            this.set('subPage', 0)
+            this.set('page', 0)
+        } else if (location.href.includes('flavors')) {
+            this.set('subPage', 5)
+            this.set('page', 0)
+        } else if (location.href.includes('ingredients')) {
+            this.set('subPage', 5)
+            this.set('page', 0)
         } else if (location.href.includes('checkout')) {
             this.set('subPage', 2)
-            this.set('subPage', 0)
+            this.set('page', 0)
         } else if (location.href.includes('about')) {
             this.set('subPage', 1)
         } else {  // We're going back to the main page with nothing appended to the url.
-            this.set('subPage', 0)
-            this.set('subPage', 0)
+            this.set('subPage', 6)
+            this.set('page', 0)
         }
+    }
+
+    ingSelFromAr(ings: [number, number][]) {
+        // Replace the selected ingredients with a new one, generated by the
+        // flavor-based page.
+        let newSel = new Map()  // empty
+        this.state.ingSelection.forEach(
+            (val, key, map) => {
+                newSel.set(key, 0)
+            }
+        )
+
+        for (let ing of ings) {
+            newSel.set(ing[0], ing[1])
+        }
+
+        this.setState({ingSelection: newSel})
     }
 
     render() {
@@ -491,10 +543,12 @@ class Main extends React.Component<MainProps, MainState> {
         let mainDisplay = <Picker
             ingredients={this.state.ingredients}
             blend={blend}
+            title={this.state.title}
+            descrip={this.state.description}
             ingSelection={this.state.ingSelection}
             selectCb={this.changeIngVal}
             titleCb={(title: string) => this.set('title', title)}
-            descriptionCb={(descrip: string) => this.set('description', descrip)}
+            descripCb={(descrip: string) => this.set('description', descrip)}
         />
 
         // Only show the size and price option if at least one ingredient is selected.
@@ -568,7 +622,8 @@ class Main extends React.Component<MainProps, MainState> {
             mainDisplay = <OrderPlaced />
             nextDisplayButtons = (
                 <div style={{'display': 'flex', 'margin': 'auto'}}>
-                    <Button onClick={() => this.set('mainDisplay', 0)}>⇐ Back to the main page</Button>
+                    <DispButton text=" ⇐Back to the main page" route=""
+                                subPage={6} primary={false} set={this.set} />
                 </div>
             )
         }
@@ -577,7 +632,8 @@ class Main extends React.Component<MainProps, MainState> {
             mainDisplay = <OrderFailed />
             nextDisplayButtons = (
                 <div style={{'display': 'flex', 'margin': 'auto'}}>
-                    <Button onClick={() => this.set('mainDisplay', 0)}>⇐ Back to the main page</Button>
+                    <DispButton text=" ⇐Back to the main page" route=""
+                                subPage={6} primary={false} set={this.set} />
                 </div>
             )
         }
@@ -586,7 +642,14 @@ class Main extends React.Component<MainProps, MainState> {
             mainDisplay = <FlavorPicker
                 ingredients={this.state.ingredients}
                 selection={this.state.flavorSelection}
-                selectionCb={(sel: Map<number, boolean>) => this.setState({flavorSelection: sel})}
+                flavSelCb={(sel: Map<number, boolean>) => this.setState({flavorSelection: sel})}
+                ingSelCb={this.ingSelFromAr}
+                subPageCb={(sp: number) => this.setState({subPage: sp})}
+
+                title={this.state.title}
+                descrip={this.state.description}
+                titleCb={(title: string) => this.set('title', title)}
+                descripCb={(descrip: string) => this.set('description', descrip)}
             />
             // Keep the same buttons as the ingredient picker, set by default above.
         }
@@ -596,7 +659,7 @@ class Main extends React.Component<MainProps, MainState> {
             nextDisplayButtons = null
         } else if (this.state.subPage > 6) { console.log("Invalid subpage set") }
 
-         let display = mainDisplay
+        let display = mainDisplay
         if (this.state.page === 1) {
             display = <About />
         } else if (this.state.page === 2) {
@@ -604,17 +667,15 @@ class Main extends React.Component<MainProps, MainState> {
         } else if (this.state.page === 3) {
             display = <Terms />
         }
-
         return (
             <Router>
                 <div style={{
                     display: 'grid',
-                    width: '80%',
+                    width: util.onMobile() ? '100%' : '80%',
                     margin: 'auto',
                     gridTemplateColumns: '1fm',
                     gridTemplateRows: '130px 40px auto 40px 300px',
                     gridTemplateAreas: '"header" "menu" "content" "menu2" "footer"',
-                    // gridGap: 20
                 }}>
                     <div style={{gridArea: 'header'}}>
                         <Heading set={this.set} />
@@ -635,7 +696,7 @@ class Main extends React.Component<MainProps, MainState> {
                         opacity: util.mainOpacity,
                         justifySelf: this.state.subPage === 6? 'center': 'stretch',
                         border: "0px solid black",
-                        padding: 40
+                        padding: util.onMobile() ? 0 : 40
                     }}>
                         {display}
                     </div>
