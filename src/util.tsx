@@ -5,14 +5,15 @@ import {Blend} from "./types"
 
 
 const HOSTNAME = window && window.location && window.location.hostname
-let ON_HEROKU = false
+let online = false
 
 if (HOSTNAME === 'infinitea.herokuapp.com' || HOSTNAME === 'www.infinitea.org'
-    || HOSTNAME === 'david-oconnor.github.io') {
-    ON_HEROKU = true
+    || HOSTNAME === 'david-oconnor.github.io' ||
+    HOSTNAME === 'https://amazing-villani-7734f7.netlify.com') {
+    online = true
 }
 
-export const BASE_URL = ON_HEROKU ? 'https://infinitea.herokuapp.com/api/' :
+export const BASE_URL = online ? 'https://infinitea.herokuapp.com/api/' :
     'http://localhost:8000/api/'
 
 // Keep this index url fixed here, rather than calling window.location.pathname

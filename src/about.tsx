@@ -1,7 +1,7 @@
 import * as React from "react"
 
 
-const FAQStyle = {marginTop: 40}
+const FAQStyle = {marginTop: 40, fontWeight: 700}
 
 export default () => (
 

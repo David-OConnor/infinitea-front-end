@@ -22,9 +22,9 @@ const flavorColor = '#dbeef6'
 const ingredColor = '#ffe5e5'
 
 
-const Menu = ({page, subPage, flavorMode, setPage, setSubPage}:
+const Menu = ({page, subPage, flavorMode, setPage, setSubPage, setFlav}:
                   {page: number, subPage: number, flavorMode: boolean,
-                      setPage: Function, setSubPage: Function}) => {
+                      setPage: Function, setSubPage: Function, setFlav: Function}) => {
     let text = "About"
     let destPage = 1
     let route = 'about'
@@ -55,6 +55,7 @@ const Menu = ({page, subPage, flavorMode, setPage, setSubPage}:
                     style={{...util.buttonStyle, background: flavorColor}}
                     onClick={() => {
                         setSubPage(5)
+                        setFlav(true)
                         history.push(util.indexUrl + 'flavors')
                     }}
                 >
@@ -65,6 +66,7 @@ const Menu = ({page, subPage, flavorMode, setPage, setSubPage}:
                     style={{...util.buttonStyle, background: ingredColor}}
                     onClick={() => {
                         setSubPage(0)
+                        setFlav(false)
                         history.push(util.indexUrl + 'ingredients')
                     }}
                 >
@@ -96,7 +98,7 @@ const Heading = ({set}: {set: Function}) => (
 
 const IngredientCard = ({ingredient, val, selectCb}:
                             {ingredient: Ingredient, val: number, selectCb: Function}) => {
-
+    // Make selectCb null to hide the slider
     const imgSrc = './images/' + ingredient.name.toLowerCase() + '.jpg'
 
     const popoverWidth = util.onMobile()? 200 : 400
@@ -147,14 +149,15 @@ const IngredientCard = ({ingredient, val, selectCb}:
                 />
             </OverlayTrigger>
             {/*  textAlign left or slider will be in the wrong place. */}
-            <div style={{marginTop: 20, marginBottom: 0, textAlign: 'left', cursor: 'pointer'}}>
+
+            {selectCb !== null ? <div style={{marginTop: 20, marginBottom: 0, textAlign: 'left', cursor: 'pointer'}}>
                 <Rheostat
                     min={0}
                     max={100}
                     values={[val]}
                     onChange={(e: any) => selectCb(e.values[0])}
                 />
-            </div>
+            </div> : null }
         </div>
     )
 }
@@ -238,11 +241,14 @@ const Picker = ({ingredients, title, descrip, blend, ingSelection, selectCb, tit
 const YourBlend = ({blend}: {blend: Blend}) => (
     <div>
         <h3>Your blend</h3>
-        <ul>
-            {blend.ingredients.map(ing => <li key={ing[0].id}>
-                {ing[0].name + ' ' + util.ingPortion(blend, ing[1]) + '%'}
-            </li>)}
-        </ul>
+        <div style={{display: 'flex', flexWrap: 'wrap'}}>
+            {blend.ingredients.map(ing =>
+                <IngredientCard ingredient={ing[0]} val={ing[1]} selectCb={null}/>
+                // <li key={ing[0].id}>
+                //     {ing[0].name + ' ' + util.ingPortion(blend, ing[1]) + '%'}
+                // </li>
+            )}
+        </div>
     </div>
 )
 
@@ -343,7 +349,7 @@ const DispButton = ({text, route, subPage, primary, set}: {text: string, route: 
     )} />
 )
 
-const Start = ({setPage}: {setPage: Function}) => {
+const Start = ({setPage, setFlav}: {setPage: Function, setFlav: Function}) => {
     const style={
         cursor: 'pointer',
         padding: 30,
@@ -358,6 +364,7 @@ const Start = ({setPage}: {setPage: Function}) => {
                 <div style={{...style, background: flavorColor}}
                      onClick={() => {
                          setPage(5)
+                         setFlav(true)
                          history.push(util.indexUrl + 'flavors')
                      }}>
                     <h3>Pick flavors - we'll build your tea</h3>
@@ -369,6 +376,7 @@ const Start = ({setPage}: {setPage: Function}) => {
                 <div style={{...style, background: ingredColor}}
                      onClick={() => {
                          setPage(0)
+                         setFlav(false)
                          history.push(util.indexUrl + 'ingredients')
                      }}>
                     <h3>Create it yourself, exactly how you like</h3>
@@ -655,7 +663,10 @@ class Main extends React.Component<MainProps, MainState> {
         }
 
         else if (this.state.subPage === 6)  {
-            mainDisplay = <Start setPage={(page: number) => this.set('subPage', page)}/>
+            mainDisplay = <Start
+                setPage={(page: number) => this.set('subPage', page)}
+                setFlav={(flav: boolean) => this.set('flavorMode', flav)}
+            />
             nextDisplayButtons = null
         } else if (this.state.subPage > 6) { console.log("Invalid subpage set") }
 
@@ -687,6 +698,7 @@ class Main extends React.Component<MainProps, MainState> {
                               flavorMode={this.state.flavorMode}
                               setPage={(page: number) => this.set('page', page)}
                               setSubPage={(page: number) => this.set('subPage', page)}
+                              setFlav={(flav: boolean) => this.set('flavorMode', flav)}
                         />
                     </div>
 

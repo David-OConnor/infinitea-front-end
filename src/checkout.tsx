@@ -26,8 +26,9 @@ const maxPostal = 10
 const minPhone = 10
 const maxPhone = 15
 
-// todo duped from main!
+
 const YourBlend = ({blend}: {blend: Blend}) => (
+    // Unlike YourBlend in main.tsx, this is text-only.
     <div>
         <h3>Your blend</h3>
         <ul>
@@ -45,6 +46,7 @@ const cardOptions = () => {
         style: {
             base: {
                 color: 'black',
+                // lineHeight: 12,
                 // border: '5px solid orange',
                 // letterSpacing: '0.025em',
                 // fontSize: '14px',
@@ -52,46 +54,22 @@ const cardOptions = () => {
                 // padding: '6px 14px',
                 '::placeholder': {
                     color: '#aab7c4',
-                    // height: '2em',
-                    // padding: '5px 12px',
-                    // fontFamily: 'Karla',
-                    // marginLeft: 30,
-                    // marginRight: 30,
-                    // marginTop: 40,
-                    // fontSize: '14px',
+
+                    paddingTop: 30,
+                    fontFamily: 'Karla',
                 },
             },
             invalid: {
                 color: '#b4677e',
+
             },
         },
     }
 }
 
-// const inputStyle = {
-//     display: 'block',
-//     margin: '10px 0 20px 0',
-//     padding: '6px 14px',
-//     fontSize: 14,
-//     fontFamily: 'Helvetica Neue",Helvetica,Arial,sans-serif',
-//     // fontFamily: "'Source Code Pro', monospace",
-//     boxShadow: "rgba(50, 50, 93, 0.14902) 0px 1px 3px, rgba(0, 0, 0, 0.0196078) 0px 1px 0px",
-//     border: '2px solid black',
-//     borderRadius: 4,
-//     background: 'white',
-//     // backgroundCo: '#ff1111'
-// }
-
-const inputStyle = {  // todo duped from style.css
-    padding: '5px 12px',
-    height: 32,
-    marginLeft: 30,
-    marginRight: 30,
-}
 
 const validStyle = {borderColor: 'green'}
 const invalidStyle = {borderColor: '#b4677e'}
-
 
 const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
     return (
@@ -235,8 +213,11 @@ class _CardForm extends React.Component<any, any> {
                     href={'https://stripe.com/docs/security/stripe'}>Details about security</a></p>
 
                 <h4 style={{marginBottom: 0}}>Card details</h4>
-                <div className='card' style={{margin: 'auto'}}>
+                {/*// Having trouble styling the card form.*/}
+                <div className='card' style={{margin: 'auto', height: 23,
+                    paddingTop: 10, borderColor: this.state.cardValid ? 'green' : '#b4677e'}}>
                     <CardElement
+                        style={{paddingTop: 20}}
                         onChange={(e) => {
                             this.setValid(e.complete && e.error === undefined)
                         }}
@@ -367,8 +348,9 @@ export default ({blend, size, price, shippingPrice, address, orderCb, addressCb}
             <h4 style={{textAlign: 'left'}}>{"Total: $" + util.priceDisplay(price + shippingPrice)}</h4>
         </div>
 
-        <div style={{gridArea: 'form', textAlign: 'center'}}>
 
+        <div style={{gridArea: 'form', textAlign: 'center'}}>
+            <hr />
             <Checkout address={address} orderCb={orderCb} addressCb={addressCb} />
 
         </div>
