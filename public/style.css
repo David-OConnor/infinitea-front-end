@@ -91,6 +91,9 @@ input {
     margin-right: 30px;
     border: 1px solid black;
     width: 400px;
+    /* Not sure why I have to specify font info here; not covered by body. */
+    font-family: 'Karla', sans-serif;
+    font-size: medium;
 }
 
 textarea {
@@ -100,6 +103,9 @@ textarea {
     margin-right: 30px;
     border: 1px solid black;
     width: 400px;
+
+    font-family: 'Karla', sans-serif;
+    font-size: medium;
 }
 
 .card {
@@ -109,6 +115,8 @@ textarea {
     margin-right: 30px;
     border: 1px solid black;
     width: 400px;
+    font-family: 'Karla', sans-serif;
+    font-size: medium;
 }
 
 select {

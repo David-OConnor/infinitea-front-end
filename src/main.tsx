@@ -243,10 +243,7 @@ const YourBlend = ({blend}: {blend: Blend}) => (
         <h3>Your blend</h3>
         <div style={{display: 'flex', flexWrap: 'wrap'}}>
             {blend.ingredients.map(ing =>
-                <IngredientCard ingredient={ing[0]} val={ing[1]} selectCb={null}/>
-                // <li key={ing[0].id}>
-                //     {ing[0].name + ' ' + util.ingPortion(blend, ing[1]) + '%'}
-                // </li>
+                <IngredientCard key={ing[0].id} ingredient={ing[0]} val={ing[1]} selectCb={null}/>
             )}
         </div>
     </div>
@@ -411,13 +408,17 @@ interface MainState {
 class Main extends React.Component<MainProps, MainState> {
     constructor(props: MainProps) {
         super(props)
+
+        const flavorSelection = new Map()
+        flavorSelection.set(0, true)
+
         this.state = {
             page: this.props.initialPage,
             subPage: 6,
             ingredients: [],
 
             ingSelection: new Map(),
-            flavorSelection: new Map(),
+            flavorSelection: flavorSelection,
             title: "",
             description: "",
             sizeSelected: 50,

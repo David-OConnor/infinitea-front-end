@@ -6,7 +6,7 @@ import {Ingredient} from "./types";
 
 
 function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [number, number][] {
-    const targetNumIngreds = 5
+    const targetNumIngreds = 4
 
     let selectedArr: number[] = []
     selected.forEach(
@@ -16,12 +16,15 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
     )
 
     let result = []
-    let suitableIngs, val
+
+    // suitableIngsPerFlav is used to make sure we get at least one ingred
+    // per selected flav. suitableIngs is used later, to add additional ings.
+    let suitableIngs = [], suitableIngsPerFlav, val
     for (let flavor of selectedArr) {
-        suitableIngs = []
+        suitableIngsPerFlav = []
         for (let ing of ingredients) {
             // This must sync up with the buttons.
-            switch(flavor) {
+            switch (flavor) {
                 case 0:
                     val = ing.caffeine
                     break;
@@ -53,33 +56,57 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
                     val = 0
             }
             if (val > 0) {
-                suitableIngs.push(ing)
+                suitableIngsPerFlav.push(ing)
+                // todo note: We don't take into account ings
+                // todo that count towards multiple flavors here;
+                // todo perhaps we should
+
+                if (!suitableIngs.map(i => i.id).includes(ing.id)) {
+                    suitableIngs.push(ing)
+                }
+
             }
         }
         // For each selected flavor, add a random ingredient that has this flavor.
         // For each additional ingredient marked with this flavor, there's some
         // chance to add it too.
-        result.push(util.randChoice(suitableIngs))
-        const extraIngThresh = 0.5
-        for (let ing of suitableIngs) {
-            // todo take into account the specific value for each ing, eg val above.
-            // todo also, change the portions below too, perhaps.
-            if (Math.random() > extraIngThresh) {
-                result.push(ing)
-            }
-        }
+        // Make sure to add at least one suitable ing per flavor selected.
+        result.push(util.randChoice(suitableIngsPerFlav))
     }
 
-    let deduped: Ingredient[] = []
-    for (let ing of result) {
-        if (!deduped.map(i => i.id).includes(ing.id)) {
-            deduped.push(ing)
+    let numIngs = targetNumIngreds
+
+    // Weighted chances to add 1, add 2, sub 1, sub 2, or leave num ings unchanged,
+    // Assuming enough suitable ings are avail.
+    let numModifier = Math.random()
+    if (numModifier > .9) {
+        numIngs += 2
+    } else if (numModifier > .6) {
+        numIngs += 1
+    } else if (numModifier > .4) {
+        numIngs += 0
+    } else  if (numModifier > .1) {
+        numIngs -= 1
+    } else {
+        numIngs -= 2
+    }
+
+    // Don't try to add ings when we don't have enough.
+    numIngs = Math.min(numIngs, suitableIngs.length)
+
+    let choice
+    while (result.length < numIngs) {
+        // Deliberatly un-deduped suitableings, for now, to bias towards
+        // ings that are in multiple selected flavors.
+        choice = util.randChoice(suitableIngs)
+        if (!result.map(i => i.id).includes(choice.id)) {
+            result.push(choice)
         }
     }
 
     // Set the value to a 0-100 val so that the sliders under ingred selection
     // make sense.
-    return deduped.map(i => [i.id, 50] as any)
+    return result.map(i => [i.id, 50] as any)
 }
 
 const FlavorCard = ({index, name, selected, toggleCb}:
@@ -138,7 +165,6 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
         this.props.flavSelCb(newSelection)
     }
 
-
     render() {
         // Reference models.py; could find a clever way to automatically set this.
         let flavors = new Map()
@@ -191,19 +217,19 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
                 {ready ?
 
                     <Route render={({history}) => (
-                    <div
-                    style={{...util.primaryStyle, marginTop: 40}}
-                    onClick={() => {
-                        this.props.ingSelCb(
-                            recommend(this.props.selection, this.props.ingredients)
-                        )
-                        this.props.subPageCb(1)
-                        history.push(util.indexUrl + 'size')
-                    }}
-                >Create my tea ⇒</div>
-                        )} />
+                        <div
+                            style={{...util.primaryStyle, marginTop: 40}}
+                            onClick={() => {
+                                this.props.ingSelCb(
+                                    recommend(this.props.selection, this.props.ingredients)
+                                )
+                                this.props.subPageCb(1)
+                                history.push(util.indexUrl + 'size')
+                            }}
+                        >Create my tea ⇒</div>
+                    )} />
 
-                        : null }
+                    : null }
             </div>
         )
     }
