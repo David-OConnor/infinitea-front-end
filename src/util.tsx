@@ -7,11 +7,9 @@ import {Blend} from "./types"
 const HOSTNAME = window && window.location && window.location.hostname
 let online = false
 
-console.log(HOSTNAME, "HN")
-
 if (HOSTNAME === 'infinitea.herokuapp.com' || HOSTNAME === 'www.infinitea.org'
     || HOSTNAME === 'david-oconnor.github.io' ||
-    HOSTNAME === 'https://amazing-villani-7734f7.netlify.com') {
+    HOSTNAME === 'amazing-villani-7734f7.netlify.com') {
     online = true
 }
 
