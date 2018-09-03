@@ -763,7 +763,7 @@ class Main extends React.Component<MainProps, MainState> {
                     width: util.onMobile() ? '100%' : '80%',
                     margin: 'auto',
                     gridTemplateColumns: '1fr',
-                    gridTemplateRows: '130px 40px auto 40px 300px',
+                    gridTemplateRows: '170px 40px auto 40px 300px',
                     gridTemplateAreas: '"header" "menu" "content" "menu2" "footer"',
                 }}>
                     <div style={{gridArea: 'header'}}>
