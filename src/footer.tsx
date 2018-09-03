@@ -130,7 +130,7 @@ export default class _ extends React.Component<FooterProps, FooterState> {
 
     render() {
         return (
-            <div style={{textAlign: 'center'}}>
+            <div style={{textAlign: 'center', marginTop: 40}}>
                 {!this.state.showContact ?
                     <button
                         style={{width: 220, height: 70}}
