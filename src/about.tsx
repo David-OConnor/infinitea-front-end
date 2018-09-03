@@ -28,7 +28,7 @@ export default () => (
             While a few
             existing shops will make custom blends, our goal is to make
             this as easy
-            as possible. We focus on high-quality teas, with a
+            as possible. We focus on high-quality ingredients, with a
             user-friendly
             design page. Enjoy the quality and taste, blended with your
             creativitea.</p>

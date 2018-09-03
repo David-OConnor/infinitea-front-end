@@ -209,8 +209,12 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
                 <h2 style={{textAlign: 'center', marginBottom: 40}}>
                     We'll build a blend from your choices
                 </h2>
+                <p>Choose as many flavors as you like, we'll pick ingredients
+                that match your choices. If you don't like the result after clicking
+                'Create my tea', you can go back and try again with the same flavors,
+                different ones, or customize with 'Pick Ingredients' above.</p>
 
-                <div style={{display: 'flex', flexFlow: 'row wrap'}}>
+                <div style={{display: 'flex', flexFlow: 'row wrap', marginTop: 40}}>
                     {items}
                 </div>
 
