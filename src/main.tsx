@@ -259,7 +259,7 @@ const Picker = ({ingredients, title, descrip, blend, ingSelection, selectCb, tit
     selectedDisplay = selectedDisplay.slice(0, -1)  // Remove final trailing comma.
 
     const blendText = selected.length > 0 ? "Your blend: " + selectedDisplay :
-        "Pick an ingredient to get started"
+        "Use the sliders to add ingredients. Click the pictures for details."
 
     // Ensure the instruction height's large enough to prevent the line changing
     // sizes or overlapping text when many ingredients are selected.
