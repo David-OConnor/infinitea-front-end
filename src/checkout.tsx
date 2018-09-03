@@ -55,7 +55,7 @@ const cardOptions = () => {
                 '::placeholder': {
                     color: '#aab7c4',
 
-                    paddingTop: 30,
+                    // paddingTop: 30,
                     fontFamily: 'Karla',
                 },
             },
@@ -186,8 +186,8 @@ class _CardForm extends React.Component<any, any> {
                 .createToken()
                 .then((payload: any) => {
                         if (payload.token) {
-                            this.props.processingCb(false)
                             this.props.orderCb(payload.token)
+                            // this.props.processingCb(false)
                         }
                         else {
                             this.props.processingCb(false)
@@ -215,9 +215,9 @@ class _CardForm extends React.Component<any, any> {
                 <h4 style={{marginBottom: 0}}>Card details</h4>
                 {/*// Having trouble styling the card form.*/}
                 <div className='card' style={{margin: 'auto', height: 25,
-                    paddingTop: 10, borderColor: this.state.cardValid ? 'green' : '#b4677e'}}>
+                    borderColor: this.state.cardValid ? 'green' : '#b4677e'}}>
                     <CardElement
-                        style={{paddingTop: 20}}
+                        // style={{paddingTop: 20}}
                         onChange={(e) => {
                             this.setValid(e.complete && e.error === undefined)
                         }}

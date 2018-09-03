@@ -556,8 +556,10 @@ class Main extends React.Component<MainProps, MainState> {
             (resp) => {
                 if (resp.data.success) {
                     this.set('subPage', 3)
+                    console.log('Success')
                 } else {
                     this.set('subPage', 4)
+                    console.log("Failure")
                 }
             }
         )
