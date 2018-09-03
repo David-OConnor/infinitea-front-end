@@ -77,7 +77,7 @@ class ContactForm extends React.Component<ContactProps, ContactState> {
                     />
 
                     <div style={{display: 'flex', margin: 'auto', marginTop: 20}}>
-                        <div
+                        <button
                             style={util.primaryStyle}
                             onClick={() => {
                                 sendMessage(
@@ -88,14 +88,13 @@ class ContactForm extends React.Component<ContactProps, ContactState> {
                                 this.props.showCb(false)
                                 this.props.confirmationCb(true)
 
-                            }}>Submit</div>
+                            }}>Submit</button>
 
-                        <div
-                            style={util.buttonStyle}
+                        <button
                             onClick={() => {
                                 this.handleChange('name', "")
                                 this.props.showCb(false)
-                            }}>Discard</div>
+                            }}>Discard</button>
                     </div>
                 </div>
             </form>
@@ -131,24 +130,17 @@ export default class _ extends React.Component<FooterProps, FooterState> {
 
     render() {
         return (
-            <div>
-                <br />
-                <br />
-
+            <div style={{textAlign: 'center'}}>
                 {!this.state.showContact ?
-
-                    <div
-                        style={{
-                            ...util.buttonStyle,
-                            height: 60,
-                        }}
+                    <button
+                        style={{width: 220, height: 70}}
                         onClick={() => {
                             this.setContactForm(true)
                             this.setConfirmation(false)
                         }}>
                         Questions? Feedback?
                         Send us a message
-                    </div>
+                    </button>
 
                     : null}
                 {this.state.showContact ? <ContactForm
@@ -175,7 +167,8 @@ export default class _ extends React.Component<FooterProps, FooterState> {
                     </div>: null}
 
                 <Route render={({history}) => (
-                    <h4 style={{textAlign: 'center', color: 'black', cursor: 'pointer', textDecoration: 'underline'}}>
+                    <h4 style={{textAlign: 'center', color: 'black', cursor: 'pointer',
+                                 textDecoration: 'underline'}}>
                         <span
                             onClick={() => {
                                 history.push(util.indexUrl + 'privacy')

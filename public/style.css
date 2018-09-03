@@ -91,6 +91,15 @@ select {
 }
 
 button {
-    /* Required for rheostat.*/
     cursor: pointer;
+    border: none;
+    background: #c4ddd2;
+    height: 40px;
+    width: 200px;
+    margin: auto;
+    text-align: center;
+    color: black;
+    font-family: 'Karla', sans-serif;
+    font-size: 1em;
+    border-radius: 4px;
 }

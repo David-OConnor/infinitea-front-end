@@ -38,20 +38,19 @@ const Menu = ({page, subPage, flavorMode, setPage, setSubPage, setFlav}:
     return <Route render={({history}) => (
         <div style={{display: 'flex', margin: 'auto'}}>
             <div style={{display: 'flex', margin: 'auto'}}>
-                <div
-                    style={{...util.buttonStyle}}
+                <button
                     onClick={() => {
                         setPage(destPage)
                         history.push(util.indexUrl + route)
                     }}
                 >
                     {text}
-                </div>
+                </button>
 
                 {page === 0 && (subPage === 0 || subPage === 5) ? <span style={{width: 10}}/> : null}
 
-                {page === 0 && subPage === 0 ? <div
-                    style={{...util.buttonStyle, background: flavorColor}}
+                {page === 0 && subPage === 0 ? <button
+                    style={{background: flavorColor}}
                     onClick={() => {
                         setSubPage(5)
                         setFlav(true)
@@ -59,10 +58,10 @@ const Menu = ({page, subPage, flavorMode, setPage, setSubPage, setFlav}:
                     }}
                 >
                     Pick flavors
-                </div> : null}
+                </button> : null}
 
-                {page === 0 && subPage === 5 ? <div
-                    style={{...util.buttonStyle, background: ingredColor}}
+                {page === 0 && subPage === 5 ? <button
+                    style={{background: ingredColor}}
                     onClick={() => {
                         setSubPage(0)
                         setFlav(false)
@@ -70,7 +69,7 @@ const Menu = ({page, subPage, flavorMode, setPage, setSubPage, setFlav}:
                     }}
                 >
                     Pick ingredients
-                </div> : null}
+                </button> : null}
             </div>
         </div>
     )} />
@@ -122,7 +121,7 @@ const IngredPopover = ({ingred, showCb}: {ingred: Ingredient, showCb: Function})
             // Correction factor for text.
             marginTop: -(popoverWidth + 120) / 2
         }}
-        onClick={() => showCb()}
+             onClick={() => showCb()}
         >
             <h4>{ingred.name}</h4>
             <p style={{fontSize: util.onMobile() ? 12 : 14}}>{ingred.description}</p>
@@ -266,7 +265,7 @@ const Picker = ({ingredients, title, descrip, blend, ingSelection, selectCb, tit
     return (
         <div style={{
             display: 'grid',
-            gridTemplateColumns: '1fm',
+            gridTemplateColumns: '1fr',
             gridTemplateRows: util.onMobile() ? '5em' : '3em' + ' auto 250px',
             gridTemplateAreas: '"instructions" "ingredients" "title"',
             justifyItems: 'center',
@@ -398,55 +397,65 @@ const OrderFailed = () => (
 const DispButton = ({text, route, subPage, primary, set}: {text: string, route: string,
     subPage: number, primary: boolean, set: Function}) => (
     <Route render={({history}) => (
-        <div style={primary? util.primaryStyle : util.buttonStyle}
+        <button style={primary? util.primaryStyle : null}
              onClick={() => {
                  set('subPage', subPage)
                  history.push(util.indexUrl + route)
              }
              }>{text}
-        </div>
+        </button>
     )} />
 )
 
 const Start = ({setPage, setFlav}: {setPage: Function, setFlav: Function}) => {
     const style={
         cursor: 'pointer',
-        padding: 30,
-        height: 200,
-        flexBasis: '100%',
+        padding: '100px 30px',
+        gridRow: '1 / 2'
     }
-
+    // {/*<div style={{display: 'flex', height: 300, alignItems: 'center',*/}
+    // {/*justifyContent: 'center', textAlign: 'center', margin: 'auto'}}>*/}
+    // Grid is perhaps overkill compared to flex, but I can't get the flex items
+    // to vertically-center.
     return (
-        <div style={{display: 'flex', height: 300, alignItems: 'center',
-            textAlign: 'center'}}>
-            <Route render={({history}) => (
-                <div style={{...style, background: flavorColor}}
+        <Route render={({history}) => (
+            <div style={{
+                display: 'grid',
+                gridTemplateRows: '1fr',
+                gridTemplateColumns: '1fr 1fr',
+                textAlign: 'center',
+                margin: 'auto',
+                height: 300
+            }}>
+
+                <div style={{...style, gridColumn: '1 / 2', background: flavorColor}}
                      onClick={() => {
                          setPage(5)
                          setFlav(true)
                          history.push(util.indexUrl + 'flavors')
                      }}>
                     <h3 style={{fontSize: util.onMobile() ? 14 : null}}>
-                        Pick flavors - we'll build your tea
+                        Pick flavors
                     </h3>
-                    <h4 style={{fontSize: util.onMobile() ? 12 : null}}>(Fast and easy)</h4>
+                    <h4 style={{fontSize: util.onMobile() ? 12 : null}}>
+                        We'll build your tea - fast and easy</h4>
                 </div>
-            )} />
 
-            <Route render={({history}) => (
-                <div style={{...style, background: ingredColor}}
+                <div style={{...style, gridColumn: '2 / 3', background: ingredColor}}
                      onClick={() => {
                          setPage(0)
                          setFlav(false)
                          history.push(util.indexUrl + 'ingredients')
                      }}>
                     <h3 style={{fontSize: util.onMobile() ? 14 : null}}>
-                        Create it yourself, exactly how you like
+                        Create it yourself
                     </h3>
-                    <h4 style={{fontSize: util.onMobile() ? 12 : null}}>(Fully customizable)</h4>
+                    <h4 style={{fontSize: util.onMobile() ? 12 : null}}>
+                        Fully customizable</h4>
                 </div>
-            )} />
-        </div>
+
+            </div>
+        )} />
     )
 }
 
@@ -753,7 +762,7 @@ class Main extends React.Component<MainProps, MainState> {
                     display: 'grid',
                     width: util.onMobile() ? '100%' : '80%',
                     margin: 'auto',
-                    gridTemplateColumns: '1fm',
+                    gridTemplateColumns: '1fr',
                     gridTemplateRows: '130px 40px auto 40px 300px',
                     gridTemplateAreas: '"header" "menu" "content" "menu2" "footer"',
                 }}>

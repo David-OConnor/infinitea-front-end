@@ -322,7 +322,7 @@ export default ({blend, size, price, shippingPrice, address, orderCb, addressCb}
         style={{
             display: 'grid',
             gridTemplateRows: 'auto 180px auto',
-            gridTemplateColumns: '1fm 1fm',
+            gridTemplateColumns: '1fr 1fr',
             gridTemplateAreas: '"title title" "topleft topright" "form form"',
             alignItems: 'center',
             justifyItems: 'center',

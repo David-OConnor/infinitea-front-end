@@ -202,7 +202,7 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
         )
 
         return (
-            <div>
+            <div style={{textAlign: 'center'}}>
                 <h4 style={{textAlign: 'center', marginBottom: 40}}>
                     We'll build a blend from your choices
                 </h4>
@@ -217,7 +217,7 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
                 {ready ?
 
                     <Route render={({history}) => (
-                        <div
+                        <button
                             style={{...util.primaryStyle, marginTop: 40}}
                             onClick={() => {
                                 this.props.ingSelCb(
@@ -226,7 +226,7 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
                                 this.props.subPageCb(1)
                                 history.push(util.indexUrl + 'size')
                             }}
-                        >Create my tea ⇒</div>
+                        >Create my tea ⇒</button>
                     )} />
 
                     : null }

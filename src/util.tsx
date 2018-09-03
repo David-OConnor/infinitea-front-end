@@ -54,23 +54,24 @@ export function ingPortion(blend: Blend, val: number): string {
     return (val * 100 / totalVal).toFixed(0)
 }
 
-export const buttonStyle = {
-    cursor: 'pointer',
-    background: '#c4ddd2',
-    height: 40,
-    width: 200,
+// export const buttonStyle = {
+//     cursor: 'pointer',
+//     background: '#c4ddd2',
+//     height: 40,
+//     width: 200,
+//
+//     margin: 'auto',
+//     paddingTop: 9,
+//     // lineHeight: 40,
+//     textAlign: 'center' as any,  // wtf?
+//     // verticalAlign: 'middle',
+//     color: 'black',
+//     fontFamily: '"Lucida Sans Unicode"',
+//     fontSize: '1em',
+// }
 
-    margin: 'auto',
-    paddingTop: 9,
-    // lineHeight: 40,
-    textAlign: 'center' as any,  // wtf?
-    // verticalAlign: 'middle',
-    color: 'black',
-    fontFamily: '"Lucida Sans Unicode"',
-    fontSize: '1em',
-}
 export const primaryStyle = {
-    ...buttonStyle,
+    // ...buttonStyle,
     background: '#9091c2',
     fontWeight: 600
 }
