@@ -30,25 +30,6 @@ body {
     /*}*/
 /*}*/
 
-/*#outer {*/
-    /*!*position: absolute;*!*/
-
-    /*!*background-size: 100%;*!*/
-    /*background-color: #cecece;*/
-    /*!*background: url("../images/background.jpg") no-repeat top center;*!*/
-    /*!*background-color: #aaaaaa;*!*/
-    /*opacity: .4;*/
-    /*!*z-index: 99;*!*/
-/*}*/
-
-/*#inner {*/
-    /*!*position: absolute;*!*/
-    /*background: url("../images/background.jpg") no-repeat top center;*/
-    /*!*background-color: #aaaaaa;*!*/
-    /*opacity: 1;*/
-    /*z-index: 99;*/
-/*}*/
-
 h1 {
     font-family: 'Karla', sans-serif;
 }
@@ -66,23 +47,6 @@ h4 {
     font-weight: normal;
     font-family: 'Karla', sans-serif;
 }
-
-/*h2 {*/
-    /*font-family: times, Georgia, Verdana, Helvetica, sans-serif;*/
-/*}*/
-/*h3 {*/
-    /*font-family: times, Georgia, Verdana, Helvetica, sans-serif;*/
-/*}*/
-
-
-
-/*span {*/
-    /*font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif*/
-/*}*/
-
-/*div {*/
-    /*font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif*/
-/*}*/
 
 input {
     padding: 5px 12px;

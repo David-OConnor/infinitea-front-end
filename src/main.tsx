@@ -426,7 +426,9 @@ const Start = ({setPage, setFlav}: {setPage: Function, setFlav: Function}) => {
                          setFlav(true)
                          history.push(util.indexUrl + 'flavors')
                      }}>
-                    <h3>Pick flavors - we'll build your tea</h3>
+                    <h3 style={{fontSize: util.onMobile() ? 14 : null}}>
+                        Pick flavors - we'll build your tea
+                    </h3>
                     <h4>(Fast and easy)</h4>
                 </div>
             )} />
@@ -438,7 +440,9 @@ const Start = ({setPage, setFlav}: {setPage: Function, setFlav: Function}) => {
                          setFlav(false)
                          history.push(util.indexUrl + 'ingredients')
                      }}>
-                    <h3>Create it yourself, exactly how you like</h3>
+                    <h3 style={{fontSize: util.onMobile() ? 14 : null}}>
+                        Create it yourself, exactly how you like
+                    </h3>
                     <h4>(Fully customizable)</h4>
                 </div>
             )} />
