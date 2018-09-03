@@ -296,7 +296,8 @@ class Checkout extends React.Component<CheckoutProps, CheckoutState> {
             <div style={{margin: '0px auto', maxWidth: 800, boxSizing: 'border-box', padding: '0 5px'}}>
                 <AddressForm address={this.props.address} cb={this.props.addressCb}/>
 
-                <StripeProvider apiKey="pk_test_hf9oqK2GfiqI8ZII7cadPM3W">
+                {/*<StripeProvider apiKey="pk_test_hf9oqK2GfiqI8ZII7cadPM3W">*/}
+                <StripeProvider apiKey="pk_live_n37f11dQvFbbfyQZT6Qhf70y">
                     <Elements>
                         <CardForm
                             fontSize={elementFontSize}
