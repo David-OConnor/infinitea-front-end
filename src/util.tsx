@@ -115,8 +115,9 @@ export const TitleForm = ({title, descrip, titleCb, descripCb}:
             />
 
             <h4>Description</h4>
-            <input
-                type="text"
+            <textarea
+                // type="text"
+                style={{height: 40}}
                 value={descrip}
                 // Random description.
                 placeholder={description2}
