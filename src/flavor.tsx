@@ -203,9 +203,9 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
 
         return (
             <div style={{textAlign: 'center'}}>
-                <h4 style={{textAlign: 'center', marginBottom: 40}}>
+                <h2 style={{textAlign: 'center', marginBottom: 40}}>
                     We'll build a blend from your choices
-                </h4>
+                </h2>
 
                 <div style={{display: 'flex', flexFlow: 'row wrap'}}>
                     {items}
