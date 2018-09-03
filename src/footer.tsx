@@ -138,7 +138,8 @@ export default class _ extends React.Component<FooterProps, FooterState> {
                             this.setContactForm(true)
                             this.setConfirmation(false)
                         }}>
-                        Questions? Feedback?
+                        <span style={{fontWeight: 700}}>Questions? Feedback?</span>
+                        <br />
                         Send us a message
                     </button>
 
