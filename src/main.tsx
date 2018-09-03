@@ -119,6 +119,7 @@ const IngredPopover = ({ingred, showCb}: {ingred: Ingredient, showCb: Function})
             left: '50%',
             top: '50%',
             marginLeft: -popoverWidth / 2,
+            // Correction factor for text.
             marginTop: -(popoverWidth + 120) / 2
         }}
         onClick={() => showCb()}
@@ -142,9 +143,6 @@ interface IngredCardState {
     showPopover: boolean
 }
 
-// const IngredientCard = ({ingredient, val, selectCb}:
-//                             {ingredient: Ingredient, val: number, selectCb: Function}) => {
-//
 class IngredientCard extends React.Component<IngredCardProps, IngredCardState> {
     // Make selectCb null to hide the slider
     constructor(props: IngredCardProps) {
@@ -188,6 +186,7 @@ class IngredientCard extends React.Component<IngredCardProps, IngredCardState> {
                 marginLeft: 20,
                 marginRight: 20,
                 display: 'flex', flexDirection: 'column',
+                alignItems: 'center'
             }}>
                 <h4 style={{
                     color: val > 0 ? selectedColor : 'black',
@@ -211,6 +210,7 @@ class IngredientCard extends React.Component<IngredCardProps, IngredCardState> {
                     marginBottom: 0,
                     textAlign: 'left',
                     cursor: 'pointer',
+                    alignSelf: 'stretch'
                 }}>
                     <Rheostat
                         min={0}
