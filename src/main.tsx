@@ -88,7 +88,7 @@ const Heading = ({set}: {set: Function}) => (
                     history.push(util.indexUrl)
                 }}
             >Infini·tea ∞ </h1>
-            <h3>Unique blends, designed by you</h3>
+            <h2>Unique blends, designed by you</h2>
         </div>
     )} />
 )
