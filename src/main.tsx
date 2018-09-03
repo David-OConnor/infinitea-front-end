@@ -791,7 +791,7 @@ class Main extends React.Component<MainProps, MainState> {
                         {display}
                     </div>
 
-                    <div style={{gridArea: 'menu2'}}>
+                    <div style={{gridArea: 'menu2', textAlign: 'center'}}>
                         {this.state.page === 0 ? nextDisplayButtons : null }
                     </div>
 
