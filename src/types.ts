@@ -14,6 +14,7 @@ export interface Ingredient {
     minty: number
     chocolate: number
     spicy: number
+    hot: number
     savory: number
     price: number
     inventory: number

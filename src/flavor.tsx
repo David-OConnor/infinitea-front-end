@@ -52,6 +52,9 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
                 case 8:
                     val = ing.floral
                     break;
+                case 9:
+                    val = ing.spicy
+                    break;
                 default:
                     val = 0
             }
@@ -171,7 +174,8 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
         flavors.set(0, 'Tea 🍵')
         flavors.set(7, 'Sweet 🍬')
         flavors.set(1, 'Citrus 🍋')
-        flavors.set(2, 'Spicy 🌶️')
+        flavors.set(2, 'Spicy 🥧')
+        flavors.set(9, 'Hot 🌶️')
         flavors.set(3, 'Chocolate 🍫')
         flavors.set(4, 'Tart 🍒')
         flavors.set(5, 'Minty 🌿')
