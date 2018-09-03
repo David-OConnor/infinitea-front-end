@@ -1,7 +1,6 @@
 import axios from "axios"
 import * as React from 'react'
 import * as ReactDOM from "react-dom"
-import {OverlayTrigger, Popover} from 'react-bootstrap'
 import { BrowserRouter as Router, Route } from "react-router-dom"
 import 'rheostat/initialize'
 import Rheostat from 'rheostat'
@@ -93,73 +92,136 @@ const Heading = ({set}: {set: Function}) => (
             <h3>Unique blends, designed by you</h3>
         </div>
     )} />
-
 )
 
-const IngredientCard = ({ingredient, val, selectCb}:
-                            {ingredient: Ingredient, val: number, selectCb: Function}) => {
-    // Make selectCb null to hide the slider
-    const imgSrc = './images/' + ingredient.name.toLowerCase() + '.jpg'
-
-    const popoverWidth = util.onMobile()? 200 : 400
-
+const IngredPopover = ({ingred, showCb}: {ingred: Ingredient, showCb: Function}) => {
+    const popoverWidth = util.onMobile() ? 300 : 500
+    // const popoverWidth = '80%'
+    const imgSrc = './images/' + ingred.name.toLowerCase() + '.jpg'
     let organicTag = null
-    if (ingredient.organic === 1) {
+    if (ingred.organic === 1) {
         organicTag = <h4>USDA certified organic</h4>
-    } else if (ingredient.organic === 2) {
+    } else if (ingred.organic === 2) {
         organicTag = <h4>Organic</h4>
     }
 
-    const popover = <Popover
-        style={{width:  popoverWidth + 40}}
-        id="0"  // Not sure what this does.
-        placement="left"  // Appears to be overridden by the trigger.
-        title={ingredient.name}
-    >
-        <p>{ingredient.description}</p>
-        {organicTag}
-        <img style={{display: 'flex', margin: 'auto'}} src={imgSrc}
-             height={popoverWidth} width={popoverWidth} />
-    </Popover>
+    return (
+        <div style={{
+            width: popoverWidth,
+            cursor: 'pointer',
+            border: '1px solid black',
+            // zIndex and background are both required to
+            // have it show over other items.
+            zIndex: 999,
+            background: 'white',
+            position: 'fixed',
+            margin: 'auto',
+            left: '50%',
+            top: '50%',
+            marginLeft: -popoverWidth / 2,
+            marginTop: -(popoverWidth + 120) / 2
+        }}
+        onClick={() => showCb()}
+        >
+            <h4>{ingred.name}</h4>
+            <p style={{fontSize: util.onMobile() ? 12 : 14}}>{ingred.description}</p>
+            {organicTag}
+            <img style={{display: 'flex', margin: 'auto'}} src={imgSrc}
+                 height={popoverWidth} width={popoverWidth}/>
+        </div>
+    )
+}
 
-    const selectedColor = '#3330ab'
-    let style = {
-        cursor: 'pointer',
-        borderWidth: "5px",
-        borderStyle: 'solid',
-        borderColor: 'white',  // not-selected
-        borderRadius: '50%'
+interface IngredCardProps {
+    ingredient: Ingredient
+    val: number
+    selectCb: Function
+}
+
+interface IngredCardState {
+    showPopover: boolean
+}
+
+// const IngredientCard = ({ingredient, val, selectCb}:
+//                             {ingredient: Ingredient, val: number, selectCb: Function}) => {
+//
+class IngredientCard extends React.Component<IngredCardProps, IngredCardState> {
+    // Make selectCb null to hide the slider
+    constructor(props: IngredCardProps) {
+        super(props)
+        this.state = {showPopover: false}
+
+        this.togglePopover = this.togglePopover.bind(this)
     }
 
-    // Select color rather than style to keep the card from changing size.
-    if (val > 0) {style['borderColor'] = selectedColor}
+    togglePopover() {
+        this.setState({showPopover: !this.state.showPopover})
+    }
 
-    return (
-        <div style={{textAlign: 'center', width: 110, marginLeft: 20, marginRight: 20,
+    render() {
+        const ingredient = this.props.ingredient
+        const val = this.props.val
+        const selectCb = this.props.selectCb
 
-        }}>
-            <h4 style={{color: val > 0 ? selectedColor : 'black', height: '1.1em'}}>
-                {ingredient.name}
-            </h4>
+        const imgSrc = './images/' + ingredient.name.toLowerCase() + '.jpg'
 
-            <OverlayTrigger trigger={['hover', 'focus']} placement="bottom" overlay={popover}>
+        const selectedColor = '#3330ab'
+        let style = {
+            // Don't use the pointer if
+            // cursor: selectCb !== null ? null :'pointer',
+            cursor :'pointer',
+            borderWidth: 5,
+            borderStyle: 'solid',
+            borderColor: 'white',  // not-selected
+            borderRadius: '50%',
+        }
+
+        // Select color rather than style to keep the card from changing size.
+        if (val > 0) {
+            style.borderColor = selectedColor
+        }
+
+        return (
+            <div style={{
+                textAlign: 'center',
+                width: 110,
+                marginLeft: 20,
+                marginRight: 20,
+                display: 'flex', flexDirection: 'column',
+            }}>
+                <h4 style={{
+                    color: val > 0 ? selectedColor : 'black',
+                    height: '1.1em'
+                }}>
+                    {ingredient.name}
+                </h4>
+
                 <img src={imgSrc}
                      style={style}
                      width={64} height={64}
+                     onClick={() => this.togglePopover()}
                 />
-            </OverlayTrigger>
-            {/*  textAlign left or slider will be in the wrong place. */}
 
-            {selectCb !== null ? <div style={{marginTop: 20, marginBottom: 0, textAlign: 'left', cursor: 'pointer'}}>
-                <Rheostat
-                    min={0}
-                    max={100}
-                    values={[val]}
-                    onChange={(e: any) => selectCb(e.values[0])}
-                />
-            </div> : null }
-        </div>
-    )
+                {this.state.showPopover ?
+                    <IngredPopover ingred={ingredient} showCb={this.togglePopover} /> : null}
+
+                {/*  textAlign left or slider will be in the wrong place. */}
+                {selectCb !== null ? <div style={{
+                    marginTop: 20,
+                    marginBottom: 0,
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                }}>
+                    <Rheostat
+                        min={0}
+                        max={100}
+                        values={[val]}
+                        onChange={(e: any) => selectCb(e.values[0])}
+                    />
+                </div> : null}
+            </div>
+        )
+    }
 }
 
 // const BlendDisplay = ({ingredients, ingSelection}:

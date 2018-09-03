@@ -3,7 +3,6 @@ import * as React from 'react'
 import {Blend} from "./types"
 
 
-
 const HOSTNAME = window && window.location && window.location.hostname
 let online = false
 
