@@ -22,8 +22,8 @@ export default () => (
         <hr style={{marginTop: 50}} />
         <h2 style={{marginTop: 50}}>🍵 FAQ</h2>
 
-        <h4 style={{marginTop: 20}}>How are we different from other
-            online tea shops?</h4>
+        <h3 style={{...FAQStyle, marginTop: 20}}>How are we different from other
+            online tea shops?</h3>
         <p>We focus on the experience of creating personalized teas.
             While a few
             existing shops will make custom blends, our goal is to make
@@ -33,33 +33,33 @@ export default () => (
             design page. Enjoy the quality and taste, blended with your
             creativitea.</p>
 
-        <h4 style={FAQStyle}>Do you ship outside the US?</h4>
+        <h3 style={FAQStyle}>Do you ship outside the US?</h3>
         <p>Not at this time. We'd like to in the future though!</p>
 
-        <h4 style={FAQStyle}>Do you plan to increase your
-            selection of ingredients?</h4>
+        <h3 style={FAQStyle}>Do you plan to increase your
+            selection of ingredients?</h3>
         <p>Yes! We're just getting started, and will increase our
             selection over time.
             Have a specific inredient you'd like to see? Let us know using
             the 'Send us a message'
             button below.</p>
 
-        <h4 style={FAQStyle}>How quickly do you ship orders?</h4>
+        <h3 style={FAQStyle}>How quickly do you ship orders?</h3>
         <p>We ship your order within 3 days of when you place it.</p>
 
-        <h4 style={FAQStyle}>Will you send marketing emails after I order?</h4>
+        <h3 style={FAQStyle}>Will you send marketing emails after I order?</h3>
         <p>Not a chance.</p>
 
-        <h4 style={FAQStyle}>Can I register an account to save my blends and shipping/payment info?</h4>
+        <h3 style={FAQStyle}>Can I register an account to save my blends and shipping/payment info?</h3>
         <p>Not currently. We've decided to keep our order process simple and streamlined by
             forgoeing user accounts. It's one less thing for you to remember, and the best
             way to keep your personal info safe is not to store it at all.
             If you'd like to see this change, send us a message.</p>
 
-        <h4 style={FAQStyle}>Other tea stores advertise health
+        <h3 style={FAQStyle}>Other tea stores advertise health
             and medicinal benefits associated with their
             teas and ingredients. What benefits are associated with
-            yours?</h4>
+            yours?</h3>
         <p>Enjoy the taste and caffeine kick. Some chemicals in green tea have been found
             to have antioxidant, anticarcinogen, and anti-inflammatory effects in lab studies, but
             there's no evidence that drinking tea offers these benefits. We encourage you to do
@@ -71,7 +71,7 @@ export default () => (
             contains theobromine - a stimulent similar to, but weaker than caffeine,
             and hibiscus contains vitamin C. </p>
 
-        <h4 style={FAQStyle}>Does tea expire?</h4>
+        <h3 style={FAQStyle}>Does tea expire?</h3>
         <p>Tea lasts for years due to its low moisture content. Store in
             an area with low humidty like a box or cabinet. Over time the flavor may
             dull (More so in green tea than black), but old tea is safe to drink.</p>
