@@ -6,10 +6,10 @@ import {Blend} from "./types"
 const HOSTNAME = window && window.location && window.location.hostname
 let online = false
 
-if (HOSTNAME === 'infinitea.herokuapp.com' || HOSTNAME === 'www.infinitea.org'
+if (HOSTNAME === 'infinitea.herokuapp.com' || HOSTNAME === 'infinitea.org'
     || HOSTNAME === 'david-oconnor.github.io' ||
     HOSTNAME === 'amazing-villani-7734f7.netlify.com') {
-    online = true
+        online = true
 }
 
 export const BASE_URL = online ? 'https://infinitea.herokuapp.com/api/' :
