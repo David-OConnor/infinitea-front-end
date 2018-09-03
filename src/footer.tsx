@@ -43,7 +43,8 @@ class ContactForm extends React.Component<ContactProps, ContactState> {
             <form style={{
                 display: 'flex',
                 flexDirection: 'column',
-                width: 500,
+                width: '100%',
+                maxWidth: 500,
                 margin: 'auto',
                 background: 'white',
                 opacity: util.mainOpacity,
