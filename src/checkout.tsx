@@ -32,7 +32,10 @@ const YourBlend = ({blend}: {blend: Blend}) => (
     <div>
         <h3>Your blend</h3>
         <ul>
-            {blend.ingredients.map(ing => <li key={ing[0].id}>
+            {blend.ingredients.map(ing => <li
+                key={ing[0].id}
+                style={{fontSize: util.onMobile() ? 14 : null}}
+            >
                 {ing[0].name + ' ' + util.ingPortion(blend, ing[1]) + '%'}
             </li>)}
         </ul>
@@ -82,7 +85,7 @@ const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
     let emailStyle = emptyStyle
     if (address.email.length > 0) {
         emailStyle = address.email.length >= minEmail && address.email.includes('@') &&
-                address.email.includes('.') ? validStyle : invalidStyle
+        address.email.includes('.') ? validStyle : invalidStyle
     }
 
     let address1Style = emptyStyle
@@ -108,13 +111,13 @@ const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
     let postalStyle = emptyStyle
     if (address.postal.length > 0) {
         postalStyle = address.postal.length >= minPostal &&
-            address.postal.length <= maxPostal ? validStyle : invalidStyle
+        address.postal.length <= maxPostal ? validStyle : invalidStyle
     }
 
     let phoneStyle = emptyStyle
     if (address.phone.length > 0) {
         phoneStyle = address.phone.length >=minPhone &&
-            address.phone.length <= maxPhone ? validStyle : invalidStyle
+        address.phone.length <= maxPhone ? validStyle : invalidStyle
     }
 
 
@@ -359,6 +362,10 @@ class Checkout extends React.Component<CheckoutProps, CheckoutState> {
     }
 }
 
+const topRightStyle = {
+    fontSize: util.onMobile() ? 14 : null,
+}
+
 export default ({blend, size, price, shippingPrice, address, orderCb, addressCb}:
                     {blend: Blend, size: number, price: number, shippingPrice: number,
                         address: Address, orderCb: Function, addressCb: Function}) => (
@@ -387,10 +394,10 @@ export default ({blend, size, price, shippingPrice, address, orderCb, addressCb}
         </div>
 
         <div style={{gridArea: 'topright'}}>
-            <h4 style={{textAlign: 'left'}}>Size: {size + " grams"}</h4>
-            <h4 style={{textAlign: 'left'}}>Price: {"$" + util.priceDisplay(price) + " + $" +
+            <h4 style={topRightStyle}>Size: {size + " grams"}</h4>
+            <h4 style={topRightStyle}>Price: {"$" + util.priceDisplay(price) + " + $" +
             util.priceDisplay(shippingPrice) + " shipping"}</h4>
-            <h4 style={{textAlign: 'left'}}>{"Total: $" + util.priceDisplay(price + shippingPrice)}</h4>
+            <h4 style={topRightStyle}>{"Total: $" + util.priceDisplay(price + shippingPrice)}</h4>
         </div>
 
 
