@@ -22,7 +22,7 @@ export default () => (
         <hr style={{marginTop: 50}} />
         <h2 style={{marginTop: 50}}>🍵 FAQ</h2>
 
-        <h3 style={{...FAQStyle, marginTop: 20}}>How are you different from other
+        <h3 style={FAQStyle}>How are you different from other
             online tea shops?</h3>
         <p>We focus on the experience of creating personalized teas.
             While a few
