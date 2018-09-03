@@ -274,7 +274,7 @@ const Picker = ({ingredients, title, descrip, blend, ingSelection, selectCb, tit
 
             <div style={{gridArea: 'instructions'}}>
 
-                <h4>{blendText}</h4>
+                <h3>{blendText}</h3>
             </div>
 
             <div style={{
