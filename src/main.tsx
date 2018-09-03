@@ -181,7 +181,7 @@ class IngredientCard extends React.Component<IngredCardProps, IngredCardState> {
         return (
             <div style={{
                 textAlign: 'center',
-                width: 110,
+                width: util.onMobile() ? 80 : 120,
                 marginLeft: 20,
                 marginRight: 20,
                 display: 'flex', flexDirection: 'column',
