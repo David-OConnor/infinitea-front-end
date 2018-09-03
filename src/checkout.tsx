@@ -68,10 +68,56 @@ const cardOptions = () => {
 }
 
 
+const emptyStyle = {borderColor: 'black'}
 const validStyle = {borderColor: 'green'}
 const invalidStyle = {borderColor: '#b4677e'}
 
 const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
+
+    let nameStyle = emptyStyle
+    if (address.name.length > 0) {
+        nameStyle = address.name.length >= minName ? validStyle : invalidStyle
+    }
+
+    let emailStyle = emptyStyle
+    if (address.email.length > 0) {
+        emailStyle = address.email.length >= minEmail && address.email.includes('@') &&
+                address.email.includes('.') ? validStyle : invalidStyle
+    }
+
+    let address1Style = emptyStyle
+    if (address.address1.length > 0) {
+        address1Style = address.address1.length >= minAddress1 ? validStyle : invalidStyle
+    }
+
+    let address2Style = emptyStyle
+    if (address.address2.length > 0) {
+        address2Style = address.address2.length >= minAddress2 ? validStyle : invalidStyle
+    }
+
+    let cityStyle = emptyStyle
+    if (address.city.length > 0) {
+        cityStyle = address.city.length >= minCity ? validStyle : invalidStyle
+    }
+
+    let stateStyle = emptyStyle
+    if (address.state.length > 0) {
+        stateStyle = address.state.length >= minState ? validStyle : invalidStyle
+    }
+
+    let postalStyle = emptyStyle
+    if (address.postal.length > 0) {
+        postalStyle = address.postal.length >= minPostal &&
+            address.postal.length <= maxPostal ? validStyle : invalidStyle
+    }
+
+    let phoneStyle = emptyStyle
+    if (address.phone.length > 0) {
+        phoneStyle = address.phone.length >=minPhone &&
+            address.phone.length <= maxPhone ? validStyle : invalidStyle
+    }
+
+
     return (
         <form>
             <h4> Only orders to US addresses accepted at this time.
@@ -80,7 +126,7 @@ const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
 
             <h4 style={{marginBottom: 0}}>Your name</h4>
             <input
-                style={address.name.length >= minName ? validStyle : invalidStyle}
+                style={nameStyle}
                 // style={validStyle}
                 type="text"
                 value={address.name}
@@ -90,8 +136,7 @@ const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
 
             <h4 style={{marginBottom: 0}}>Email address</h4>
             <input
-                style={address.email.length >= minEmail && address.email.includes('@') &&
-                address.email.includes('.') ? validStyle : invalidStyle}
+                style={emailStyle}
                 type="text"
                 value={address.email}
                 placeholder="Email"
@@ -100,7 +145,7 @@ const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
 
             <h4 style={{marginBottom: 0}}>Address, line 1</h4>
             <input
-                style={address.address1.length >= minAddress1 ? validStyle : invalidStyle}
+                style={address1Style}
                 type="text"
                 value={address.address1}
                 placeholder="Address 1"
@@ -109,7 +154,7 @@ const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
 
             <h4 style={{marginBottom: 0}}>Address, line 2 (eg apartment #)</h4>
             <input
-                style={address.address2.length >= minAddress2 ? validStyle : invalidStyle}
+                style={address2Style}
                 type="text"
                 value={address.address2}
                 placeholder="(Optional)"
@@ -118,7 +163,7 @@ const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
 
             <h4 style={{marginBottom: 0}}>City</h4>
             <input
-                style={address.city.length >= minCity ? validStyle : invalidStyle}
+                style={cityStyle}
                 type="text"
                 value={address.city}
                 placeholder="City"
@@ -127,7 +172,7 @@ const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
 
             <h4 style={{marginBottom: 0}}>State</h4>
             <input
-                style={address.state.length >= minState ? validStyle : invalidStyle}
+                style={stateStyle}
                 type="text"
                 value={address.state}
                 placeholder="State"
@@ -136,7 +181,7 @@ const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
 
             <h4 style={{marginBottom: 0}}>Postal (ZIP) code</h4>
             <input
-                style={address.postal.length >= minPostal && address.postal.length <= maxPostal ? validStyle : invalidStyle}
+                style={postalStyle}
                 type="text"
                 value={address.postal}
                 placeholder="Postal code"
@@ -145,8 +190,7 @@ const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
 
             <h4 style={{marginBottom: 0}}>Phone number</h4>
             <input
-                style={address.phone.length >=minPhone &&
-                address.phone.length <= maxPhone ? validStyle : invalidStyle}
+                style={phoneStyle}
                 type="text"
                 value={address.phone}
                 placeholder="Phone number"
@@ -215,7 +259,7 @@ class _CardForm extends React.Component<any, any> {
                 <h4 style={{marginBottom: 0}}>Card details</h4>
                 {/*// Having trouble styling the card form.*/}
                 <div className='card' style={{margin: 'auto', height: 25,
-                    borderColor: this.state.cardValid ? 'green' : '#b4677e'}}>
+                    borderColor: this.state.cardValid ? 'green' : 'black'}}>
                     <CardElement
                         // style={{paddingTop: 20}}
                         onChange={(e) => {

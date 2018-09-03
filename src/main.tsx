@@ -345,8 +345,8 @@ const OrderDetails = ({sizeSelected, blend, title, description, sizeCb}:
                 top: 52, left: 20,
             }}>
                 <h4 style={{fontSize: 9, marginBottom: 5}}>{title}</h4>
-                <p style={{fontSize: 6, marginTop: 0, marginBottom: 5, fontStyle: 'italic'}}>{description}</p>
-                <p style={{fontSize: 6, marginTop: 0}}>{blendNameSimple(blend)}</p>
+                <p style={{fontSize: 7, marginTop: 0, marginBottom: 5, fontStyle: 'italic'}}>{description}</p>
+                <p style={{fontSize: 7, marginTop: 0}}>{blendNameSimple(blend)}</p>
             </div>
         </div>
 
