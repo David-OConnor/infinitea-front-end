@@ -66,8 +66,10 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
                 // todo note: We don't take into account ings
                 // todo that count towards multiple flavors here;
                 // todo perhaps we should
-                numTeas = result.reduce((acc, ing) => ing.caffeine > 0 ? acc + 1 : acc, 0)
 
+
+                numTeas = suitableIngs.reduce((acc, ing) => ing.caffeine > 0 ? acc + 1 : acc, 0)
+                // Limit the number of teas in the blend.
                 if (!suitableIngs.map(i => i.id).includes(ing.id)) {
                     if (ing.caffeine <= 0 || numTeas < maxTeas) {
                         suitableIngs.push(ing)
