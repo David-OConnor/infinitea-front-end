@@ -7,6 +7,9 @@ import {Ingredient} from "./types";
 
 function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [number, number][] {
     const targetNumIngreds = 4
+    const maxTeas = 2  // ie tea proper.
+
+    // Note that we're inconsistent with terms 'tea' (here) and 'caffeine" (model)
 
     let selectedArr: number[] = []
     selected.forEach(
@@ -19,7 +22,7 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
 
     // suitableIngsPerFlav is used to make sure we get at least one ingred
     // per selected flav. suitableIngs is used later, to add additional ings.
-    let suitableIngs = [], suitableIngsPerFlav, val
+    let suitableIngs = [], numTeas = 0, suitableIngsPerFlav, val
     for (let flavor of selectedArr) {
         suitableIngsPerFlav = []
         for (let ing of ingredients) {
@@ -63,9 +66,12 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
                 // todo note: We don't take into account ings
                 // todo that count towards multiple flavors here;
                 // todo perhaps we should
+                numTeas = result.reduce((acc, ing) => ing.caffeine > 0 ? acc + 1 : acc, 0)
 
                 if (!suitableIngs.map(i => i.id).includes(ing.id)) {
-                    suitableIngs.push(ing)
+                    if (ing.caffeine <= 0 || numTeas < maxTeas) {
+                        suitableIngs.push(ing)
+                    }
                 }
 
             }
@@ -210,9 +216,9 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
                     We'll build a blend from your choices
                 </h2>
                 <p>Choose as many flavors as you like, we'll pick ingredients
-                that match your choices. If you don't like the result after clicking
-                'Create my tea', you can go back and try again with the same flavors,
-                different ones, or customize with 'Pick Ingredients' above.</p>
+                    that match your choices. If you don't like the result after clicking
+                    'Create my tea', you can go back and try again with the same flavors,
+                    different ones, or customize with 'Pick Ingredients' above.</p>
 
                 <div style={{display: 'flex', flexFlow: 'row wrap', marginTop: 40}}>
                     {items}

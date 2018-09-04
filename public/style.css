@@ -9,26 +9,35 @@ body {
     background-position: top center;
     background-size: auto;
 
-    font-family: 'Karla', sans-serif;
+    /*font-family: 'Karla', sans-serif;*/
 }
 
+
 /*@media (min-width: 0px) {*/
-    /*body {*/
-        /*background-image: url("../images/background-slim.jpg");*/
-    /*}*/
+/*body {*/
+/*background-image: url("../images/background-slim.jpg");*/
+/*}*/
 /*}*/
 
 /*@media (min-width: 800px) {*/
-    /*body {*/
-        /*background-image: url("../images/background-portrait.jpg");*/
-    /*}*/
+/*body {*/
+/*background-image: url("../images/background-portrait.jpg");*/
+/*}*/
 /*}*/
 
 /*@media (min-width: 1100px) {*/
-    /*body {*/
-        /*background-image: url("../images/background.jpg");*/
-    /*}*/
+/*body {*/
+/*background-image: url("../images/background.jpg");*/
 /*}*/
+/*}*/
+
+div {
+    font-family: 'Karla', sans-serif;
+}
+
+span {
+    font-family: 'Karla', sans-serif;
+}
 
 h1 {
     font-family: 'Karla', sans-serif;
@@ -45,6 +54,10 @@ h3 {
 
 h4 {
     font-weight: normal;
+    font-family: 'Karla', sans-serif;
+}
+
+p {
     font-family: 'Karla', sans-serif;
 }
 

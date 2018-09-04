@@ -274,10 +274,10 @@ class _CardForm extends React.Component<any, any> {
                 </div>
                 {
                     this.props.addressValid && this.state.cardValid && !this.props.processing ?
-                        <div
+                        <button type='button'
                             style={{...util.primaryStyle, marginTop: 30}}
                             onClick={(e: any) => this.handleSubmit(e)}
-                        >Place Order</div> : null
+                        >Place Order</button> : null
                 }
             </form>
         );
