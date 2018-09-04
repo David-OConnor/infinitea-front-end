@@ -76,7 +76,7 @@ export default () => (
 
         <h3>Governing Law & Jurisdiction</h3>
 
-        <p>These Terms will be governed by and interpreted in accordance with the laws of the State of us, and you submit to the non-exclusive jurisdiction of the state and federal courts located in us for the resolution of any disputes.</p>
+        <p>These Terms will be governed by and interpreted in accordance with the laws of the State of North Carolina, and you submit to the non-exclusive jurisdiction of the state and federal courts located in us for the resolution of any disputes.</p>
 
     </div>
 )
