@@ -120,13 +120,8 @@ const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
         address.phone.length <= maxPhone ? validStyle : invalidStyle
     }
 
-
-    return (
-        <form>
-            <h4> Only orders to US addresses accepted at this time.
-                Expect international shipping in the future!</h4>
-            <h3 style={{marginBottom: 20}}>Shipping address</h3>
-
+    const col1 = (
+        <React.Fragment>
             <h4 style={{marginBottom: 0}}>Your name</h4>
             <input
                 style={nameStyle}
@@ -163,7 +158,11 @@ const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
                 placeholder="(Optional)"
                 onChange={(e: any) => cb('address2', e.target.value)}
             />
+        </React.Fragment>
+    )
 
+    const col2 = (
+        <React.Fragment>
             <h4 style={{marginBottom: 0}}>City</h4>
             <input
                 style={cityStyle}
@@ -199,6 +198,42 @@ const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
                 placeholder="Phone number"
                 onChange={(e: any) => cb('phone', e.target.value)}
             />
+        </React.Fragment>
+    )
+
+
+    return (
+        <form style={{
+            display: 'grid',
+            gridTemplateColumns: util.onMobile() ? '1fr' : '1fr 1fr',
+            gridTemplateRows: 'auto auto'
+        }}>
+
+            <div style={{gridColumn: '1 / 3', gridRow: '1 / 2'}}>
+                <h4> Only orders to US addresses accepted at this time.
+                    Expect international shipping in the future!</h4>
+                <h3 style={{marginBottom: 20}}>Shipping address</h3>
+            </div>
+
+            {util.onMobile() ? (
+
+                <div style={{gridColumn: '1 / 3', gridRow: '2 / 3'}}>
+                    {col1}
+                    {col2}
+                </div>
+            ) : (
+                <React.Fragment>
+                    <div style={{gridColumn: '1 / 2', gridRow: '2 / 3'}}>
+                        {col1}
+                    </div>
+
+                    <div style={{gridColumn: '2 / 3', gridRow: '2 / 3'}}>
+                        {col2}
+                    </div>
+                </React.Fragment>
+            )}
+
+
         </form>
     )
 }
@@ -275,8 +310,8 @@ class _CardForm extends React.Component<any, any> {
                 {
                     this.props.addressValid && this.state.cardValid && !this.props.processing ?
                         <button type='button'
-                            style={{...util.primaryStyle, marginTop: 30}}
-                            onClick={(e: any) => this.handleSubmit(e)}
+                                style={{...util.primaryStyle, marginTop: 30}}
+                                onClick={(e: any) => this.handleSubmit(e)}
                         >Place Order</button> : null
                 }
             </form>

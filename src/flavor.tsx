@@ -6,15 +6,18 @@ import {Ingredient} from "./types";
 
 
 function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [number, number][] {
+    // Todo this function has lots of room for improvement, algo-wise.
     const targetNumIngreds = 4
     const maxTeas = 2  // ie tea proper.
 
     // Note that we're inconsistent with terms 'tea' (here) and 'caffeine" (model)
 
+    let suitable: Map<number, number[]> = new Map()
     let selectedArr: number[] = []
     selected.forEach(
-        (sel, i, map) => {
-            if (sel) {selectedArr.push(i)}
+        (sel, flavId, map) => {
+            suitable.set(flavId, [])
+            if (sel) {selectedArr.push(flavId)}
         }
     )
 
@@ -23,6 +26,9 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
     // suitableIngsPerFlav is used to make sure we get at least one ingred
     // per selected flav. suitableIngs is used later, to add additional ings.
     let suitableIngs = [], numTeas = 0, suitableIngsPerFlav, val
+
+
+
     for (let flavor of selectedArr) {
         suitableIngsPerFlav = []
         for (let ing of ingredients) {
@@ -62,16 +68,20 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
                     val = 0
             }
             if (val > 0) {
-                suitableIngsPerFlav.push(ing)
+                suitable.set(flavor, suitable.get(flavor).concat([ing.id]))
                 // todo note: We don't take into account ings
                 // todo that count towards multiple flavors here;
                 // todo perhaps we should
 
 
-                numTeas = suitableIngs.reduce((acc, ing) => ing.caffeine > 0 ? acc + 1 : acc, 0)
+                numTeas = suitableIngs.reduce((acc, ing) => ing.category === 0 ? acc + 1 : acc, 0)
                 // Limit the number of teas in the blend.
+
+                // todo flavor or category to determine if tea is selected.
+
+                // todo joined, not nested if?
                 if (!suitableIngs.map(i => i.id).includes(ing.id)) {
-                    if (ing.caffeine <= 0 || numTeas < maxTeas) {
+                    if (ing.category !== 0 || numTeas < maxTeas) {
                         suitableIngs.push(ing)
                     }
                 }
@@ -82,7 +92,11 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
         // For each additional ingredient marked with this flavor, there's some
         // chance to add it too.
         // Make sure to add at least one suitable ing per flavor selected.
-        result.push(util.randChoice(suitableIngsPerFlav))
+        // result.push(util.randChoice(suitableIngsPerFlav))
+    }
+
+    for (let flavId of selectedArr) {
+        result.push(util.randChoice(suitable.get(flavId)))
     }
 
     let numIngs = targetNumIngreds

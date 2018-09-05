@@ -19,6 +19,8 @@ export interface Ingredient {
     price: number
     inventory: number
     organic: number
+    pairings: number[]  // id
+    clashes: number[]  // id
 }
 
 export interface Blend {

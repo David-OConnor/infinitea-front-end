@@ -17,6 +17,8 @@ export interface Ingredient {
     price: number;
     inventory: number;
     organic: number;
+    pairings: number[];
+    clashes: number[];
 }
 export interface Blend {
     title: string;

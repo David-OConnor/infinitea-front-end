@@ -614,7 +614,7 @@ class Main extends React.Component<MainProps, MainState> {
     }
 
     render() {
-        // Todo this handles forward in addition to back.
+        // This handles forward in addition to back.
         window.onpopstate = this.nav
 
         const selected = this.state.ingredients.filter(ing => this.state.ingSelection.get(ing.id) > 0)
@@ -798,7 +798,6 @@ class Main extends React.Component<MainProps, MainState> {
                     <div style={{gridArea: 'footer'}}>
                         <Footer setPage={(page: number) => this.set('page', page)} />
                     </div>
-
                 </div>
             </Router>
 
