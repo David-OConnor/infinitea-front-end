@@ -81,7 +81,6 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
     )
 
     for (let flavor of selectedArr) {
-        // suitableIngsPerFlav = []
         for (let ing of ingredients) {
             if (ing[flavAttrMap.get(flavor)] > 0) {
                 suitable.set(flavor, suitable.get(flavor).concat([ing.id]))
@@ -126,7 +125,7 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
     for (let i=0; i<=numIters; i++) {
         shuffle(suitableArr)
 
-        candidate = suitableArr.slice(0, numIngs)
+        candidate = suitableArr.slice(0, numIngs + 1)
         candidateIngs = candidate.map(id => ingFromId(id, ingredients))
 
         mixes.push([candidateIngs, score(candidateIngs, selectedArr)])
