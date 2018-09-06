@@ -79,6 +79,7 @@ const Heading = ({set}: {set: Function}) => (
     <Route render={({history}) => (
         <div style={{
             textAlign: 'center',
+            marginBottom: 40,
         }}>
             <h1
                 style={{cursor: 'pointer'}}
@@ -300,14 +301,14 @@ const Picker = ({ingredients, title, descrip, blend, ingSelection, selectCb, tit
 
 
 const YourBlend = ({blend}: {blend: Blend}) => (
-    <div>
+    <>
         <h3>Your blend</h3>
         <div style={{display: 'flex', flexWrap: 'wrap'}}>
             {blend.ingredients.map(ing =>
                 <IngredientCard key={ing[0].id} ingredient={ing[0]} val={ing[1]} selectCb={null}/>
             )}
         </div>
-    </div>
+    </>
 )
 
 function blendNameSimple(blend: Blend) {
@@ -381,17 +382,17 @@ const OrderDetails = ({sizeSelected, blend, title, description, sizeCb}:
 
 
 const OrderPlaced = () => (
-    <div>
+    <>
         <h1 style={{color: '#9ae27f'}}>Order placed successfully!</h1>
         <h3>We'll send a confirmation email with order details soon</h3>
-    </div>
+    </>
 )
 
 const OrderFailed = () => (
-    <div>
+    <>
         <h1 style={{color: '#e25f45'}}>There was a problem placing your order. 😞</h1>
         <h3>If this happens again, please let us know.</h3>
-    </div>
+    </>
 )
 
 const DispButton = ({text, route, subPage, primary, set}: {text: string, route: string,
@@ -763,7 +764,7 @@ class Main extends React.Component<MainProps, MainState> {
                     width: util.onMobile() ? '100%' : '80%',
                     margin: 'auto',
                     gridTemplateColumns: '1fr',
-                    gridTemplateRows: '170px 40px auto 40px 300px',
+                    gridTemplateRows: 'auto 40px auto 40px 300px',
                     gridTemplateAreas: '"header" "menu" "content" "menu2" "footer"',
                 }}>
                     <div style={{gridArea: 'header'}}>

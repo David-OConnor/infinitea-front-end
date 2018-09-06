@@ -121,7 +121,7 @@ const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
     }
 
     const col1 = (
-        <React.Fragment>
+        <>
             <h4 style={{marginBottom: 0}}>Your name</h4>
             <input
                 style={nameStyle}
@@ -158,11 +158,11 @@ const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
                 placeholder="(Optional)"
                 onChange={(e: any) => cb('address2', e.target.value)}
             />
-        </React.Fragment>
+        </>
     )
 
     const col2 = (
-        <React.Fragment>
+        <>
             <h4 style={{marginBottom: 0}}>City</h4>
             <input
                 style={cityStyle}
@@ -198,7 +198,7 @@ const AddressForm = ({address, cb}: {address: Address, cb: Function}) => {
                 placeholder="Phone number"
                 onChange={(e: any) => cb('phone', e.target.value)}
             />
-        </React.Fragment>
+        </>
     )
 
 

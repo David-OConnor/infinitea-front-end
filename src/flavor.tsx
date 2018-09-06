@@ -5,10 +5,67 @@ import * as util from "./util";
 import {Ingredient} from "./types";
 
 
+function shuffle(a: any[]) {
+    // https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
+    // I think this suffle's in place.
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    // return a;
+}
+
+function ingFromId(id: number, ingreds: Ingredient[]): Ingredient {
+    return ingreds.filter(ing => ing.id === id)[0]
+}
+
+let flavAttrMap = new Map()
+flavAttrMap.set(0, 'caffeine')
+flavAttrMap.set(1, 'citrus')
+flavAttrMap.set(2, 'spicy')
+flavAttrMap.set(3, 'chocolate')
+flavAttrMap.set(4, 'tart')
+flavAttrMap.set(5, 'minty')
+flavAttrMap.set(6, 'savory')
+flavAttrMap.set(7, 'sweet')
+flavAttrMap.set(8, 'floral')
+flavAttrMap.set(9, 'hot')
+
+function score(ingreds: Ingredient[], flavs: number[]): number {
+    const flavsUsedFactor = 2
+    let result = 0
+
+    for (let ing1 of ingreds) {
+        for (let ing2 of ingreds) {
+            if (ing1.pairings.includes(ing2.id) || ing2.pairings.includes(ing1.id)) {
+                result += 1
+            }
+            if (ing1.clashes.includes(ing2.id) || ing2.clashes.includes(ing1.id)) {
+                result -= 1
+            }
+        }
+    }
+
+    let numSelFlavorsUsed = 0
+    for (let flav of flavs) {
+        for (let ing of ingreds) {
+            if (ing[flavAttrMap.get(flav)] > 0) {
+                numSelFlavorsUsed += 1
+                break
+            }
+        }
+    }
+
+    result += numSelFlavorsUsed / flavs.length * flavsUsedFactor
+
+    return result
+}
+
 function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [number, number][] {
     // Todo this function has lots of room for improvement, algo-wise.
-    const targetNumIngreds = 4
-    const maxTeas = 2  // ie tea proper.
+    const targetNumIngreds = 5
+    // More iters provides a better result, but is slower.
+    const numIters = 40
 
     // Note that we're inconsistent with terms 'tea' (here) and 'caffeine" (model)
 
@@ -16,87 +73,20 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
     let selectedArr: number[] = []
     selected.forEach(
         (sel, flavId, map) => {
+            // In Python, setting up suitable here would be handled by a
+            // default dict, but in JS, we need to set this up manually.
             suitable.set(flavId, [])
             if (sel) {selectedArr.push(flavId)}
         }
     )
 
-    let result = []
-
-    // suitableIngsPerFlav is used to make sure we get at least one ingred
-    // per selected flav. suitableIngs is used later, to add additional ings.
-    let suitableIngs = [], numTeas = 0, suitableIngsPerFlav, val
-
-
-
     for (let flavor of selectedArr) {
-        suitableIngsPerFlav = []
+        // suitableIngsPerFlav = []
         for (let ing of ingredients) {
-            // This must sync up with the buttons.
-            switch (flavor) {
-                case 0:
-                    val = ing.caffeine
-                    break;
-                case 1:
-                    val = ing.citrus
-                    break;
-                case 2:
-                    val = ing.spicy
-                    break;
-                case 3:
-                    val = ing.chocolate
-                    break;
-                case 4:
-                    val = ing.tart
-                    break;
-                case 5:
-                    val = ing.minty
-                    break;
-                case 6:
-                    val = ing.savory
-                    break;
-                case 7:
-                    val = ing.sweet
-                    break;
-                case 8:
-                    val = ing.floral
-                    break;
-                case 9:
-                    val = ing.hot
-                    break;
-                default:
-                    val = 0
-            }
-            if (val > 0) {
+            if (ing[flavAttrMap.get(flavor)] > 0) {
                 suitable.set(flavor, suitable.get(flavor).concat([ing.id]))
-                // todo note: We don't take into account ings
-                // todo that count towards multiple flavors here;
-                // todo perhaps we should
-
-
-                numTeas = suitableIngs.reduce((acc, ing) => ing.category === 0 ? acc + 1 : acc, 0)
-                // Limit the number of teas in the blend.
-
-                // todo flavor or category to determine if tea is selected.
-
-                // todo joined, not nested if?
-                if (!suitableIngs.map(i => i.id).includes(ing.id)) {
-                    if (ing.category !== 0 || numTeas < maxTeas) {
-                        suitableIngs.push(ing)
-                    }
-                }
-
             }
         }
-        // For each selected flavor, add a random ingredient that has this flavor.
-        // For each additional ingredient marked with this flavor, there's some
-        // chance to add it too.
-        // Make sure to add at least one suitable ing per flavor selected.
-        // result.push(util.randChoice(suitableIngsPerFlav))
-    }
-
-    for (let flavId of selectedArr) {
-        result.push(util.randChoice(suitable.get(flavId)))
     }
 
     let numIngs = targetNumIngreds
@@ -117,21 +107,41 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
     }
 
     // Don't try to add ings when we don't have enough.
-    numIngs = Math.min(numIngs, suitableIngs.length)
+    numIngs = Math.min(numIngs, selectedArr.length)
 
-    let choice
-    while (result.length < numIngs) {
-        // Deliberatly un-deduped suitableings, for now, to bias towards
-        // ings that are in multiple selected flavors.
-        choice = util.randChoice(suitableIngs)
-        if (!result.map(i => i.id).includes(choice.id)) {
-            result.push(choice)
+    let suitableArr: number[] = []
+    suitable.forEach(
+        (ingIds, flavId, map) => {
+            for (let ingId of ingIds) {
+                if (!suitableArr.includes(ingId)) {
+                    suitableArr.push(ingId)
+                }
+            }
         }
+    )
+
+    let candidate
+
+    let mixes = [], candidateIngs
+    for (let i=0; i<=numIters; i++) {
+        shuffle(suitableArr)
+
+        candidate = suitableArr.slice(0, numIngs)
+        candidateIngs = candidate.map(id => ingFromId(id, ingredients))
+
+        mixes.push([candidateIngs, score(candidateIngs, selectedArr)])
     }
+
+
+    mixes.sort((a: any, b: any) => b[1] - a[1])
+    // console.log(mixes, 'after')
+    const best = mixes[0]
+
+    // console.log("best: ", best)
 
     // Set the value to a 0-100 val so that the sliders under ingred selection
     // make sense.
-    return result.map(i => [i.id, 50] as any)
+    return (best[0] as any).map((b: any) => [b.id, 50] as any)
 }
 
 const FlavorCard = ({index, name, selected, toggleCb}:
