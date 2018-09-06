@@ -449,7 +449,7 @@ const Start = ({setPage, setFlav}: {setPage: Function, setFlav: Function}) => {
                          history.push(util.indexUrl + 'ingredients')
                      }}>
                     <h3 style={{fontSize: util.onMobile() ? 14 : null}}>
-                        Create it yourself
+                        Design it yourself
                     </h3>
                     <h4 style={{fontSize: util.onMobile() ? 12 : null}}>
                         Fully customizable</h4>
