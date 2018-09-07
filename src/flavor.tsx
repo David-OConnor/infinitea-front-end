@@ -88,25 +88,7 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
         }
     }
 
-    let numIngs = targetNumIngreds
 
-    // Weighted chances to add 1, add 2, sub 1, sub 2, or leave num ings unchanged,
-    // Assuming enough suitable ings are avail.
-    let numModifier = Math.random()
-    if (numModifier > .9) {
-        numIngs += 2
-    } else if (numModifier > .6) {
-        numIngs += 1
-    } else if (numModifier > .4) {
-        numIngs += 0
-    } else  if (numModifier > .1) {
-        numIngs -= 1
-    } else {
-        numIngs -= 2
-    }
-
-    // Don't try to add ings when we don't have enough.
-    numIngs = Math.min(numIngs, selectedArr.length)
 
     let suitableArr: number[] = []
     suitable.forEach(
@@ -122,10 +104,30 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
     let candidate
 
     let mixes = [], candidateIngs
+
+    let numIngs
     for (let i=0; i<=numIters; i++) {
+        numIngs = targetNumIngreds  // Reset
+
         shuffle(suitableArr)
 
-        candidate = suitableArr.slice(0, numIngs + 1)
+        // Weighted chances to add 1, add 2, sub 1, sub 2, or leave num ings unchanged,
+        // Assuming enough suitable ings are avail.
+        let numModifier = Math.random()
+        if (numModifier > .8) {
+            numIngs += 2
+        } else if (numModifier > .6) {
+            numIngs += 1
+        } else if (numModifier > .4) {
+            numIngs += 0
+        } else  if (numModifier > .1) {
+            numIngs -= 1
+        } else {
+            numIngs -= 2
+        }
+
+        // if suitableArr isn't long enough, the slice will be the whole arary.
+        candidate = suitableArr.slice(0, numIngs)
         candidateIngs = candidate.map(id => ingFromId(id, ingredients))
 
         mixes.push([candidateIngs, score(candidateIngs, selectedArr)])
