@@ -282,6 +282,7 @@ const Picker = ({ingredients, title, descrip, blend, ingSelection, selectCb, tit
                 gridArea: 'ingredients',
                 display: 'flex',
                 flexWrap: 'wrap',
+                justifyContent: 'center',
             }}>
                 {ingredients.map(ing => <IngredientCard
                     key={ing.id}
@@ -785,7 +786,6 @@ class Main extends React.Component<MainProps, MainState> {
                         gridArea: 'content',
                         background: 'white',
                         opacity: util.mainOpacity,
-                        justifySelf: this.state.subPage === 6? 'center': 'stretch',
                         border: "0px solid black",
                         padding: util.onMobile() ? 0 : 40
                     }}>

@@ -146,25 +146,32 @@ function recommend(selected: Map<number, boolean>, ingredients: Ingredient[]): [
 }
 
 const FlavorCard = ({index, name, selected, toggleCb}:
-                        {index: number, name: string, selected: boolean, toggleCb: Function}) => (
+                        {index: number, name: string, selected: boolean, toggleCb: Function}) => {
+    const imgSize = util.onMobile() ? 120 : 180
+    return (
     <div
         style={{
             display: 'flex',
-            margin: 'auto',
-            marginBottom: 10,
-            width: 200,
-            height: 30,
+            flexDirection: 'column',
+            // margin: 'auto',
+            padding: 10,
+            margin: 10,
+            // width: 200,
+            // height: 130,
             backgroundColor: selected ? '#9bffc6' : '#cfeaf6',
             cursor: 'pointer'
         }}
         onClick={() => toggleCb()}
     >
         <h4 style={{
-            display: 'flex',
             margin: 'auto',
+            padding: 6,
         }}>{name}</h4>
+
+        <img src={'./images/' + name.toLowerCase() + '.jpg'} width={imgSize} height={imgSize} />
     </div>
 )
+}
 
 interface FlavorProps {
     ingredients: Ingredient[]
@@ -207,7 +214,8 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
         flavors.set(0, 'Tea 🍵')
         flavors.set(7, 'Sweet 🍬')
         flavors.set(1, 'Citrus 🍋')
-        flavors.set(2, 'Spicy 🥧')
+        // flavors.set(2, 'Spicy 🥧')
+        flavors.set(2, 'Spicy')
         flavors.set(9, 'Hot 🌶️')
         flavors.set(3, 'Chocolate 🍫')
         flavors.set(4, 'Tart 🍒')
@@ -247,7 +255,7 @@ export default class _ extends React.Component<FlavorProps, FlavorState> {
                     'Create my tea', you can go back and try again with the same flavors,
                     different ones, or customize with 'Pick Ingredients' above.</p>
 
-                <div style={{display: 'flex', flexFlow: 'row wrap', marginTop: 40}}>
+                <div style={{display: 'flex', flexFlow: 'row wrap', justifyContent: 'center', marginTop: 40}}>
                     {items}
                 </div>
 

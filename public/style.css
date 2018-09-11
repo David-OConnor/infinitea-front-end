@@ -110,6 +110,7 @@ button {
     height: 40px;
     width: 200px;
     margin: auto;
+    padding: 0;  /* Prevents text from shifting on click. */
     text-align: center;
     color: black;
     font-family: 'Karla', sans-serif;
